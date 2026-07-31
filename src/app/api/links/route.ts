@@ -1,0 +1,62 @@
+import { NextResponse } from "next/server";
+import { CreateLinkUseCase } from "@/use-cases/create-link.use-case";
+import { LinkRepository } from "@/repositories/link.repository";
+
+import { ratelimit } from "@/lib/ratelimit";
+import { isUrlBlocklisted } from "@/lib/blocklist";
+
+// Clean Architecture: Initialize dependencies outside the handler
+const linkRepository = new LinkRepository();
+const createLinkUseCase = new CreateLinkUseCase(linkRepository);
+
+export async function POST(request: Request) {
+  try {
+    // 1. Rate Limiting Check
+    const ip = request.headers.get("x-forwarded-for") || "anonymous";
+    const { success, limit, reset, remaining } = await ratelimit.limit(`create-link_${ip}`);
+
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { 
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": limit.toString(),
+            "X-RateLimit-Remaining": remaining.toString(),
+            "X-RateLimit-Reset": reset.toString()
+          }
+        }
+      );
+    }
+
+    const body = await request.json();
+    const { longUrl, customAlias, domainId } = body;
+
+    if (!longUrl) {
+      return NextResponse.json({ error: "longUrl is required" }, { status: 400 });
+    }
+
+    // 2. Blocklist Check
+    if (isUrlBlocklisted(longUrl)) {
+      return NextResponse.json({ error: "This URL is not allowed (blocklisted or invalid format)" }, { status: 400 });
+    }
+
+    // TODO: Extract userId from Auth session if available
+    const link = await createLinkUseCase.execute({
+      longUrl,
+      customAlias,
+      domainId,
+    });
+
+    return NextResponse.json({ 
+      success: true,
+      data: link 
+    }, { status: 201 });
+    
+  } catch (error: any) {
+    return NextResponse.json({ 
+      success: false,
+      error: error.message 
+    }, { status: 400 });
+  }
+}

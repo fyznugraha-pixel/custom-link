@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String         @id @default(cuid())
+  name          String?
+  email         String?        @unique
+  links         Link[]
+  customDomains CustomDomain[]
+  createdAt     DateTime       @default(now())
+}
+
+model Link {
+  id           String       @id @default(cuid())
+  shortCode    String
+  longUrl      String
+  userId       String?
+  domainId     String?
+  redirectType Int          @default(301)
+  clicks       Int          @default(0)
+  expiresAt    DateTime?
+  createdAt    DateTime     @default(now())
+  
+  user         User?        @relation(fields: [userId], references: [id])
+  domain       CustomDomain? @relation(fields: [domainId], references: [id])
+  clickEvents  ClickEvent[]
+
+  @@unique([domainId, shortCode])
+}
+
+model ClickEvent {
+  id        String   @id @default(cuid())
+  linkId    String
+  referrer  String?
+  device    String?
+  country   String?
+  createdAt DateTime @default(now())
+  
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+}
+
+model CustomDomain {
+  id        String   @id @default(cuid())
+  domain    String   @unique
+  userId    String
+  status    String   @default("pending") // pending, verified, failed
+  createdAt DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  links     Link[]
+}
