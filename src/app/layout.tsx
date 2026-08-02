@@ -15,7 +15,11 @@ export const metadata: Metadata = {
     template: "%s | Fylink"
   },
   description: "Redefine how you share. Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes. Fast, secure, and free to use.",
-  keywords: ["URL shortener", "custom domains", "QR code generator", "link tracking", "free link shortener", "Fylink"],
+  keywords: [
+    "URL shortener", "custom URL shortener", "free link shortener", "shorten link", 
+    "custom link generator", "branded link shortener", "link tracking", "QR code generator", 
+    "persingkat URL", "pemendek link", "short link gratis", "custom domains", "Fylink"
+  ],
   authors: [{ name: "Fylink Team" }],
   creator: "Fylink",
   openGraph: {
