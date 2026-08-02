@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus, Globe, CheckCircle2, XCircle, AlertCircle, RefreshCw, Copy, X, Loader2 } from 'lucide-react';
+import { Plus, Globe, CheckCircle2, XCircle, AlertCircle, RefreshCw, Copy, X, Loader2, Trash2 } from 'lucide-react';
 
 export default function DomainTableClient({ initialDomains }: { initialDomains: any[] }) {
   const [domains, setDomains] = useState(initialDomains);
@@ -11,6 +11,7 @@ export default function DomainTableClient({ initialDomains }: { initialDomains: 
   const [error, setError] = useState('');
   
   const [verifyingId, setVerifyingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const handleAddDomain = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,6 +53,24 @@ export default function DomainTableClient({ initialDomains }: { initialDomains: 
       alert('Verification request failed');
     } finally {
       setVerifyingId(null);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this custom domain? All links using this domain will stop working properly until they are reassigned.')) return;
+    
+    setDeletingId(id);
+    try {
+      const res = await fetch(`/api/domains/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setDomains(domains.filter(d => d.id !== id));
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to delete domain');
+      }
+    } catch (err: any) {
+      alert('Delete request failed');
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -117,18 +136,28 @@ export default function DomainTableClient({ initialDomains }: { initialDomains: 
                       {new Date(domain.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-5 text-right">
-                      {domain.status !== 'verified' ? (
+                      <div className="flex items-center justify-end gap-2">
+                        {domain.status !== 'verified' ? (
+                          <button 
+                            onClick={() => handleVerify(domain.id)}
+                            disabled={verifyingId === domain.id || deletingId === domain.id}
+                            className="inline-flex items-center px-3 py-1.5 border border-border text-xs font-medium rounded-lg text-foreground bg-white hover:bg-muted transition-colors disabled:opacity-50"
+                          >
+                            {verifyingId === domain.id ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-1" />}
+                            Verify
+                          </button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground italic px-2">Ready to use</span>
+                        )}
                         <button 
-                          onClick={() => handleVerify(domain.id)}
-                          disabled={verifyingId === domain.id}
-                          className="inline-flex items-center px-3 py-1.5 border border-border text-xs font-medium rounded-lg text-foreground bg-white hover:bg-muted transition-colors disabled:opacity-50"
+                          onClick={() => handleDelete(domain.id)}
+                          disabled={deletingId === domain.id}
+                          title="Delete Domain"
+                          className="p-1.5 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
                         >
-                          {verifyingId === domain.id ? <Loader2 className="w-4 h-4 mr-1 animate-spin" /> : <RefreshCw className="w-4 h-4 mr-1" />}
-                          Verify
+                          {deletingId === domain.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                         </button>
-                      ) : (
-                        <span className="text-xs text-muted-foreground italic">Ready to use</span>
-                      )}
+                      </div>
                     </td>
                   </tr>
                 ))
