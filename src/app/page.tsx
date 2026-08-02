@@ -247,14 +247,15 @@ export default function Home() {
                       <QRCodeCanvas 
                         id="qr-canvas"
                         value={`http://${result.domain}/${result.shortCode}`} 
-                        size={130}
+                        size={1024}
+                        style={{ width: '130px', height: '130px' }}
                         level="H"
                         includeMargin={true}
                         className="rounded-lg"
                         imageSettings={{
                           src: '/logo/fy.png?v=1',
-                          height: 32,
-                          width: 32,
+                          height: 250,
+                          width: 250,
                           excavate: true,
                         }}
                       />
@@ -294,13 +295,14 @@ export default function Home() {
                         <QRCodeCanvas 
                           id="qr-canvas-standalone"
                           value={qrText} 
-                          size={200}
+                          size={1024}
+                          style={{ width: '200px', height: '200px' }}
                           level="H"
                           includeMargin={true}
                           imageSettings={{
                             src: '/logo/fy.png?v=1',
-                            height: 48,
-                            width: 48,
+                            height: 250,
+                            width: 250,
                             excavate: true,
                           }}
                         />

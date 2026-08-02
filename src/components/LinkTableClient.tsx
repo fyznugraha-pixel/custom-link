@@ -287,13 +287,14 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
                 <QRCodeCanvas 
                   id="qr-canvas"
                   value={`http://${qrModalLink.domain?.domain || defaultDomain}/${qrModalLink.shortCode}`} 
-                  size={200}
+                  size={1024}
+                  style={{ width: '200px', height: '200px' }}
                   level="H"
                   includeMargin={true}
                   imageSettings={{
                     src: '/logo/fy.png?v=1',
-                    height: 48,
-                    width: 48,
+                    height: 250,
+                    width: 250,
                     excavate: true,
                   }}
                 />
