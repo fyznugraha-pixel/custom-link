@@ -1,239 +1,78 @@
-'use client';
-
-import { useState } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2 } from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react';
+import Link from 'next/link';
+import { ArrowRight, Link as LinkIcon, BarChart3, Globe, Shield } from 'lucide-react';
 
 export default function Home() {
-  const [longUrl, setLongUrl] = useState('');
-  const [customAlias, setCustomAlias] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  const defaultDomain = typeof window !== 'undefined' ? window.location.host : 'go.link.com';
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setResult(null);
-    setCopied(false);
-
-    try {
-      const res = await fetch('/api/links', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ longUrl, customAlias: customAlias || undefined }),
-      });
-      
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to create short link');
-      }
-      
-      setResult({
-        shortCode: data.data.shortCode,
-        domain: defaultDomain
-      });
-      
-      // Clear form except for result
-      setLongUrl('');
-      setCustomAlias('');
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCopy = () => {
-    if (!result) return;
-    navigator.clipboard.writeText(`http://${result.domain}/${result.shortCode}`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleDownloadQR = () => {
-    const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement;
-    if (!canvas) return;
-    
-    const pngUrl = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
-    const downloadLink = document.createElement('a');
-    downloadLink.href = pngUrl;
-    downloadLink.download = `qr-${result?.shortCode}.png`;
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
-  };
-
   return (
-    <div className="min-h-screen bg-white selection:bg-primary-100 selection:text-primary-900 font-sans">
+    <div className="min-h-screen bg-white selection:bg-primary-100 selection:text-primary-900">
       {/* Navigation */}
       <nav className="border-b border-border bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
+          <div className="flex items-center gap-2 group cursor-pointer">
             <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center group-hover:scale-105 transition-transform">
               <LinkIcon className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-xl text-foreground tracking-tight">CustomLink</span>
           </div>
+          <div className="flex items-center gap-6">
+            <Link href="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Login
+            </Link>
+            <Link href="/dashboard" className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5">
+              Dashboard
+            </Link>
+          </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex-1 flex flex-col justify-center">
+      <main className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-sm font-medium mb-8 border border-primary-100">
-            <Zap className="w-4 h-4 text-primary-600" />
-            Simple, fast, and secure
+            <span className="flex h-2 w-2 rounded-full bg-primary-600 animate-pulse"></span>
+            Enterprise-grade link management
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6">
-            Make every link <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500">count.</span>
+          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-8">
+            Short links, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500">big results.</span>
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto">
-            Transform long, ugly URLs into memorable custom links. No registration required, generate QR codes instantly, and share them anywhere.
+          <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
+            Build your brand's authority with custom domains, track every click in real-time, and protect your links with enterprise-grade security.
           </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <Link href="/dashboard" className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-all shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:-translate-y-0.5 group">
+              Go to Dashboard
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
         </div>
 
-        {/* Action Area (Form or Result) */}
-        <div className="max-w-2xl mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
-          <div className="bg-white rounded-2xl shadow-xl shadow-primary-900/5 border border-border overflow-hidden">
-            
-            {!result ? (
-              <form onSubmit={handleSubmit} className="p-6 sm:p-10">
-                {error && (
-                  <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm rounded-xl border border-red-100 flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                    <span>{error}</span>
-                  </div>
-                )}
-                
-                <div className="space-y-6">
-                  <div>
-                    <label htmlFor="longUrl" className="block text-sm font-semibold text-foreground mb-2">
-                      Destination URL <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Globe className="h-5 w-5 text-muted-foreground" />
-                      </div>
-                      <input
-                        id="longUrl"
-                        type="url"
-                        required
-                        placeholder="https://your-very-long-url.com/some/path"
-                        value={longUrl}
-                        onChange={(e) => setLongUrl(e.target.value)}
-                        className="block w-full pl-12 pr-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div>
-                    <label htmlFor="customAlias" className="block text-sm font-semibold text-foreground mb-2">
-                      Custom Alias <span className="text-muted-foreground font-normal">(Optional)</span>
-                    </label>
-                    <div className="flex shadow-sm rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
-                      <span className="inline-flex items-center px-4 border border-r-0 border-border bg-muted/50 text-muted-foreground text-sm sm:text-base whitespace-nowrap">
-                        {defaultDomain}/
-                      </span>
-                      <input
-                        id="customAlias"
-                        type="text"
-                        placeholder="my-custom-name"
-                        value={customAlias}
-                        onChange={(e) => setCustomAlias(e.target.value)}
-                        pattern="[a-zA-Z0-9-_]+"
-                        title="Only letters, numbers, dashes, and underscores are allowed"
-                        className="flex-1 block w-full px-4 py-4 text-base border border-border rounded-none rounded-r-xl focus:outline-none bg-muted/30 focus:bg-white"
-                      />
-                    </div>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      Leave blank to auto-generate a random short code.
-                    </p>
-                  </div>
-                </div>
-                
-                <button
-                  type="submit"
-                  disabled={loading || !longUrl}
-                  className="mt-8 w-full inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-all focus:outline-none focus:ring-4 focus:ring-primary-200 disabled:opacity-70 disabled:cursor-not-allowed group shadow-md"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Shortening...
-                    </>
-                  ) : (
-                    <>
-                      Shorten URL
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </button>
-              </form>
-            ) : (
-              <div className="p-6 sm:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6 mx-auto">
-                  <CheckCircle2 className="w-8 h-8 text-green-600" />
-                </div>
-                <h2 className="text-2xl font-bold text-center text-foreground mb-8">Your link is ready!</h2>
-                
-                <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
-                  <div className="flex-1 w-full space-y-6">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-2">Short Link</p>
-                      <div className="flex shadow-sm rounded-xl overflow-hidden border border-primary-200 bg-primary-50/50">
-                        <div className="flex-1 px-4 py-4 truncate text-primary-700 font-medium text-lg">
-                          http://{result.domain}/{result.shortCode}
-                        </div>
-                        <button
-                          onClick={handleCopy}
-                          className="px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors flex items-center border-l border-primary-600"
-                        >
-                          {copied ? (
-                            <><CheckCircle2 className="w-5 h-5 mr-2" /> Copied</>
-                          ) : (
-                            <><Copy className="w-5 h-5 mr-2" /> Copy</>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                    
-                    <button
-                      onClick={() => setResult(null)}
-                      className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center"
-                    >
-                      <ArrowRight className="w-4 h-4 mr-1 rotate-180" />
-                      Create another link
-                    </button>
-                  </div>
-                  
-                  <div className="flex flex-col items-center p-4 bg-muted/30 rounded-2xl border border-border">
-                    <div className="bg-white p-3 rounded-xl shadow-sm border border-border mb-4">
-                      <QRCodeCanvas 
-                        id="qr-canvas"
-                        value={`http://${result.domain}/${result.shortCode}`} 
-                        size={160}
-                        level="H"
-                        includeMargin={true}
-                      />
-                    </div>
-                    <button
-                      onClick={handleDownloadQR}
-                      className="inline-flex items-center justify-center px-4 py-2 border border-border rounded-lg text-sm font-medium text-foreground bg-white hover:bg-muted transition-colors shadow-sm w-full"
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Download QR
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-            
+        {/* Features Grid */}
+        <div className="mt-32 grid md:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300 fill-mode-both">
+          <div className="bg-white p-8 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow group">
+            <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-primary-100 transition-all">
+              <Globe className="w-6 h-6 text-primary-600" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-3">Custom Domains</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Connect your own domain to brand your short links and increase click-through rates seamlessly.
+            </p>
+          </div>
+          <div className="bg-white p-8 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow group">
+            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-blue-100 transition-all">
+              <BarChart3 className="w-6 h-6 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-3">Real-time Analytics</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Track clicks, referrers, locations, and device types instantly with our beautiful Bento grid dashboard.
+            </p>
+          </div>
+          <div className="bg-white p-8 rounded-2xl border border-border shadow-sm hover:shadow-md transition-shadow group">
+            <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-green-100 transition-all">
+              <Shield className="w-6 h-6 text-green-600" />
+            </div>
+            <h3 className="text-xl font-bold text-foreground mb-3">Enterprise Security</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              Built-in rate limiting and anti-abuse blocklists keep your platform safe, reliable, and highly performant.
+            </p>
           </div>
         </div>
       </main>

@@ -31,6 +31,23 @@ export async function middleware(request: NextRequest) {
 
     if (longUrl) {
       // CACHE HIT -> Redirect
+      // 3. Async click logging
+      // Fire and forget via waitUntil (Vercel Edge support)
+      // Note: request.waitUntil is available in Edge Middleware, but we can also just use standard fetch without awaiting.
+      // NextFetchEvent can be passed if we export middleware properly, but fire-and-forget fetch usually works on Vercel too.
+      fetch(`${url.origin}/api/log-click`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          shortCode,
+          domain: cleanHostname,
+          referrer: request.headers.get('referer') || '',
+          userAgent: request.headers.get('user-agent') || '',
+          ip: request.headers.get('x-forwarded-for') || '',
+          country: request.headers.get('x-vercel-ip-country') || '',
+        }),
+      }).catch(console.error);
+
       return NextResponse.redirect(new URL(longUrl), { status: 301 });
     }
 
@@ -41,6 +58,20 @@ export async function middleware(request: NextRequest) {
     if (res.ok) {
       const data = await res.json();
       if (data.longUrl) {
+        // Async click log
+        fetch(`${url.origin}/api/log-click`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+             shortCode, 
+             domain: cleanHostname, 
+             referrer: request.headers.get('referer') || '',
+             userAgent: request.headers.get('user-agent') || '', 
+             ip: request.headers.get('x-forwarded-for') || '',
+             country: request.headers.get('x-vercel-ip-country') || ''
+          })
+        }).catch(console.error);
+
         return NextResponse.redirect(new URL(data.longUrl), { status: 301 });
       }
     }
