@@ -213,47 +213,48 @@ export default function Home() {
                 </div>
                 <h2 className="text-3xl font-bold text-foreground mb-8">Your link is ready!</h2>
                 
-                <div className="bg-primary-50/50 rounded-2xl border border-primary-100 p-6 sm:p-8 flex flex-col md:flex-row items-center gap-8">
-                  <div className="flex-1 w-full text-left">
+                <div className="bg-primary-50/50 rounded-2xl border border-primary-100 p-6 flex flex-col md:flex-row gap-6 items-stretch text-left">
+                  <div className="flex-1 flex flex-col justify-center min-w-0">
                     <p className="text-sm font-semibold text-muted-foreground mb-3">Short Link</p>
                     <div className="flex shadow-sm rounded-xl overflow-hidden border border-primary-200 bg-white mb-6">
-                      <div className="flex-1 px-4 py-4 truncate text-primary-700 font-medium text-lg flex items-center">
-                        http://{result.domain}/{result.shortCode}
+                      <div className="flex-1 px-4 py-3 truncate text-primary-700 font-medium text-base sm:text-lg flex items-center min-w-0">
+                        <span className="truncate">http://{result.domain}/{result.shortCode}</span>
                       </div>
                       <button
                         onClick={handleCopy}
-                        className="px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors flex items-center shrink-0"
+                        className="px-4 sm:px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors flex items-center shrink-0"
                       >
                         {copied ? (
-                          <><CheckCircle2 className="w-5 h-5 mr-2" /> Copied</>
+                          <><CheckCircle2 className="w-5 h-5 sm:mr-2" /> <span className="hidden sm:inline">Copied</span></>
                         ) : (
-                          <><Copy className="w-5 h-5 mr-2" /> Copy</>
+                          <><Copy className="w-5 h-5 sm:mr-2" /> <span className="hidden sm:inline">Copy</span></>
                         )}
                       </button>
                     </div>
                     
                     <button
                       onClick={() => setResult(null)}
-                      className="text-primary-600 hover:text-primary-700 font-medium flex items-center transition-colors group"
+                      className="text-primary-600 hover:text-primary-700 font-medium flex items-center transition-colors group w-fit"
                     >
                       <ArrowRight className="w-4 h-4 mr-2 rotate-180 group-hover:-translate-x-1 transition-transform" />
                       Create another link
                     </button>
                   </div>
                   
-                  <div className="flex flex-col items-center bg-white p-4 rounded-2xl shadow-sm border border-border shrink-0">
-                    <div className="mb-4">
+                  <div className="flex flex-col items-center justify-center bg-white p-4 rounded-2xl shadow-sm border border-border shrink-0 md:w-[180px]">
+                    <div className="mb-4 bg-muted/10 rounded-xl p-1">
                       <QRCodeCanvas 
                         id="qr-canvas"
                         value={`http://${result.domain}/${result.shortCode}`} 
-                        size={140}
+                        size={130}
                         level="H"
                         includeMargin={true}
+                        className="rounded-lg"
                       />
                     </div>
                     <button
                       onClick={handleDownloadQR}
-                      className="inline-flex items-center justify-center px-4 py-2 border border-border rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors w-full"
+                      className="inline-flex items-center justify-center px-4 py-2 border border-border rounded-xl text-xs font-semibold text-foreground hover:bg-muted transition-colors w-full"
                     >
                       <Download className="w-4 h-4 mr-2" />
                       Download QR
