@@ -292,7 +292,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
                   level="H"
                   includeMargin={true}
                   imageSettings={{
-                    src: '/logo/fy.png?v=1',
+                    src: '/logo/fy-v2.png',
                     height: 250,
                     width: 250,
                     excavate: true,
