@@ -8,7 +8,9 @@ import { useSession } from 'next-auth/react';
 
 export default function Home() {
   const { data: session } = useSession();
+  const [activeTab, setActiveTab] = useState<'shortener' | 'qr'>('shortener');
   const [longUrl, setLongUrl] = useState('');
+  const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -99,10 +101,7 @@ export default function Home() {
                 Go to Dashboard
               </Link>
             )}
-            <a href="/qr" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
-              <QrCode className="w-4 h-4" />
-              QR Generator
-            </a>
+            )}
           </div>
         </div>
       </nav>
@@ -124,9 +123,28 @@ export default function Home() {
 
         {/* Action Area (Form or Result) */}
         <div className="max-w-2xl mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
-          <div className="bg-white rounded-2xl shadow-xl shadow-primary-900/5 border border-border overflow-hidden">
+          
+          {/* Tabs */}
+          <div className="flex bg-white/50 backdrop-blur-md p-1 rounded-t-2xl border border-border border-b-0 w-fit mx-auto sm:mx-0">
+            <button
+              onClick={() => setActiveTab('shortener')}
+              className={`px-6 py-3 text-sm font-semibold rounded-t-xl transition-colors ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border border-border border-b-white' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              Shorten Link
+            </button>
+            <button
+              onClick={() => setActiveTab('qr')}
+              className={`px-6 py-3 text-sm font-semibold rounded-t-xl transition-colors flex items-center ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border border-border border-b-white' : 'text-muted-foreground hover:text-foreground'}`}
+            >
+              <QrCode className="w-4 h-4 mr-2" />
+              QR Code
+            </button>
+          </div>
+
+          <div className="bg-white rounded-2xl rounded-tl-none shadow-xl shadow-primary-900/5 border border-border overflow-hidden">
             
-            {!result ? (
+            {activeTab === 'shortener' && (
+              !result ? (
               <form onSubmit={handleSubmit} className="p-6 sm:p-10">
                 {error && (
                   <div className="mb-6 p-4 bg-red-50 text-red-700 text-sm rounded-xl border border-red-100 flex items-start gap-3">
@@ -256,21 +274,59 @@ export default function Home() {
               </div>
             )}
             
-          </div>
-          
-          <div className="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
-            <Link href="/qr" className="flex items-center justify-between p-4 bg-white hover:bg-primary-50/50 border border-border hover:border-primary-200 rounded-xl transition-all group shadow-sm hover:shadow-md">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-lg bg-primary-100 flex items-center justify-center group-hover:scale-105 transition-transform">
-                  <QrCode className="w-6 h-6 text-primary-600" />
+            {activeTab === 'qr' && (
+              <div className="p-6 sm:p-10 animate-in fade-in duration-300">
+                <div className="mb-8">
+                  <label htmlFor="qrText" className="block text-sm font-semibold text-foreground mb-2">
+                    Text or URL <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    id="qrText"
+                    placeholder="Enter any text or URL to generate a QR code instantly..."
+                    value={qrText}
+                    onChange={(e) => setQrText(e.target.value)}
+                    className="block w-full px-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white resize-none min-h-[120px]"
+                  />
                 </div>
-                <div className="text-left">
-                  <p className="text-sm font-semibold text-foreground group-hover:text-primary-700 transition-colors">Need a standalone QR Code?</p>
-                  <p className="text-xs text-muted-foreground">Generate a QR code from any text or link instantly.</p>
+
+                <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed">
+                  {qrText.trim() ? (
+                    <>
+                      <div className="bg-white p-4 rounded-2xl shadow-sm border border-border mb-6">
+                        <QRCodeCanvas 
+                          id="qr-canvas-standalone"
+                          value={qrText} 
+                          size={200}
+                          level="H"
+                          includeMargin={true}
+                        />
+                      </div>
+                      <button
+                        onClick={() => {
+                          const canvas = document.getElementById('qr-canvas-standalone') as HTMLCanvasElement;
+                          if (!canvas) return;
+                          const pngUrl = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+                          const downloadLink = document.createElement('a');
+                          downloadLink.href = pngUrl;
+                          downloadLink.download = `qr-code.png`;
+                          downloadLink.click();
+                        }}
+                        className="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Download QR Code
+                      </button>
+                    </>
+                  ) : (
+                    <div className="text-center text-muted-foreground flex flex-col items-center py-8">
+                      <QrCode className="w-12 h-12 mb-4 opacity-20" />
+                      <p>Type something above to see your QR code</p>
+                    </div>
+                  )}
                 </div>
               </div>
-              <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 group-hover:translate-x-1 transition-all" />
-            </Link>
+            )}
+            
           </div>
         </div>
       </main>
