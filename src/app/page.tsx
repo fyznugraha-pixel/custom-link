@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const TAGLINE_WORDS = ["count.", "short.", "easy.", "yours.", "trackable.", "powerful."];
 
@@ -109,9 +110,20 @@ export default function Home() {
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-col items-center justify-center gap-y-2 md:gap-y-4">
             <span>Make every link</span>
-            <span key={wordIndex} className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 animate-bounce-in-top pb-4 px-2 inline-block">
-              {TAGLINE_WORDS[wordIndex]}
-            </span>
+            <div className="flex justify-center items-center overflow-visible min-h-[1.5em] w-full">
+              <AnimatePresence mode="popLayout">
+                <motion.span
+                  key={wordIndex}
+                  initial={{ y: -40, opacity: 0, scale: 0.8 }}
+                  animate={{ y: 0, opacity: 1, scale: 1 }}
+                  exit={{ y: 40, opacity: 0, scale: 0.8 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 pb-4 px-2 inline-block whitespace-nowrap"
+                >
+                  {TAGLINE_WORDS[wordIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </div>
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto">
             Redefine how you share. Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes. Fast, secure, and ready to use. No account needed.
