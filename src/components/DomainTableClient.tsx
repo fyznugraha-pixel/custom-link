@@ -53,6 +53,7 @@ export default function DomainTableClient({ initialDomains }: { initialDomains: 
       alert('Verification request failed');
     } finally {
       setVerifyingId(null);
+    }
   };
 
   const handleDelete = async (id: string) => {
