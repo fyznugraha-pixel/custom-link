@@ -85,7 +85,7 @@ export default function Home() {
             <div className="flex items-center select-none group-hover:scale-105 transition-transform">
               <span className="text-3xl font-bold text-primary-600 tracking-tighter relative">
                 fy
-                <span className="absolute -bottom-2 right-1 w-4 h-1.5 bg-primary-600 rounded-full"></span>
+                <span className="absolute -bottom-1.5 right-0.5 w-4 h-1.5 bg-primary-600 rounded-full"></span>
               </span>
               <span className="text-3xl font-light text-foreground tracking-tighter ml-0.5">link</span>
             </div>
@@ -259,7 +259,7 @@ export default function Home() {
                         includeMargin={true}
                         className="rounded-lg"
                         imageSettings={{
-                          src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjUwIiBoZWlnaHQ9IjI1MCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI1MCIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI2MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSIzMiIgeT0iNzIiIHdpZHRoPSIzNiIgaGVpZ2h0PSIxMCIgcng9IjUiIGZpbGw9IiMyNTYzZWIiLz48L3N2Zz4=',
+                          src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNSIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI0NSIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI3MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSI1MCIgeT0iNzYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI4IiByeD0iNCIgZmlsbD0iIzI1NjNlYiIvPjwvc3ZnPg==',
                           height: 200,
                           width: 200,
                           excavate: true,
@@ -306,7 +306,7 @@ export default function Home() {
                           level="H"
                           includeMargin={true}
                           imageSettings={{
-                            src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjUwIiBoZWlnaHQ9IjI1MCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI1MCIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI2MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSIzMiIgeT0iNzIiIHdpZHRoPSIzNiIgaGVpZ2h0PSIxMCIgcng9IjUiIGZpbGw9IiMyNTYzZWIiLz48L3N2Zz4=',
+                            src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNSIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI0NSIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI3MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSI1MCIgeT0iNzYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI4IiByeD0iNCIgZmlsbD0iIzI1NjNlYiIvPjwvc3ZnPg==',
                             height: 200,
                             width: 200,
                             excavate: true,
