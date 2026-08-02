@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
@@ -15,7 +15,11 @@ export default function Home() {
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
   const [copied, setCopied] = useState(false);
 
-  const defaultDomain = typeof window !== 'undefined' ? window.location.host : 'go.link.com';
+  const [defaultDomain, setDefaultDomain] = useState('link.byfayiz.web.id');
+
+  useEffect(() => {
+    setDefaultDomain(window.location.host);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
