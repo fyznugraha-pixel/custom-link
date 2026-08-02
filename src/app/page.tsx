@@ -519,7 +519,7 @@ export default function Home() {
       </main>
 
       {/* Premium Blue Footer */}
-      <footer className="mt-20 bg-primary-600 text-white pt-12 pb-6 px-6 sm:px-10 lg:px-16 shadow-2xl relative overflow-hidden">
+      <footer className="mt-20 bg-[#1978e5] text-white pt-12 pb-6 px-6 sm:px-10 lg:px-16 shadow-2xl relative overflow-hidden">
         {/* Abstract Background Shapes */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
           <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[150%] bg-white/5 blur-3xl rounded-full transform rotate-12"></div>
