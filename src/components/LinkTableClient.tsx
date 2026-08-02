@@ -292,7 +292,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
                   level="H"
                   includeMargin={true}
                   imageSettings={{
-                    src: '/logo/fy-v2.png',
+                    src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjUwIiBoZWlnaHQ9IjI1MCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI1MCIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI2MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSIzMiIgeT0iNzIiIHdpZHRoPSIzNiIgaGVpZ2h0PSIxMCIgcng9IjUiIGZpbGw9IiMyNTYzZWIiLz48L3N2Zz4=',
                     height: 250,
                     width: 250,
                     excavate: true,

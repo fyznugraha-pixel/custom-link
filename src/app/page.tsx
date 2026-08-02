@@ -82,7 +82,13 @@ export default function Home() {
       <nav className="border-b border-border bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
-            <img src="/logo/fylink-v2.png" alt="Fylink" className="h-8 w-auto object-contain group-hover:scale-105 transition-transform" />
+            <div className="flex items-center select-none group-hover:scale-105 transition-transform">
+              <span className="text-3xl font-bold text-primary-600 tracking-tighter relative">
+                fy
+                <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-4 h-1.5 bg-primary-600 rounded-full"></span>
+              </span>
+              <span className="text-3xl font-light text-foreground tracking-tighter ml-0.5">link</span>
+            </div>
           </div>
           
           <div className="flex items-center gap-6">
@@ -253,7 +259,7 @@ export default function Home() {
                         includeMargin={true}
                         className="rounded-lg"
                         imageSettings={{
-                          src: '/logo/fy-v2.png',
+                          src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjUwIiBoZWlnaHQ9IjI1MCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI1MCIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI2MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSIzMiIgeT0iNzIiIHdpZHRoPSIzNiIgaGVpZ2h0PSIxMCIgcng9IjUiIGZpbGw9IiMyNTYzZWIiLz48L3N2Zz4=',
                           height: 250,
                           width: 250,
                           excavate: true,
@@ -300,7 +306,7 @@ export default function Home() {
                           level="H"
                           includeMargin={true}
                           imageSettings={{
-                            src: '/logo/fy-v2.png',
+                            src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjUwIiBoZWlnaHQ9IjI1MCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIyMCIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI1MCIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI2MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSIzMiIgeT0iNzIiIHdpZHRoPSIzNiIgaGVpZ2h0PSIxMCIgcng9IjUiIGZpbGw9IiMyNTYzZWIiLz48L3N2Zz4=',
                             height: 250,
                             width: 250,
                             excavate: true,
