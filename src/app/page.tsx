@@ -109,7 +109,7 @@ export default function Home() {
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-col items-center justify-center gap-y-2 md:gap-y-4">
             <span>Make every link</span>
-            <span key={wordIndex} className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 animate-in fade-in slide-in-from-top-8 zoom-in-90 duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] pb-4 px-2 inline-block">
+            <span key={wordIndex} className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 animate-bounce-in-top pb-4 px-2 inline-block">
               {TAGLINE_WORDS[wordIndex]}
             </span>
           </h1>
