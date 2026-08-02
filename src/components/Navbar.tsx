@@ -29,8 +29,8 @@ export default function Navbar() {
               <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-sm">
                 <LinkIcon className="text-white w-4 h-4" />
               </div>
-              <span className="font-bold text-xl text-foreground tracking-tight">
-                Link<span className="text-primary-600">Enterprise</span>
+              <span className="font-bold text-xl tracking-tight text-foreground">
+                <span className="text-primary-600">Fy</span>link
               </span>
             </Link>
             <div className="hidden sm:ml-10 sm:flex sm:space-x-8">

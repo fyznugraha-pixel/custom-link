@@ -8,7 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Link Shortener Platform",
+  title: "Fylink - URL Shortener",
   description: "Enterprise-grade URL shortener with custom domains and analytics.",
 };
 
