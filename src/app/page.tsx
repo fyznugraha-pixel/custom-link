@@ -120,7 +120,7 @@ export default function Home() {
             <Zap className="w-4 h-4 text-primary-600" />
             Free to use
           </div>
-          <h1 className="text-[2rem] sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-row items-center justify-center gap-x-2 md:gap-x-4 whitespace-nowrap overflow-visible">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-tight">
             <span>Make every link</span>
             <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative">
               <AnimatePresence mode="popLayout">
