@@ -14,6 +14,7 @@ export interface CreateLinkDTO {
   customAlias?: string;
   userId?: string;
   domainId?: string;
+  expiresIn?: string; // '1d', '3d', '7d', '30d'
 }
 
 export class CreateLinkUseCase {
@@ -38,9 +39,29 @@ export class CreateLinkUseCase {
       }
       
       // Check collision
-      const exists = await this.linkRepository.checkAliasExists(shortCode, data.domainId);
-      if (exists) {
-        throw new Error("Custom alias already in use");
+      const existingLink = await this.linkRepository.findByShortCode(shortCode, data.domainId);
+      if (existingLink) {
+        const now = new Date();
+        if (existingLink.expiresAt && existingLink.expiresAt < now) {
+          // Link is expired! Auto-recycle it.
+          await this.linkRepository.delete(existingLink.id);
+        } else {
+          // Link is still active. Calculate remaining time for the error message.
+          if (!existingLink.expiresAt) {
+            throw new Error("Custom alias already in use (Never expires)");
+          }
+          
+          const msRemaining = existingLink.expiresAt.getTime() - now.getTime();
+          const days = Math.floor(msRemaining / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((msRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          
+          let timeMsg = "";
+          if (days > 0) timeMsg = `${days} day${days > 1 ? 's' : ''}`;
+          else if (hours > 0) timeMsg = `${hours} hour${hours > 1 ? 's' : ''}`;
+          else timeMsg = "less than an hour";
+
+          throw new Error(`Custom alias already in use. It will expire in ${timeMsg}.`);
+        }
       }
     } else {
       // Generate unique short code fallback
@@ -60,12 +81,23 @@ export class CreateLinkUseCase {
       }
     }
 
-    // 3. Save to database
+    // 3. Calculate expiresAt
+    let expiresAt: Date | null = null;
+    if (data.expiresIn) {
+      const days = parseInt(data.expiresIn.replace('d', ''), 10);
+      if (!isNaN(days) && days > 0) {
+        expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + days);
+      }
+    }
+
+    // 4. Save to database
     const link = await this.linkRepository.create({
       longUrl: parsedUrl.toString(),
       shortCode: shortCode as string,
       user: data.userId ? { connect: { id: data.userId } } : undefined,
       domain: data.domainId ? { connect: { id: data.domainId } } : undefined,
+      expiresAt: expiresAt as Date | undefined,
     });
 
     // 4. Set to Redis Cache (TODO - to be implemented with Edge Middleware setup)

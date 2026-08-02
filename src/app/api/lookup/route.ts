@@ -31,9 +31,21 @@ export async function GET(request: Request) {
     const link = await linkRepository.findByShortCode(code, domainId);
 
     if (link) {
-      // 2. Set to Redis Cache for future hits (ttl: 1 hour)
+      if (link.expiresAt && link.expiresAt < new Date()) {
+        return NextResponse.json({ error: 'Link not found or expired' }, { status: 404 });
+      }
+
+      // 2. Set to Redis Cache for future hits (ttl: 1 hour max, or until expiry)
+      let ttl = 3600;
+      if (link.expiresAt) {
+        const secondsUntilExpiry = Math.floor((link.expiresAt.getTime() - Date.now()) / 1000);
+        if (secondsUntilExpiry < 3600) {
+          ttl = Math.max(1, secondsUntilExpiry);
+        }
+      }
+
       const cacheKey = `domain:${domain}:code:${code}`;
-      await redis.setex(cacheKey, 3600, link.longUrl);
+      await redis.setex(cacheKey, ttl, link.longUrl);
 
       return NextResponse.json({ longUrl: link.longUrl });
     }

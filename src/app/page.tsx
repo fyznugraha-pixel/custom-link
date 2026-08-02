@@ -13,6 +13,7 @@ export default function Home() {
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
+  const [expiresIn, setExpiresIn] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
@@ -40,7 +41,7 @@ export default function Home() {
       const res = await fetch('/api/links', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ longUrl, customAlias: customAlias || undefined }),
+        body: JSON.stringify({ longUrl, customAlias: customAlias || undefined, expiresIn: expiresIn || undefined }),
       });
       
       const data = await res.json();
@@ -205,6 +206,24 @@ export default function Home() {
                     <p className="mt-2 text-xs text-muted-foreground">
                       Leave blank to auto-generate a random short code.
                     </p>
+                  </div>
+
+                  <div>
+                    <label htmlFor="expiresIn" className="block text-sm font-semibold text-foreground mb-2">
+                      Link Expiration <span className="text-muted-foreground font-normal">(Optional)</span>
+                    </label>
+                    <select
+                      id="expiresIn"
+                      value={expiresIn}
+                      onChange={(e) => setExpiresIn(e.target.value)}
+                      className="block w-full px-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white appearance-none cursor-pointer"
+                    >
+                      <option value="">Never (Default)</option>
+                      <option value="1d">1 Day</option>
+                      <option value="3d">3 Days</option>
+                      <option value="7d">7 Days</option>
+                      <option value="30d">30 Days</option>
+                    </select>
                   </div>
                 </div>
                 
