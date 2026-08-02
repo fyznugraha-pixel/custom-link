@@ -107,9 +107,9 @@ export default function Home() {
             <Zap className="w-4 h-4 text-primary-600" />
             Free to use
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-wrap justify-center gap-x-4">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-col items-center justify-center gap-y-2 md:gap-y-4">
             <span>Make every link</span>
-            <span key={wordIndex} className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 animate-in fade-in zoom-in-95 duration-500 inline-block">
+            <span key={wordIndex} className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 animate-in fade-in slide-in-from-bottom-6 zoom-in-75 duration-700 ease-out">
               {TAGLINE_WORDS[wordIndex]}
             </span>
           </h1>
