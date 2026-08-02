@@ -82,7 +82,7 @@ export default function Home() {
       <nav className="border-b border-border bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
-            <img src="/logo/fylink-v2.png" alt="Fylink" className="h-8 w-auto object-contain group-hover:scale-105 transition-transform" />
+            <img src="/logo/fylink-v2.png" alt="Fylink" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
           </div>
           
           <div className="flex items-center gap-6">
