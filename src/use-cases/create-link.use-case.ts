@@ -81,14 +81,18 @@ export class CreateLinkUseCase {
       }
     }
 
-    // 3. Calculate expiresAt
+    // 3. Calculate expiresAt (Mandatory)
     let expiresAt: Date | null = null;
-    if (data.expiresIn) {
-      const days = parseInt(data.expiresIn.replace('d', ''), 10);
-      if (!isNaN(days) && days > 0) {
-        expiresAt = new Date();
-        expiresAt.setDate(expiresAt.getDate() + days);
-      }
+    const expirationStr = data.expiresIn || '7d'; // Enforce default if missing
+    
+    const days = parseInt(expirationStr.replace('d', ''), 10);
+    if (!isNaN(days) && days > 0) {
+      expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + days);
+    }
+
+    if (!expiresAt) {
+      throw new Error("Invalid expiration format");
     }
 
     // 4. Save to database

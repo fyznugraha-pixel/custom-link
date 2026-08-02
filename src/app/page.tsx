@@ -8,10 +8,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const TAGLINE_WORDS = ["count.", "short.", "easy.", "yours.", "trackable.", "powerful."];
 const EXPIRATION_OPTIONS = [
-  { value: '', label: 'Never (Default)' },
   { value: '1d', label: '1 Day' },
   { value: '3d', label: '3 Days' },
-  { value: '7d', label: '7 Days' },
+  { value: '7d', label: '7 Days (Default)' },
   { value: '30d', label: '30 Days' },
 ];
 
@@ -20,7 +19,7 @@ export default function Home() {
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
-  const [expiresIn, setExpiresIn] = useState('');
+  const [expiresIn, setExpiresIn] = useState('7d');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -218,7 +217,7 @@ export default function Home() {
 
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">
-                      Link Expiration <span className="text-muted-foreground font-normal">(Optional)</span>
+                      Link Expiration <span className="text-red-500">*</span>
                     </label>
                     <div 
                       className="relative" 
@@ -234,8 +233,8 @@ export default function Home() {
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         className={`flex items-center justify-between w-full px-4 py-4 text-base text-left border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all ${isDropdownOpen ? 'border-primary-500 bg-white ring-2 ring-primary-500 ring-opacity-20' : 'border-border bg-muted/30 hover:bg-white'}`}
                       >
-                        <span className={expiresIn === '' ? 'text-foreground' : 'text-foreground font-medium'}>
-                          {EXPIRATION_OPTIONS.find(opt => opt.value === expiresIn)?.label || 'Never (Default)'}
+                        <span className="text-foreground font-medium">
+                          {EXPIRATION_OPTIONS.find(opt => opt.value === expiresIn)?.label || '7 Days (Default)'}
                         </span>
                         <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                       </button>
