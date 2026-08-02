@@ -12,6 +12,7 @@ const EXPIRATION_OPTIONS = [
   { value: '3d', label: '3 Days' },
   { value: '7d', label: '7 Days (Default)' },
   { value: '30d', label: '30 Days' },
+  { value: 'custom', label: 'Custom...' },
 ];
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
   const [expiresIn, setExpiresIn] = useState('7d');
+  const [customDays, setCustomDays] = useState('60');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -45,10 +47,12 @@ export default function Home() {
     setCopied(false);
 
     try {
+      const finalExpiresIn = expiresIn === 'custom' ? `${customDays}d` : expiresIn;
+      
       const res = await fetch('/api/links', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ longUrl, customAlias: customAlias || undefined, expiresIn: expiresIn || undefined }),
+        body: JSON.stringify({ longUrl, customAlias: customAlias || undefined, expiresIn: finalExpiresIn || undefined }),
       });
       
       const data = await res.json();
@@ -268,6 +272,30 @@ export default function Home() {
                         )}
                       </AnimatePresence>
                     </div>
+
+                    <AnimatePresence>
+                      {expiresIn === 'custom' && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                          animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="number"
+                              min="1"
+                              max="3650"
+                              value={customDays}
+                              onChange={(e) => setCustomDays(e.target.value)}
+                              className="block w-24 px-4 py-3 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white text-center font-medium shadow-inner shadow-primary-900/5"
+                            />
+                            <span className="text-muted-foreground font-medium text-sm">Days</span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
                 
