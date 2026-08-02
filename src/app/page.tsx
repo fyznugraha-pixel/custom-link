@@ -403,13 +403,25 @@ export default function Home() {
 
                 <div className="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
                   <div className="col-span-2 sm:col-span-2">
-                    <label className="block text-sm font-semibold text-foreground mb-2">Custom Logo URL</label>
+                    <label className="block text-sm font-semibold text-foreground mb-2">Upload Custom Logo (Max 2MB)</label>
                     <input 
-                      type="url"
-                      placeholder="https://example.com/logo.png"
-                      value={qrLogo}
-                      onChange={(e) => setQrLogo(e.target.value)}
-                      className="block w-full px-4 py-3 text-sm border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
+                      type="file"
+                      accept="image/png, image/jpeg, image/webp"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          if (file.size > 2 * 1024 * 1024) {
+                            alert("File is too large. Please upload an image smaller than 2MB.");
+                            return;
+                          }
+                          const reader = new FileReader();
+                          reader.onload = (event) => {
+                            setQrLogo(event.target?.result as string);
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 border border-border rounded-xl p-1 bg-white cursor-pointer"
                     />
                   </div>
                   <div className="col-span-1">
