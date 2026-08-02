@@ -290,6 +290,12 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
                   size={200}
                   level="H"
                   includeMargin={true}
+                  imageSettings={{
+                    src: '/logo.svg',
+                    height: 48,
+                    width: 48,
+                    excavate: true,
+                  }}
                 />
               </div>
               <p className="mt-4 text-sm font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full truncate max-w-full">

@@ -250,6 +250,12 @@ export default function Home() {
                         level="H"
                         includeMargin={true}
                         className="rounded-lg"
+                        imageSettings={{
+                          src: '/logo.svg',
+                          height: 32,
+                          width: 32,
+                          excavate: true,
+                        }}
                       />
                     </div>
                     <button
@@ -290,6 +296,12 @@ export default function Home() {
                           size={200}
                           level="H"
                           includeMargin={true}
+                          imageSettings={{
+                            src: '/logo.svg',
+                            height: 48,
+                            width: 48,
+                            excavate: true,
+                          }}
                         />
                       </div>
                       <button
