@@ -36,7 +36,7 @@ export default function Home() {
   const [defaultDomain, setDefaultDomain] = useState('link.byfayiz.web.id');
 
   useEffect(() => {
-    setDefaultDomain(window.location.host);
+    setDefaultDomain(window.location.host.replace(/^www\./, ''));
     const interval = setInterval(() => {
       setWordIndex((prev) => (prev + 1) % TAGLINE_WORDS.length);
     }, 2500);
@@ -205,7 +205,7 @@ export default function Home() {
                     </label>
                     <div className="flex shadow-sm rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
                       <span className="inline-flex items-center px-4 border border-r-0 border-border bg-muted/50 text-muted-foreground text-sm sm:text-base whitespace-nowrap">
-                        {defaultDomain}/
+                        {defaultDomain}
                       </span>
                       <input
                         id="customAlias"
