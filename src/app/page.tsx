@@ -285,15 +285,15 @@ export default function Home() {
                   />
                 </div>
 
-                <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed h-[480px] w-full">
+                <div className="flex flex-col items-center justify-center p-4 sm:p-8 bg-muted/20 rounded-2xl border border-border border-dashed min-h-[480px] w-full">
                   {qrText.trim() ? (
                     <>
-                      <div className="bg-white p-4 rounded-2xl shadow-sm border border-border mb-6">
+                      <div className="bg-white p-3 sm:p-4 rounded-2xl shadow-sm border border-border mb-6 w-full max-w-[340px] flex justify-center aspect-square">
                         <QRCodeCanvas 
                           id="qr-canvas-standalone"
                           value={qrText} 
                           size={1024}
-                          style={{ width: '300px', height: '300px' }}
+                          style={{ width: '100%', height: '100%', maxWidth: '300px', maxHeight: '300px' }}
                           level="H"
                           includeMargin={true}
                           imageSettings={{
