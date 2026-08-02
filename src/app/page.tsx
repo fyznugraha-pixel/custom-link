@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Instagram } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -518,14 +518,45 @@ export default function Home() {
         </div>
       </main>
 
-      {/* Simple Footer */}
-      <footer className="mt-20 pb-8 pt-4 border-t border-slate-200/60 text-center text-slate-500 text-sm">
-        <p>&copy; {new Date().getFullYear()} Fyurl. All rights reserved.</p>
-        <div className="mt-3 flex justify-center gap-4">
-          <Link href="/report" className="hover:text-red-500 transition-colors flex items-center gap-1.5 font-medium">
-            <ShieldAlert className="w-4 h-4" />
-            Report Abuse
-          </Link>
+      {/* Premium Blue Footer */}
+      <footer className="mt-20 bg-primary-600 text-white pt-12 pb-6 px-4 md:px-8 shadow-2xl relative overflow-hidden">
+        {/* Abstract Background Shapes */}
+        <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+          <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[150%] bg-white/5 blur-3xl rounded-full transform rotate-12"></div>
+          <div className="absolute bottom-[10%] -right-[10%] w-[30%] h-[100%] bg-white/5 blur-3xl rounded-full transform -rotate-12"></div>
+        </div>
+
+        <div className="max-w-6xl mx-auto flex flex-col items-center relative z-10">
+          <div className="bg-white p-3 rounded-2xl shadow-lg mb-4 transform hover:scale-110 transition-transform">
+            <img src="/logo/fyurl-logo.png" alt="Fyurl Logo" className="h-10 w-10 object-contain" />
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight mb-8">Fyurl</h2>
+          
+          <div className="w-full h-px bg-primary-400/30 my-6"></div>
+          
+          <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+              <a 
+                href="https://instagram.com/faizngraha" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="flex items-center gap-2 p-2 px-4 bg-primary-500/30 hover:bg-white hover:text-primary-600 rounded-full transition-all hover:scale-105 border border-primary-400/30" 
+                title="Instagram @faizngraha"
+              >
+                <Instagram className="w-5 h-5" />
+                <span className="text-sm font-semibold">@faizngraha</span>
+              </a>
+              
+              <Link href="/report" className="flex items-center gap-1.5 text-primary-200 hover:text-white transition-colors text-sm font-medium">
+                <ShieldAlert className="w-4 h-4" />
+                Report Abuse
+              </Link>
+            </div>
+            
+            <div className="text-sm text-primary-100 font-medium text-center md:text-right">
+              Made by <span className="font-bold text-white text-base block sm:inline mt-1 sm:mt-0">Fayiz Apriwansyah Nugraha</span>
+            </div>
+          </div>
         </div>
       </footer>
     </div>

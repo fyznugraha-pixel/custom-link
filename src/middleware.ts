@@ -26,6 +26,7 @@ export async function middleware(request: NextRequest) {
     url.pathname.startsWith('/api') ||
     url.pathname.startsWith('/dashboard') ||
     url.pathname.startsWith('/logo') ||
+    url.pathname.startsWith('/report') ||
     url.pathname === '/' ||
     url.pathname === '/favicon.ico' ||
     url.pathname === '/icon.png' ||
