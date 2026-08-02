@@ -1,12 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const TAGLINE_WORDS = ["count.", "short.", "easy.", "yours.", "trackable.", "powerful."];
+const EXPIRATION_OPTIONS = [
+  { value: '', label: 'Never (Default)' },
+  { value: '1d', label: '1 Day' },
+  { value: '3d', label: '3 Days' },
+  { value: '7d', label: '7 Days' },
+  { value: '30d', label: '30 Days' },
+];
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'shortener' | 'qr'>('shortener');
@@ -14,6 +21,7 @@ export default function Home() {
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
   const [expiresIn, setExpiresIn] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
@@ -209,21 +217,58 @@ export default function Home() {
                   </div>
 
                   <div>
-                    <label htmlFor="expiresIn" className="block text-sm font-semibold text-foreground mb-2">
+                    <label className="block text-sm font-semibold text-foreground mb-2">
                       Link Expiration <span className="text-muted-foreground font-normal">(Optional)</span>
                     </label>
-                    <select
-                      id="expiresIn"
-                      value={expiresIn}
-                      onChange={(e) => setExpiresIn(e.target.value)}
-                      className="block w-full px-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white appearance-none cursor-pointer"
+                    <div 
+                      className="relative" 
+                      tabIndex={0} 
+                      onBlur={(e) => {
+                        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                          setIsDropdownOpen(false);
+                        }
+                      }}
                     >
-                      <option value="">Never (Default)</option>
-                      <option value="1d">1 Day</option>
-                      <option value="3d">3 Days</option>
-                      <option value="7d">7 Days</option>
-                      <option value="30d">30 Days</option>
-                    </select>
+                      <button
+                        type="button"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className={`flex items-center justify-between w-full px-4 py-4 text-base text-left border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all ${isDropdownOpen ? 'border-primary-500 bg-white ring-2 ring-primary-500 ring-opacity-20' : 'border-border bg-muted/30 hover:bg-white'}`}
+                      >
+                        <span className={expiresIn === '' ? 'text-foreground' : 'text-foreground font-medium'}>
+                          {EXPIRATION_OPTIONS.find(opt => opt.value === expiresIn)?.label || 'Never (Default)'}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                      </button>
+
+                      <AnimatePresence>
+                        {isDropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                            transition={{ duration: 0.15, ease: "easeOut" }}
+                            className="absolute z-20 w-full mt-2 bg-white border border-border rounded-xl shadow-2xl overflow-hidden"
+                          >
+                            {EXPIRATION_OPTIONS.map((option) => (
+                              <button
+                                key={option.value}
+                                type="button"
+                                onClick={() => {
+                                  setExpiresIn(option.value);
+                                  setIsDropdownOpen(false);
+                                }}
+                                className={`w-full text-left px-4 py-3 text-base hover:bg-primary-50 transition-colors flex items-center justify-between ${
+                                  expiresIn === option.value ? 'bg-primary-50 text-primary-700 font-medium' : 'text-foreground'
+                                }`}
+                              >
+                                {option.label}
+                                {expiresIn === option.value && <CheckCircle2 className="w-4 h-4 text-primary-600" />}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   </div>
                 </div>
                 
