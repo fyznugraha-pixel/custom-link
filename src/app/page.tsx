@@ -108,9 +108,9 @@ export default function Home() {
             <Zap className="w-4 h-4 text-primary-600" />
             Free to use
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-col items-center justify-center gap-y-2 md:gap-y-4">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-wrap items-center justify-center gap-x-3 md:gap-x-5">
             <span>Make every link</span>
-            <div className="flex justify-center items-center overflow-visible min-h-[1.5em] w-full">
+            <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative">
               <AnimatePresence mode="popLayout">
                 <motion.span
                   key={wordIndex}
