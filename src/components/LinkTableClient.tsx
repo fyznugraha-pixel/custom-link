@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Plus, MoreHorizontal, ExternalLink, Copy, BarChart3, ChevronRight, X } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, ExternalLink, Copy, BarChart3, ChevronRight, X, QrCode, Download } from 'lucide-react';
+import { QRCodeCanvas } from 'qrcode.react';
 import CreateLinkModal from './CreateLinkModal';
 import Link from 'next/link';
 
@@ -15,6 +16,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLink, setSelectedLink] = useState<any | null>(null);
+  const [qrModalLink, setQrModalLink] = useState<any | null>(null);
 
   const filteredLinks = links.filter(
     (link) =>
@@ -28,6 +30,22 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
     const domainToUse = link.domain?.domain || defaultDomain;
     navigator.clipboard.writeText(`http://${domainToUse}/${link.shortCode}`);
     alert('Copied to clipboard!');
+  };
+
+  const handleDownloadQR = () => {
+    const canvas = document.getElementById('qr-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    const pngUrl = canvas
+      .toDataURL('image/png')
+      .replace('image/png', 'image/octet-stream');
+    
+    const downloadLink = document.createElement('a');
+    downloadLink.href = pngUrl;
+    downloadLink.download = `qr-${qrModalLink?.shortCode}.png`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
 
   return (
@@ -113,6 +131,13 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
                             title="Copy Link"
                           >
                             <Copy className="h-4 w-4" />
+                          </button>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setQrModalLink(link); }}
+                            className="text-muted-foreground hover:text-primary-600 transition-colors p-1"
+                            title="Generate QR Code"
+                          >
+                            <QrCode className="h-4 w-4" />
                           </button>
                           <a 
                             href={link.longUrl} 
@@ -207,6 +232,48 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
           }, ...links]);
         }}
       />
+
+      {/* QR Code Modal */}
+      {qrModalLink && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex justify-between items-center p-6 border-b border-border">
+              <h2 className="text-xl font-semibold text-foreground flex items-center">
+                <QrCode className="w-5 h-5 mr-2" />
+                QR Code
+              </h2>
+              <button onClick={() => setQrModalLink(null)} className="text-muted-foreground hover:bg-muted p-2 rounded-full transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-8 flex flex-col items-center justify-center bg-muted/30">
+              <div className="bg-white p-4 rounded-xl shadow-sm border border-border">
+                <QRCodeCanvas 
+                  id="qr-canvas"
+                  value={`http://${qrModalLink.domain?.domain || defaultDomain}/${qrModalLink.shortCode}`} 
+                  size={200}
+                  level="H"
+                  includeMargin={true}
+                />
+              </div>
+              <p className="mt-4 text-sm font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full truncate max-w-full">
+                {qrModalLink.domain?.domain || defaultDomain}/{qrModalLink.shortCode}
+              </p>
+            </div>
+            
+            <div className="p-6 border-t border-border bg-gray-50 flex justify-end">
+              <button
+                onClick={handleDownloadQR}
+                className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-4 focus:ring-primary-200"
+              >
+                <Download className="w-4 h-4 mr-2" />
+                Download PNG
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
