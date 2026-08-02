@@ -288,7 +288,7 @@ export default function Home() {
                   />
                 </div>
 
-                <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed h-[380px] w-full">
+                <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed h-[480px] w-full">
                   {qrText.trim() ? (
                     <>
                       <div className="bg-white p-4 rounded-2xl shadow-sm border border-border mb-6">
@@ -296,7 +296,7 @@ export default function Home() {
                           id="qr-canvas-standalone"
                           value={qrText} 
                           size={1024}
-                          style={{ width: '200px', height: '200px' }}
+                          style={{ width: '300px', height: '300px' }}
                           level="H"
                           includeMargin={true}
                           imageSettings={{
