@@ -26,17 +26,7 @@ export default function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link href="/dashboard" className="flex-shrink-0 flex items-center">
-              <div className="flex items-end select-none">
-                <div className="relative inline-flex flex-col">
-                  <div className="h-[22px] overflow-hidden">
-                    <span className="text-3xl font-bold text-primary-600 tracking-tighter leading-none">
-                      fy
-                    </span>
-                  </div>
-                  <span className="absolute -bottom-1 right-0.5 w-4 h-1.5 bg-primary-600 rounded-full"></span>
-                </div>
-                <span className="text-3xl font-light text-foreground tracking-tighter ml-0.5 leading-none">link</span>
-              </div>
+              <img src="/logo/fylink-v2.png" alt="Fylink" className="h-8 w-auto object-contain" />
             </Link>
             <div className="hidden sm:ml-10 sm:flex sm:space-x-8">
               <Link href="/dashboard" className="border-primary-600 text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
