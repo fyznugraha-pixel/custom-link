@@ -368,8 +368,8 @@ export default function Home() {
                         className="rounded-lg"
                         imageSettings={{
                           src: '/logo/fyurl-logo.png',
-                          height: 150,
-                          width: 150,
+                          height: 200,
+                          width: 200,
                           excavate: true,
                         }}
                       />
@@ -482,8 +482,8 @@ export default function Home() {
                           bgColor={qrBgColor}
                           imageSettings={qrLogo ? {
                             src: qrLogo,
-                            height: 150,
-                            width: 150,
+                            height: 200,
+                            width: 200,
                             excavate: true,
                           } : undefined}
                         />
