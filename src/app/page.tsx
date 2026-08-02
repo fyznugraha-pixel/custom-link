@@ -130,7 +130,7 @@ export default function Home() {
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ y: 40, opacity: 0, scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 pb-4 px-2 inline-block whitespace-nowrap"
+                  className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 p-2 -m-2 inline-block whitespace-nowrap"
                 >
                   {TAGLINE_WORDS[wordIndex]}
                 </motion.span>
@@ -250,7 +250,7 @@ export default function Home() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: -10, scale: 0.95 }}
                             transition={{ duration: 0.15, ease: "easeOut" }}
-                            className="absolute z-20 w-full mt-2 bg-white border border-border rounded-xl shadow-2xl overflow-hidden"
+                            className="absolute z-20 w-full mt-2 py-1 bg-white border border-border rounded-xl shadow-2xl overflow-y-auto max-h-60"
                           >
                             {EXPIRATION_OPTIONS.map((option) => (
                               <button
