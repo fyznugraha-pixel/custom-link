@@ -1,9 +1,16 @@
 import prisma from '@/lib/prisma';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Globe, Smartphone, MousePointer2, Calendar } from 'lucide-react';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function AnalyticsPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    redirect("/api/auth/signin");
+  }
+
   const { id: linkId } = await params;
   
   const link = await prisma.link.findUnique({
@@ -11,7 +18,7 @@ export default async function AnalyticsPage({ params }: { params: Promise<{ id: 
     include: { domain: true },
   });
 
-  if (!link) notFound();
+  if (!link || link.userId !== session.user?.id) notFound();
 
   // Aggregate clicks
   const clicks = await prisma.clickEvent.findMany({

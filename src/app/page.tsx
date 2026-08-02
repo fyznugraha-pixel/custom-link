@@ -1,10 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 export default function Home() {
+  const { data: session } = useSession();
   const [longUrl, setLongUrl] = useState('');
   const [customAlias, setCustomAlias] = useState('');
   const [loading, setLoading] = useState(false);
@@ -79,6 +82,27 @@ export default function Home() {
               <LinkIcon className="w-5 h-5 text-white" />
             </div>
             <span className="font-bold text-xl text-foreground tracking-tight">CustomLink</span>
+          </div>
+          
+          <div className="flex items-center gap-6">
+            {!session ? (
+              <>
+                <Link href="/api/auth/signin" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  Login
+                </Link>
+                <Link href="/api/auth/signin" className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5">
+                  Get Started
+                </Link>
+              </>
+            ) : (
+              <Link href="/dashboard" className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5">
+                Go to Dashboard
+              </Link>
+            )}
+            <a href="/qr" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
+              <QrCode className="w-4 h-4" />
+              QR Generator
+            </a>
           </div>
         </div>
       </nav>
@@ -176,55 +200,53 @@ export default function Home() {
                 </button>
               </form>
             ) : (
-              <div className="p-6 sm:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="p-6 sm:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500 text-center">
                 <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6 mx-auto">
                   <CheckCircle2 className="w-8 h-8 text-green-600" />
                 </div>
-                <h2 className="text-2xl font-bold text-center text-foreground mb-8">Your link is ready!</h2>
+                <h2 className="text-3xl font-bold text-foreground mb-8">Your link is ready!</h2>
                 
-                <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
-                  <div className="flex-1 w-full space-y-6">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-2">Short Link</p>
-                      <div className="flex shadow-sm rounded-xl overflow-hidden border border-primary-200 bg-primary-50/50">
-                        <div className="flex-1 px-4 py-4 truncate text-primary-700 font-medium text-lg">
-                          http://{result.domain}/{result.shortCode}
-                        </div>
-                        <button
-                          onClick={handleCopy}
-                          className="px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors flex items-center border-l border-primary-600"
-                        >
-                          {copied ? (
-                            <><CheckCircle2 className="w-5 h-5 mr-2" /> Copied</>
-                          ) : (
-                            <><Copy className="w-5 h-5 mr-2" /> Copy</>
-                          )}
-                        </button>
+                <div className="bg-primary-50/50 rounded-2xl border border-primary-100 p-6 sm:p-8 flex flex-col md:flex-row items-center gap-8">
+                  <div className="flex-1 w-full text-left">
+                    <p className="text-sm font-semibold text-muted-foreground mb-3">Short Link</p>
+                    <div className="flex shadow-sm rounded-xl overflow-hidden border border-primary-200 bg-white mb-6">
+                      <div className="flex-1 px-4 py-4 truncate text-primary-700 font-medium text-lg flex items-center">
+                        http://{result.domain}/{result.shortCode}
                       </div>
+                      <button
+                        onClick={handleCopy}
+                        className="px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors flex items-center shrink-0"
+                      >
+                        {copied ? (
+                          <><CheckCircle2 className="w-5 h-5 mr-2" /> Copied</>
+                        ) : (
+                          <><Copy className="w-5 h-5 mr-2" /> Copy</>
+                        )}
+                      </button>
                     </div>
                     
                     <button
                       onClick={() => setResult(null)}
-                      className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center"
+                      className="text-primary-600 hover:text-primary-700 font-medium flex items-center transition-colors group"
                     >
-                      <ArrowRight className="w-4 h-4 mr-1 rotate-180" />
+                      <ArrowRight className="w-4 h-4 mr-2 rotate-180 group-hover:-translate-x-1 transition-transform" />
                       Create another link
                     </button>
                   </div>
                   
-                  <div className="flex flex-col items-center p-4 bg-muted/30 rounded-2xl border border-border">
-                    <div className="bg-white p-3 rounded-xl shadow-sm border border-border mb-4">
+                  <div className="flex flex-col items-center bg-white p-4 rounded-2xl shadow-sm border border-border shrink-0">
+                    <div className="mb-4">
                       <QRCodeCanvas 
                         id="qr-canvas"
                         value={`http://${result.domain}/${result.shortCode}`} 
-                        size={160}
+                        size={140}
                         level="H"
                         includeMargin={true}
                       />
                     </div>
                     <button
                       onClick={handleDownloadQR}
-                      className="inline-flex items-center justify-center px-4 py-2 border border-border rounded-lg text-sm font-medium text-foreground bg-white hover:bg-muted transition-colors shadow-sm w-full"
+                      className="inline-flex items-center justify-center px-4 py-2 border border-border rounded-lg text-sm font-medium text-foreground hover:bg-muted transition-colors w-full"
                     >
                       <Download className="w-4 h-4 mr-2" />
                       Download QR

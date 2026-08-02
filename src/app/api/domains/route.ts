@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(request: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
     const domains = await prisma.customDomain.findMany({
+      where: { userId: session.user.id },
       orderBy: { createdAt: 'desc' }
     });
     return NextResponse.json({ success: true, data: domains });
@@ -37,18 +43,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Domain already registered' }, { status: 400 });
     }
 
-    // Mock User ID since we don't have auth yet
-    const userId = "temp-user-id";
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const userId = session.user.id;
 
     const customDomain = await prisma.customDomain.create({
       data: {
         domain: cleanDomain,
-        user: {
-          connectOrCreate: {
-            where: { id: userId },
-            create: { id: userId, name: "Temp User" }
-          }
-        }
+        userId: userId
       }
     });
 
