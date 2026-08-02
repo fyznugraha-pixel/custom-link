@@ -289,7 +289,7 @@ export default function Home() {
                   />
                 </div>
 
-                <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed">
+                <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed min-h-[380px]">
                   {qrText.trim() ? (
                     <>
                       <div className="bg-white p-4 rounded-2xl shadow-sm border border-border mb-6">
