@@ -18,7 +18,7 @@ export default async function DashboardPage() {
   });
 
   // Serialize dates to pass to client component safely
-  const serializedLinks = links.map(link => ({
+  const serializedLinks = links.map((link: { createdAt: Date; expiresAt: Date | null; [key: string]: any }) => ({
     ...link,
     createdAt: link.createdAt.toISOString(),
     expiresAt: link.expiresAt?.toISOString() || null,

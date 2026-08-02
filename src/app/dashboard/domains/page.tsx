@@ -8,7 +8,7 @@ export default async function DomainsPage() {
     orderBy: { createdAt: 'desc' }
   });
 
-  const serializedDomains = domains.map(d => ({
+  const serializedDomains = domains.map((d: { id: string; domain: string; status: string; createdAt: Date }) => ({
     ...d,
     createdAt: d.createdAt.toISOString()
   }));
