@@ -25,7 +25,7 @@ export default function Home() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [qrFgColor, setQrFgColor] = useState('#000000');
   const [qrBgColor, setQrBgColor] = useState('#ffffff');
-  const [qrLogo, setQrLogo] = useState('/logo/fyurl-logo.png');
+  const [qrLogo, setQrLogo] = useState('/logo/fyurl-logo-tp.png');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
@@ -426,16 +426,14 @@ export default function Home() {
                         }}
                         className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 border border-border rounded-xl p-1 bg-white cursor-pointer"
                       />
-                      {qrLogo !== '/logo/fyurl-logo.png' && (
+                      {qrLogo !== '/logo/fyurl-logo-tp.png' && (
                         <button
                           type="button"
                           onClick={() => {
-                            setQrLogo('/logo/fyurl-logo.png');
-                            if (fileInputRef.current) {
-                              fileInputRef.current.value = '';
-                            }
+                            setQrLogo('/logo/fyurl-logo-tp.png');
+                            if (fileInputRef.current) fileInputRef.current.value = '';
                           }}
-                          className="p-2.5 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors border border-transparent hover:border-red-100 shrink-0"
+                          className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl border border-red-200 transition-colors"
                           title="Remove custom logo"
                         >
                           <Trash2 className="w-5 h-5" />
