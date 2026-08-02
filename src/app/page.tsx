@@ -5,6 +5,8 @@ import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loade
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 
+const TAGLINE_WORDS = ["count.", "short.", "easy.", "yours.", "trackable.", "powerful."];
+
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'shortener' | 'qr'>('shortener');
   const [longUrl, setLongUrl] = useState('');
@@ -14,11 +16,16 @@ export default function Home() {
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [wordIndex, setWordIndex] = useState(0);
 
   const [defaultDomain, setDefaultDomain] = useState('link.byfayiz.web.id');
 
   useEffect(() => {
     setDefaultDomain(window.location.host);
+    const interval = setInterval(() => {
+      setWordIndex((prev) => (prev + 1) % TAGLINE_WORDS.length);
+    }, 2500);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,8 +107,11 @@ export default function Home() {
             <Zap className="w-4 h-4 text-primary-600" />
             Simple, fast, and secure
           </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6">
-            Make every link <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500">count.</span>
+          <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-wrap justify-center gap-x-4">
+            <span>Make every link</span>
+            <span key={wordIndex} className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 animate-in fade-in zoom-in-95 duration-500 inline-block">
+              {TAGLINE_WORDS[wordIndex]}
+            </span>
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto">
             Redefine how you share. Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes. Fast, secure, and ready to use. No account needed.
