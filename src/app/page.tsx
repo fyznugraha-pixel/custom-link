@@ -158,7 +158,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl rounded-tl-none shadow-xl shadow-primary-900/5 border border-border overflow-hidden">
+          <div className="bg-white rounded-2xl rounded-tl-none shadow-xl shadow-primary-900/5 border border-border relative">
             
             {activeTab === 'shortener' && (
               !result ? (
