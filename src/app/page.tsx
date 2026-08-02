@@ -218,7 +218,7 @@ export default function Home() {
                     <p className="text-sm font-semibold text-muted-foreground mb-3">Short Link</p>
                     <div className="flex shadow-sm rounded-xl overflow-hidden border border-primary-200 bg-white mb-6">
                       <div className="flex-1 px-4 py-3 truncate text-primary-700 font-medium text-base sm:text-lg flex items-center min-w-0">
-                        <span className="truncate">http://{result.domain}/{result.shortCode}</span>
+                        <span className="truncate">{result.domain.replace(/^www\./, '')}/{result.shortCode}</span>
                       </div>
                       <button
                         onClick={handleCopy}
