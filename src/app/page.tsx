@@ -82,12 +82,16 @@ export default function Home() {
       <nav className="border-b border-border bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
-            <div className="flex items-center select-none group-hover:scale-105 transition-transform">
-              <span className="text-3xl font-bold text-primary-600 tracking-tighter relative">
-                fy
-                <span className="absolute -bottom-1.5 right-0.5 w-4 h-1.5 bg-primary-600 rounded-full"></span>
-              </span>
-              <span className="text-3xl font-light text-foreground tracking-tighter ml-0.5">link</span>
+            <div className="flex items-end select-none group-hover:scale-105 transition-transform">
+              <div className="relative inline-flex flex-col">
+                <div className="h-[22px] overflow-hidden">
+                  <span className="text-3xl font-bold text-primary-600 tracking-tighter leading-none">
+                    fy
+                  </span>
+                </div>
+                <span className="absolute -bottom-1 right-0.5 w-4 h-1.5 bg-primary-600 rounded-full"></span>
+              </div>
+              <span className="text-3xl font-light text-foreground tracking-tighter ml-0.5 leading-none">link</span>
             </div>
           </div>
           
@@ -259,7 +263,7 @@ export default function Home() {
                         includeMargin={true}
                         className="rounded-lg"
                         imageSettings={{
-                          src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNSIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI0NSIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI3MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSI1MCIgeT0iNzYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI4IiByeD0iNCIgZmlsbD0iIzI1NjNlYiIvPjwvc3ZnPg==',
+                          src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNSIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI0NiIgeT0iNjQiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI3MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSIwIiB5PSI2NiIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIzNCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSI1MSIgeT0iNzEiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiByeD0iNCIgZmlsbD0iIzI1NjNlYiIvPjwvc3ZnPg==',
                           height: 200,
                           width: 200,
                           excavate: true,
@@ -306,7 +310,7 @@ export default function Home() {
                           level="H"
                           includeMargin={true}
                           imageSettings={{
-                            src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNSIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI0NSIgeT0iNjIiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI3MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSI1MCIgeT0iNzYiIHdpZHRoPSIyNCIgaGVpZ2h0PSI4IiByeD0iNCIgZmlsbD0iIzI1NjNlYiIvPjwvc3ZnPg==',
+                            src: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIHJ4PSIxNSIgZmlsbD0id2hpdGUiLz48dGV4dCB4PSI0NiIgeT0iNjQiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSI3MCIgZmlsbD0iIzI1NjNlYiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgbGV0dGVyLXNwYWNpbmc9Ii0yIj5meTwvdGV4dD48cmVjdCB4PSIwIiB5PSI2NiIgd2lkdGg9IjEwMCIgaGVpZ2h0PSIzNCIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSI1MSIgeT0iNzEiIHdpZHRoPSIyMCIgaGVpZ2h0PSI4IiByeD0iNCIgZmlsbD0iIzI1NjNlYiIvPjwvc3ZnPg==',
                             height: 200,
                             width: 200,
                             excavate: true,
