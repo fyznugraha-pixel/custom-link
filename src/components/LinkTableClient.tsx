@@ -5,6 +5,7 @@ import { Search, Plus, MoreHorizontal, ExternalLink, Copy, BarChart3, ChevronRig
 import { QRCodeCanvas } from 'qrcode.react';
 import CreateLinkModal from './CreateLinkModal';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface LinkTableClientProps {
   initialLinks: any[];
@@ -17,6 +18,8 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedLink, setSelectedLink] = useState<any | null>(null);
   const [qrModalLink, setQrModalLink] = useState<any | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   const filteredLinks = links.filter(
     (link) =>
@@ -46,6 +49,29 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this link? This action cannot be undone.')) return;
+    
+    setIsDeleting(true);
+    try {
+      const res = await fetch(`/api/links/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setLinks(links.filter((l) => l.id !== id));
+        setSelectedLink(null);
+        router.refresh();
+      } else {
+        alert('Failed to delete link.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('An error occurred while deleting the link.');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -210,12 +236,21 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
                 </div>
               </div>
 
-              <Link 
-                href={`/dashboard/analytics/${selectedLink.id}`}
-                className="w-full inline-flex items-center justify-center px-4 py-2 border border-primary-200 rounded-lg text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 focus:outline-none transition-colors"
-              >
-                View Full Analytics
-              </Link>
+              <div className="flex flex-col gap-3">
+                <Link 
+                  href={`/dashboard/analytics/${selectedLink.id}`}
+                  className="w-full inline-flex items-center justify-center px-4 py-2 border border-primary-200 rounded-lg text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 focus:outline-none transition-colors"
+                >
+                  View Full Analytics
+                </Link>
+                <button 
+                  onClick={() => handleDelete(selectedLink.id)}
+                  disabled={isDeleting}
+                  className="w-full inline-flex items-center justify-center px-4 py-2 border border-red-200 rounded-lg text-sm font-medium text-red-600 bg-white hover:bg-red-50 focus:outline-none transition-colors disabled:opacity-50"
+                >
+                  {isDeleting ? 'Deleting...' : 'Delete Link'}
+                </button>
+              </div>
             </div>
           </div>
         )}

@@ -5,7 +5,22 @@ import { redis } from '@/lib/redis';
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   
-  // Skip standard Next.js paths and API routes
+  // 1. Admin Protection Logic
+  const isAdminPath = url.pathname.startsWith('/dashboard') && url.pathname !== '/dashboard/login';
+  const isProtectedApi = url.pathname.startsWith('/api/domains') || url.pathname.match(/^\/api\/links\/[^\/]+$/);
+
+  if (isAdminPath || isProtectedApi) {
+    const adminToken = request.cookies.get('admin_token');
+    if (!adminToken || adminToken.value !== 'true') {
+      if (isAdminPath) {
+        return NextResponse.redirect(new URL('/dashboard/login', request.url));
+      } else {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
+  }
+
+  // 2. Skip standard Next.js paths and API routes for short code logic
   if (
     url.pathname.startsWith('/_next') ||
     url.pathname.startsWith('/api') ||
@@ -86,6 +101,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|dashboard).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
