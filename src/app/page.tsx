@@ -105,7 +105,7 @@ export default function Home() {
         <div className="text-center max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-sm font-medium mb-8 border border-primary-100">
             <Zap className="w-4 h-4 text-primary-600" />
-            Simple, fast, and secure
+            Free to use
           </div>
           <h1 className="text-5xl md:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-wrap justify-center gap-x-4">
             <span>Make every link</span>
