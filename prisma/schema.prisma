@@ -93,3 +93,11 @@ model CustomDomain {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   links     Link[]
 }
+
+model Report {
+  id        String   @id @default(cuid())
+  shortUrl  String
+  reason    String
+  status    String   @default("pending") // pending, resolved, dismissed
+  createdAt DateTime @default(now())
+}

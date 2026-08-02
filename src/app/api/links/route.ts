@@ -4,6 +4,7 @@ import { LinkRepository } from "@/repositories/link.repository";
 
 import { ratelimit } from "@/lib/ratelimit";
 import { isUrlBlocklisted } from "@/lib/blocklist";
+import { isGoogleSafeBrowsingClear } from "@/lib/safebrowsing";
 
 // Clean Architecture: Initialize dependencies outside the handler
 const linkRepository = new LinkRepository();
@@ -39,6 +40,12 @@ export async function POST(request: Request) {
     // 2. Blocklist Check
     if (isUrlBlocklisted(longUrl)) {
       return NextResponse.json({ error: "This URL is not allowed (blocklisted or invalid format)" }, { status: 400 });
+    }
+
+    // 3. Google Safe Browsing Check
+    const isSafe = await isGoogleSafeBrowsingClear(longUrl);
+    if (!isSafe) {
+      return NextResponse.json({ error: "This URL has been flagged as unsafe (Phishing/Malware) by Google Safe Browsing." }, { status: 400 });
     }
 
     const link = await createLinkUseCase.execute({

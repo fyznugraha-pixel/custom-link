@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2 } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -517,6 +517,17 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Simple Footer */}
+      <footer className="mt-20 pb-8 pt-4 border-t border-slate-200/60 text-center text-slate-500 text-sm">
+        <p>&copy; {new Date().getFullYear()} Fyurl. All rights reserved.</p>
+        <div className="mt-3 flex justify-center gap-4">
+          <Link href="/report" className="hover:text-red-500 transition-colors flex items-center gap-1.5 font-medium">
+            <ShieldAlert className="w-4 h-4" />
+            Report Abuse
+          </Link>
+        </div>
+      </footer>
     </div>
   );
 }
