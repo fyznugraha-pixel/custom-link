@@ -2,12 +2,21 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShieldAlert, CheckCircle2, Loader2, Flag } from 'lucide-react';
+import { ArrowLeft, ShieldAlert, CheckCircle2, Loader2, Flag, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const REASON_OPTIONS = [
+  { value: 'phishing', label: 'Phishing / Scam' },
+  { value: 'malware', label: 'Malware / Virus' },
+  { value: 'spam', label: 'Spam / Unsolicited' },
+  { value: 'illegal', label: 'Illegal Content' },
+  { value: 'other', label: 'Other' }
+];
 
 export default function ReportPage() {
   const [shortUrl, setShortUrl] = useState('');
   const [reason, setReason] = useState('phishing');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -61,30 +70,57 @@ export default function ReportPage() {
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-semibold text-slate-900 mb-2">Fyurl Shortlink</label>
+                  <label className="block text-sm font-semibold text-slate-900 mb-2">Shortlink URL</label>
                   <input
                     type="url"
                     required
-                    placeholder="https://fyurl.fun/badlink"
+                    placeholder="https://fylink.fun/badlink"
                     value={shortUrl}
                     onChange={(e) => setShortUrl(e.target.value)}
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors"
                   />
                 </div>
 
-                <div>
+                <div className="relative">
                   <label className="block text-sm font-semibold text-slate-900 mb-2">Reason</label>
-                  <select
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors appearance-none"
+                  <button
+                    type="button"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors"
                   >
-                    <option value="phishing">Phishing / Scam</option>
-                    <option value="malware">Malware / Virus</option>
-                    <option value="spam">Spam / Unsolicited</option>
-                    <option value="illegal">Illegal Content</option>
-                    <option value="other">Other</option>
-                  </select>
+                    <span className="text-slate-900 font-medium text-left">
+                      {REASON_OPTIONS.find(opt => opt.value === reason)?.label || 'Select reason'}
+                    </span>
+                    <ChevronDown className={`w-5 h-5 text-slate-500 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  <AnimatePresence>
+                    {isDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute z-50 w-full mt-2 bg-white border border-slate-100 rounded-xl shadow-xl shadow-slate-200/50 overflow-hidden"
+                      >
+                        {REASON_OPTIONS.map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => {
+                              setReason(opt.value);
+                              setIsDropdownOpen(false);
+                            }}
+                            className={`w-full text-left px-4 py-3 text-sm transition-colors hover:bg-slate-50 ${
+                              reason === opt.value ? 'bg-red-50 text-red-600 font-semibold' : 'text-slate-700 font-medium'
+                            }`}
+                          >
+                            {opt.label}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {error && (

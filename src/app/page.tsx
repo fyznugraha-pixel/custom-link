@@ -519,20 +519,27 @@ export default function Home() {
       </main>
 
       {/* Premium Blue Footer */}
-      <footer className="mt-20 bg-primary-600 text-white pt-12 pb-6 px-4 md:px-8 shadow-2xl relative overflow-hidden">
+      <footer className="mt-20 bg-primary-600 text-white pt-12 pb-6 px-6 sm:px-10 lg:px-16 shadow-2xl relative overflow-hidden">
         {/* Abstract Background Shapes */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
           <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[150%] bg-white/5 blur-3xl rounded-full transform rotate-12"></div>
           <div className="absolute bottom-[10%] -right-[10%] w-[30%] h-[100%] bg-white/5 blur-3xl rounded-full transform -rotate-12"></div>
         </div>
 
-        <div className="max-w-6xl mx-auto flex flex-col items-center relative z-10">
-          <div className="bg-white p-3 rounded-2xl shadow-lg mb-4 transform hover:scale-110 transition-transform">
-            <img src="/logo/fyurl-logo.png" alt="Fyurl Logo" className="h-10 w-10 object-contain" />
-          </div>
-          <h2 className="text-2xl font-bold tracking-tight mb-8">Fyurl</h2>
+        <div className="w-full max-w-[1400px] mx-auto flex flex-col relative z-10">
           
-          <div className="w-full h-px bg-primary-400/30 my-6"></div>
+          <div className="flex flex-col md:flex-row items-center md:items-start justify-between w-full">
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+              <div className="bg-white p-2 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-transform">
+                <img src="/logo/fyurl-horizontal.png" alt="Fyurl Logo" className="h-10 object-contain" />
+              </div>
+              <p className="text-primary-100 font-medium text-sm text-center md:text-left max-w-xs mt-4 md:mt-0">
+                Shorten, customize, and track your links with premium aesthetics and advanced security.
+              </p>
+            </div>
+          </div>
+          
+          <div className="w-full h-px bg-primary-400/30 my-8"></div>
           
           <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
@@ -544,7 +551,7 @@ export default function Home() {
                 title="Instagram @faizngraha"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                <span className="text-sm font-semibold">@faizngraha</span>
+                <span className="text-sm font-semibold">Instagram</span>
               </a>
               
               <Link href="/report" className="flex items-center gap-1.5 text-primary-200 hover:text-white transition-colors text-sm font-medium">
