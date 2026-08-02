@@ -80,7 +80,7 @@ export default function Home() {
     <div className="min-h-screen bg-white selection:bg-primary-100 selection:text-primary-900 font-sans">
       {/* Navigation */}
       <nav className="border-b border-border bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="w-full px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
             <img src="/logo/fylink-v2.png" alt="Fylink" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
           </div>
@@ -94,7 +94,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex-1 flex flex-col justify-center">
+      <main className="pt-32 pb-16 px-6 sm:px-10 lg:px-16 w-full flex-1 flex flex-col justify-center">
         <div className="text-center max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-sm font-medium mb-8 border border-primary-100">
             <Zap className="w-4 h-4 text-primary-600" />
@@ -109,7 +109,7 @@ export default function Home() {
         </div>
 
         {/* Action Area (Form or Result) */}
-        <div className="w-full max-w-5xl mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
+        <div className="w-full max-w-[1400px] mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
           
           {/* Tabs */}
           <div className="flex bg-white/50 backdrop-blur-md p-1 rounded-t-2xl border border-border border-b-0 w-fit mx-auto sm:mx-0">
