@@ -102,7 +102,7 @@ export default function Home() {
       <nav className="border-b border-border bg-white fixed top-0 w-full z-50 transition-all">
         <div className="w-full px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
-            <img src="/logo/fylink-v2.png" alt="Fylink" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
+            <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
           </div>
           
           <div className="flex items-center gap-6">
@@ -410,9 +410,9 @@ export default function Home() {
                           level="H"
                           includeMargin={true}
                           imageSettings={{
-                            src: '/logo/fy-v2.png',
-                            height: 200,
-                            width: 200,
+                            src: '/logo/fyurl-logo.png',
+                            height: 256,
+                            width: 256,
                             excavate: true,
                           }}
                         />

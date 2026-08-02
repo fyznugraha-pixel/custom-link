@@ -9,40 +9,40 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://fylink.fun'),
+  metadataBase: new URL('https://fyurl.fun'),
   title: {
-    default: "Fylink | Advanced URL Shortener & QR Code Generator",
-    template: "%s | Fylink"
+    default: "Fyurl | Advanced URL Shortener & QR Code Generator",
+    template: "%s | Fyurl"
   },
   description: "Redefine how you share. Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes. Fast, secure, and free to use.",
   keywords: [
-    "URL shortener", "custom URL shortener", "free link shortener", "shorten link", 
-    "custom link generator", "branded link shortener", "link tracking", "QR code generator", 
-    "persingkat URL", "pemendek link", "short link gratis", "custom domains", "Fylink"
+    "url shortener", "link shortener", "custom url", "qr code generator", 
+    "shorten link", "link management", "branded links", "free url shortener",
+    "persingkat URL", "pemendek link", "short link gratis", "custom domains", "Fyurl"
   ],
-  authors: [{ name: "Fylink Team" }],
-  creator: "Fylink",
+  authors: [{ name: "Fyurl Team" }],
+  creator: "Fyurl",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://fylink.fun",
-    title: "Fylink | Advanced URL Shortener",
-    description: "Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes.",
-    siteName: "Fylink",
+    url: "https://fyurl.fun",
+    title: "Fyurl | Advanced URL Shortener",
+    description: "Transform your long, ugly links into clean, trackable short URLs. Generate custom QR codes and manage your links efficiently.",
+    siteName: "Fyurl",
     images: [
       {
-        url: "/logo/fylink-v2.png",
-        width: 800,
-        height: 600,
-        alt: "Fylink Logo",
+        url: "/logo/fyurl-horizontal.png",
+        width: 1200,
+        height: 630,
+        alt: "Fyurl Logo",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fylink | Advanced URL Shortener",
-    description: "Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes.",
-    images: ["/logo/fylink-v2.png"],
+    title: "Fyurl | Advanced URL Shortener",
+    description: "Transform your long, ugly links into clean, trackable short URLs.",
+    images: ["/logo/fyurl-horizontal.png"],
   },
   robots: {
     index: true,
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://fylink.fun",
+    canonical: "https://fyurl.fun",
   }
 };
 
@@ -65,14 +65,14 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "WebSite",
-      "@id": "https://fylink.fun/#website",
-      "url": "https://fylink.fun",
-      "name": "Fylink",
+      "@id": "https://fyurl.fun/#website",
+      "url": "https://fyurl.fun",
+      "name": "Fyurl",
       "description": "Enterprise-grade URL shortener with custom domains and analytics.",
     },
     {
       "@type": "SoftwareApplication",
-      "name": "Fylink",
+      "name": "Fyurl",
       "operatingSystem": "Web",
       "applicationCategory": "UtilitiesApplication",
       "offers": {
