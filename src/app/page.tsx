@@ -104,7 +104,7 @@ export default function Home() {
             Make every link <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500">count.</span>
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto">
-            Transform long, ugly URLs into memorable custom links. No registration required, generate QR codes instantly, and share them anywhere.
+            Redefine how you share. Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes. Fast, secure, and ready to use—no account needed.
           </p>
         </div>
 
