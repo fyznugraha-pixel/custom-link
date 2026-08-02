@@ -257,6 +257,21 @@ export default function Home() {
             )}
             
           </div>
+          
+          <div className="mt-6 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
+            <Link href="/qr" className="flex items-center justify-between p-4 bg-white hover:bg-primary-50/50 border border-border hover:border-primary-200 rounded-xl transition-all group shadow-sm hover:shadow-md">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-lg bg-primary-100 flex items-center justify-center group-hover:scale-105 transition-transform">
+                  <QrCode className="w-6 h-6 text-primary-600" />
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-foreground group-hover:text-primary-700 transition-colors">Need a standalone QR Code?</p>
+                  <p className="text-xs text-muted-foreground">Generate a QR code from any text or link instantly.</p>
+                </div>
+              </div>
+              <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary-600 group-hover:translate-x-1 transition-all" />
+            </Link>
+          </div>
         </div>
       </main>
     </div>
