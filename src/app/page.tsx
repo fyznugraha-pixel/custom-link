@@ -561,7 +561,7 @@ export default function Home() {
             </div>
             
             <div className="text-sm text-primary-100 font-medium text-center md:text-right">
-              Made by <span className="font-bold text-white text-base block sm:inline mt-1 sm:mt-0">Fayiz Apriwansyah Nugraha</span>
+              Made by <a href="https://byfayiz.web.id/portofolio" target="_blank" rel="noopener noreferrer" className="font-bold text-white text-base block sm:inline mt-1 sm:mt-0 hover:text-blue-100 transition-colors cursor-pointer">Fayiz Apriwansyah Nugraha</a>
             </div>
           </div>
         </div>
