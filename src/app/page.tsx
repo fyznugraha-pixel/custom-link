@@ -111,7 +111,7 @@ export default function Home() {
         </div>
 
         {/* Action Area (Form or Result) */}
-        <div className="max-w-2xl mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
+        <div className="w-full max-w-5xl mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
           
           {/* Tabs */}
           <div className="flex bg-white/50 backdrop-blur-md p-1 rounded-t-2xl border border-border border-b-0 w-fit mx-auto sm:mx-0">
