@@ -23,6 +23,8 @@ export default function Home() {
   const [expiresIn, setExpiresIn] = useState('7d');
   const [customDays, setCustomDays] = useState('60');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [qrFgColor, setQrFgColor] = useState('#000000');
+  const [qrBgColor, setQrBgColor] = useState('#ffffff');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
@@ -363,9 +365,9 @@ export default function Home() {
                         includeMargin={true}
                         className="rounded-lg"
                         imageSettings={{
-                          src: '/logo/fy-v2.png',
-                          height: 200,
-                          width: 200,
+                          src: '/logo/fyurl-logo.png',
+                          height: 256,
+                          width: 256,
                           excavate: true,
                         }}
                       />
@@ -398,6 +400,33 @@ export default function Home() {
                   />
                 </div>
 
+                <div className="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
+                  <div className="col-span-2 sm:col-span-1">
+                    <label className="block text-sm font-semibold text-foreground mb-2">QR Color</label>
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="color" 
+                        value={qrFgColor} 
+                        onChange={(e) => setQrFgColor(e.target.value)}
+                        className="w-10 h-10 rounded-xl cursor-pointer border-0 p-0 shadow-sm"
+                      />
+                      <span className="text-sm font-mono text-muted-foreground uppercase">{qrFgColor}</span>
+                    </div>
+                  </div>
+                  <div className="col-span-2 sm:col-span-1">
+                    <label className="block text-sm font-semibold text-foreground mb-2">Background</label>
+                    <div className="flex items-center gap-3">
+                      <input 
+                        type="color" 
+                        value={qrBgColor} 
+                        onChange={(e) => setQrBgColor(e.target.value)}
+                        className="w-10 h-10 rounded-xl cursor-pointer border-0 p-0 shadow-sm"
+                      />
+                      <span className="text-sm font-mono text-muted-foreground uppercase">{qrBgColor}</span>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="flex flex-col items-center justify-center p-4 sm:p-8 bg-muted/20 rounded-2xl border border-border border-dashed min-h-[480px] w-full">
                   {qrText.trim() ? (
                     <>
@@ -409,6 +438,8 @@ export default function Home() {
                           style={{ width: '100%', height: '100%', maxWidth: '300px', maxHeight: '300px' }}
                           level="H"
                           includeMargin={true}
+                          fgColor={qrFgColor}
+                          bgColor={qrBgColor}
                           imageSettings={{
                             src: '/logo/fyurl-logo.png',
                             height: 256,
