@@ -14,7 +14,7 @@ export default async function GlobalAnalyticsPage() {
       include: { domain: true }
     }),
     prisma.clickEvent.findMany({
-      orderBy: { timestamp: 'desc' },
+      orderBy: { createdAt: 'desc' },
       take: 50,
       include: { link: { include: { domain: true } } }
     })
@@ -106,13 +106,13 @@ export default async function GlobalAnalyticsPage() {
                         {click.link.domain?.domain || 'go.link.com'}/{click.link.shortCode}
                       </span>
                       <span className="text-muted-foreground text-xs">
-                        {new Date(click.timestamp).toLocaleString(undefined, { 
+                        {new Date(click.createdAt).toLocaleString(undefined, { 
                           month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' 
                         })}
                       </span>
                     </div>
                     <div className="text-xs text-muted-foreground flex items-center gap-4 flex-wrap">
-                      <span><span className="font-medium text-foreground">IP:</span> {click.ip || 'Unknown'}</span>
+                      <span><span className="font-medium text-foreground">Device:</span> {click.device || 'Unknown'}</span>
                       <span><span className="font-medium text-foreground">Country:</span> {click.country || 'Unknown'}</span>
                     </div>
                   </li>
