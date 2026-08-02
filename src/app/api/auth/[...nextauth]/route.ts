@@ -22,9 +22,6 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
-  pages: {
-    signIn: "/dashboard", // We'll just prompt login directly from navbar/dashboard
-  },
 };
 
 const handler = NextAuth(authOptions);
