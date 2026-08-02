@@ -1,12 +1,7 @@
-'use client';
-
 import Link from 'next/link';
-import { LinkIcon, UserCircle, LogOut } from 'lucide-react';
-import { useSession, signOut } from 'next-auth/react';
+import { LinkIcon, UserCircle } from 'lucide-react';
 
 export default function Navbar() {
-  const { data: session } = useSession();
-
   return (
     <nav className="border-b border-border bg-white sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,24 +27,10 @@ export default function Navbar() {
               </Link>
             </div>
           </div>
-          <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
-            {session ? (
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-foreground">{session.user?.name}</span>
-                {session.user?.image ? (
-                  <img src={session.user.image} alt="User avatar" className="w-8 h-8 rounded-full border border-border" />
-                ) : (
-                  <UserCircle className="h-8 w-8 text-muted-foreground" />
-                )}
-                <button 
-                  onClick={() => signOut()}
-                  className="p-2 rounded-full text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors"
-                  title="Logout"
-                >
-                  <LogOut className="h-5 w-5" />
-                </button>
-              </div>
-            ) : null}
+          <div className="hidden sm:ml-6 sm:flex sm:items-center">
+            <button className="p-1 rounded-full text-muted-foreground hover:text-foreground focus:outline-none transition-colors">
+              <UserCircle className="h-7 w-7" />
+            </button>
           </div>
         </div>
       </div>

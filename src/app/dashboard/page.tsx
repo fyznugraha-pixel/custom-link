@@ -1,17 +1,11 @@
 import prisma from '@/lib/prisma';
 import LinkTableClient from '@/components/LinkTableClient';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user?.id;
-
   // Fetch data on the server for initial render
   const links = await prisma.link.findMany({
-    where: { userId },
     orderBy: { createdAt: 'desc' },
     include: {
       domain: true,
@@ -19,7 +13,7 @@ export default async function DashboardPage() {
   });
 
   const customDomains = await prisma.customDomain.findMany({
-    where: { userId, status: 'verified' },
+    where: { status: 'verified' },
     orderBy: { domain: 'asc' }
   });
 

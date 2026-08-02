@@ -4,10 +4,8 @@ import { useState } from 'react';
 import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
 
 export default function Home() {
-  const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState<'shortener' | 'qr'>('shortener');
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
@@ -87,20 +85,12 @@ export default function Home() {
           </div>
           
           <div className="flex items-center gap-6">
-            {!session ? (
-              <>
-                <Link href="/api/auth/signin" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                  Login
-                </Link>
-                <Link href="/api/auth/signin" className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5">
-                  Get Started
-                </Link>
-              </>
-            ) : (
-              <Link href="/dashboard" className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5">
-                Go to Dashboard
-              </Link>
-            )}
+            <Link href="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+              Dashboard
+            </Link>
+            <Link href="/dashboard" className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5">
+              Get Started
+            </Link>
           </div>
         </div>
       </nav>

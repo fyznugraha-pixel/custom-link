@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { CreateLinkUseCase } from "@/use-cases/create-link.use-case";
 import { LinkRepository } from "@/repositories/link.repository";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 import { ratelimit } from "@/lib/ratelimit";
 import { isUrlBlocklisted } from "@/lib/blocklist";
@@ -43,14 +41,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "This URL is not allowed (blocklisted or invalid format)" }, { status: 400 });
     }
 
-    const session = await getServerSession(authOptions);
-    const userId = session?.user?.id;
-
     const link = await createLinkUseCase.execute({
       longUrl,
       customAlias,
       domainId,
-      userId,
     });
 
     return NextResponse.json({ 
