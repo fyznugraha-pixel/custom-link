@@ -78,10 +78,7 @@ export default function Home() {
       <nav className="border-b border-border bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
-            <div className="w-8 h-8 rounded-lg bg-primary-600 flex items-center justify-center group-hover:scale-105 transition-transform">
-              <LinkIcon className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-bold text-xl text-foreground tracking-tight"><span className="text-primary-600">Fy</span>link</span>
+            <img src="/logo/fylink.png" alt="Fylink" className="h-8 w-auto object-contain group-hover:scale-105 transition-transform" />
           </div>
           
           <div className="flex items-center gap-6">
@@ -251,7 +248,7 @@ export default function Home() {
                         includeMargin={true}
                         className="rounded-lg"
                         imageSettings={{
-                          src: '/logo.svg',
+                          src: '/logo/fy.png',
                           height: 32,
                           width: 32,
                           excavate: true,
@@ -297,7 +294,7 @@ export default function Home() {
                           level="H"
                           includeMargin={true}
                           imageSettings={{
-                            src: '/logo.svg',
+                            src: '/logo/fy.png',
                             height: 48,
                             width: 48,
                             excavate: true,

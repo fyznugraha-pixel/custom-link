@@ -25,13 +25,8 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
-            <Link href="/dashboard" className="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-              <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center shadow-sm">
-                <LinkIcon className="text-white w-4 h-4" />
-              </div>
-              <span className="font-bold text-xl tracking-tight text-foreground">
-                <span className="text-primary-600">Fy</span>link
-              </span>
+            <Link href="/dashboard" className="flex-shrink-0 flex items-center">
+              <img src="/logo/fylink.png" alt="Fylink" className="h-8 w-auto object-contain" />
             </Link>
             <div className="hidden sm:ml-10 sm:flex sm:space-x-8">
               <Link href="/dashboard" className="border-primary-600 text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
