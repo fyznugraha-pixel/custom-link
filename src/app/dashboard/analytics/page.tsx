@@ -23,7 +23,7 @@ export default async function GlobalAnalyticsPage() {
   const totalClicks = links.reduce((sum, link) => sum + link.clicks, 0);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div className="w-full px-6 sm:px-10 lg:px-16 py-10">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Global Analytics</h1>
         <p className="mt-2 text-sm text-muted-foreground">Overview of all shortened links and traffic across the platform.</p>

@@ -79,10 +79,10 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white selection:bg-primary-100 selection:text-primary-900 font-sans">
       {/* Navigation */}
-      <nav className="border-b border-border bg-white/80 backdrop-blur-md fixed top-0 w-full z-50 transition-all">
+      <nav className="border-b border-border bg-white fixed top-0 w-full z-50 transition-all">
         <div className="w-full px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
-            <img src="/logo/fylink-v2.png" alt="Fylink" className="h-10 w-auto object-contain mix-blend-multiply group-hover:scale-105 transition-transform" />
+            <img src="/logo/fylink-v2.png" alt="Fylink" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
           </div>
           
           <div className="flex items-center gap-6">
