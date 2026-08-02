@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2 } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -30,6 +30,7 @@ export default function Home() {
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [wordIndex, setWordIndex] = useState(0);
 
   const [defaultDomain, setDefaultDomain] = useState('link.byfayiz.web.id');
@@ -404,25 +405,43 @@ export default function Home() {
                 <div className="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
                   <div className="col-span-2 sm:col-span-2">
                     <label className="block text-sm font-semibold text-foreground mb-2">Upload Custom Logo (Max 2MB)</label>
-                    <input 
-                      type="file"
-                      accept="image/png, image/jpeg, image/webp"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          if (file.size > 2 * 1024 * 1024) {
-                            alert("File is too large. Please upload an image smaller than 2MB.");
-                            return;
+                    <div className="flex items-center gap-2">
+                      <input 
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/png, image/jpeg, image/webp"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            if (file.size > 2 * 1024 * 1024) {
+                              alert("File is too large. Please upload an image smaller than 2MB.");
+                              return;
+                            }
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setQrLogo(event.target?.result as string);
+                            };
+                            reader.readAsDataURL(file);
                           }
-                          const reader = new FileReader();
-                          reader.onload = (event) => {
-                            setQrLogo(event.target?.result as string);
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
-                      className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 border border-border rounded-xl p-1 bg-white cursor-pointer"
-                    />
+                        }}
+                        className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 border border-border rounded-xl p-1 bg-white cursor-pointer"
+                      />
+                      {qrLogo !== '/logo/fyurl-logo.png' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setQrLogo('/logo/fyurl-logo.png');
+                            if (fileInputRef.current) {
+                              fileInputRef.current.value = '';
+                            }
+                          }}
+                          className="p-2.5 text-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors border border-transparent hover:border-red-100 shrink-0"
+                          title="Remove custom logo"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-foreground mb-2">QR Color</label>
