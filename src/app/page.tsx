@@ -315,7 +315,65 @@ export default function Home() {
                     </AnimatePresence>
                   </div>
 
-                  <div>
+                  {/* Password Protection */}
+                  <div className="pt-4 mt-2 border-t border-border">
+                    <div className="flex items-center justify-between mb-2 cursor-pointer" onClick={() => setRequirePassword(!requirePassword)}>
+                      <div className="flex items-center gap-2">
+                        <Lock className={`w-4 h-4 ${requirePassword ? 'text-primary-600' : 'text-muted-foreground'}`} />
+                        <span className={`font-semibold transition-colors ${requirePassword ? 'text-primary-700' : 'text-foreground'}`}>
+                          Set Password
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={requirePassword}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${requirePassword ? 'bg-primary-600' : 'bg-slate-200'}`}
+                      >
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${requirePassword ? 'translate-x-6' : 'translate-x-1'}`} />
+                      </button>
+                    </div>
+
+                    <AnimatePresence>
+                      {requirePassword && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                          animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                              <Lock className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <input
+                              type={showPassword ? "text" : "password"}
+                              required={requirePassword}
+                              placeholder="Set a strong password..."
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              className="block w-full pl-11 pr-12 py-3 text-sm border border-border rounded-xl focus:outline-none focus:border-primary-500 transition-all bg-muted/30 focus:bg-white"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
+                            <ShieldAlert className="w-3 h-3 mt-0.5 shrink-0" />
+                            Visitors will need this password to unlock the link.
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* QR Code Logo */}
+                  <div className="pt-4 mt-2 border-t border-border">
                     <label className="block text-sm font-semibold text-foreground mb-2">QR Code Logo <span className="text-muted-foreground font-normal">(Optional)</span></label>
                     <div className="flex items-center gap-2">
                       <input 
@@ -352,61 +410,6 @@ export default function Home() {
                         </button>
                       )}
                     </div>
-                  </div>
-
-                  {/* Password Protection */}
-                  <div className="pt-2 border-t border-border">
-                    <label className="flex items-center gap-3 cursor-pointer group mb-2 w-fit">
-                      <input 
-                        type="checkbox" 
-                        checked={requirePassword}
-                        onChange={(e) => setRequirePassword(e.target.checked)}
-                        className="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500 transition-all cursor-pointer accent-primary-600"
-                      />
-                      <div className="flex items-center gap-2">
-                        <Lock className={`w-4 h-4 ${requirePassword ? 'text-primary-600' : 'text-muted-foreground'}`} />
-                        <span className={`font-semibold transition-colors ${requirePassword ? 'text-primary-700' : 'text-foreground'}`}>
-                          Set Password
-                        </span>
-                      </div>
-                    </label>
-
-                    <AnimatePresence>
-                      {requirePassword && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                          animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
-                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                        >
-                          <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                              <Lock className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                            <input
-                              type={showPassword ? "text" : "password"}
-                              required={requirePassword}
-                              placeholder="Set a strong password..."
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              className="block w-full pl-11 pr-12 py-3 text-sm border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            </button>
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
-                            <ShieldAlert className="w-3 h-3 mt-0.5 shrink-0" />
-                            Visitors will need this password to unlock the link.
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </div>
                 </div>
                 
@@ -633,12 +636,12 @@ export default function Home() {
 
         <div className="w-full max-w-[1400px] mx-auto flex flex-col relative z-10">
           
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between w-full">
-            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
-              <div className="bg-white p-2 px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-transform">
-                <img src="/logo/fyurl-horizontal.png" alt="Fyurl Logo" className="h-10 object-contain" />
+          <div className="flex flex-row items-center justify-between w-full">
+            <div className="flex flex-row items-center gap-4 md:gap-6 w-full">
+              <div className="bg-white p-2 px-4 md:px-6 rounded-2xl shadow-lg transform hover:scale-105 transition-transform shrink-0">
+                <img src="/logo/fyurl-horizontal.png" alt="Fyurl Logo" className="h-8 md:h-10 object-contain" />
               </div>
-              <p className="text-primary-100 font-medium text-sm text-center md:text-left max-w-xs mt-4 md:mt-0">
+              <p className="text-primary-100 font-medium text-xs md:text-sm text-left max-w-xs">
                 Shorten, customize, and track your links with premium aesthetics and advanced security.
               </p>
             </div>
