@@ -167,7 +167,7 @@ export default function Home() {
               className={`px-6 py-3 text-sm font-semibold rounded-t-xl transition-colors flex items-center ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border border-border border-b-white' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <QrCode className="w-4 h-4 mr-2" />
-              QR Code
+              QR Generate
             </button>
           </div>
 
