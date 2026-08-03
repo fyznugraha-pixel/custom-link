@@ -25,6 +25,7 @@ export default function Home() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [qrFgColor, setQrFgColor] = useState('#000000');
   const [qrBgColor, setQrBgColor] = useState('#ffffff');
+  const [transparentBg, setTransparentBg] = useState(false);
   const [qrLogo, setQrLogo] = useState('/logo/fyurl-logo-tp.png');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -564,13 +565,25 @@ export default function Home() {
                   </div>
                   <div className="col-span-1">
                     <label className="block text-sm font-semibold text-foreground mb-2">Background</label>
-                    <div className="flex items-center gap-3">
-                      <input 
-                        type="color" 
-                        value={qrBgColor} 
-                        onChange={(e) => setQrBgColor(e.target.value)}
-                        className="w-10 h-10 rounded-xl cursor-pointer border-0 p-0 shadow-sm"
-                      />
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                      <div className="flex items-center gap-2">
+                        <input 
+                          type="color" 
+                          value={qrBgColor} 
+                          onChange={(e) => setQrBgColor(e.target.value)}
+                          disabled={transparentBg}
+                          className={`w-10 h-10 rounded-xl cursor-pointer border-0 p-0 shadow-sm ${transparentBg ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        />
+                      </div>
+                      <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          checked={transparentBg} 
+                          onChange={(e) => setTransparentBg(e.target.checked)} 
+                          className="w-4 h-4 rounded border-gray-300 accent-primary-600 cursor-pointer" 
+                        />
+                        Transparent
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -587,7 +600,7 @@ export default function Home() {
                           level="H"
                           includeMargin={true}
                           fgColor={qrFgColor}
-                          bgColor={qrBgColor}
+                          bgColor={transparentBg ? 'rgba(255,255,255,0)' : qrBgColor}
                           imageSettings={qrLogo ? {
                             src: qrLogo,
                             height: 200,
