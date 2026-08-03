@@ -51,12 +51,17 @@ export default function Home() {
     setCopied(false);
 
     try {
+      let finalUrl = longUrl.trim();
+      if (!/^https?:\/\//i.test(finalUrl)) {
+        finalUrl = `https://${finalUrl}`;
+      }
+
       const finalExpiresIn = expiresIn === 'custom' ? `${customDays}d` : expiresIn;
       
       const res = await fetch('/api/links', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ longUrl, customAlias: customAlias || undefined, expiresIn: finalExpiresIn || undefined }),
+        body: JSON.stringify({ longUrl: finalUrl, customAlias: customAlias || undefined, expiresIn: finalExpiresIn || undefined }),
       });
       
       const data = await res.json();
@@ -189,9 +194,9 @@ export default function Home() {
                       </div>
                       <input
                         id="longUrl"
-                        type="url"
+                        type="text"
                         required
-                        placeholder="https://your-very-long-url.com/some/path"
+                        placeholder="e.g. instagram.com/fayiz or https://..."
                         value={longUrl}
                         onChange={(e) => setLongUrl(e.target.value)}
                         className="block w-full pl-12 pr-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
@@ -301,6 +306,45 @@ export default function Home() {
                       )}
                     </AnimatePresence>
                   </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-foreground mb-2">QR Code Logo <span className="text-muted-foreground font-normal">(Optional)</span></label>
+                    <div className="flex items-center gap-2">
+                      <input 
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/png, image/jpeg, image/webp"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            if (file.size > 2 * 1024 * 1024) {
+                              alert("File is too large. Please upload an image smaller than 2MB.");
+                              return;
+                            }
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setQrLogo(event.target?.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                        className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 border border-border rounded-xl p-1 bg-white cursor-pointer"
+                      />
+                      {qrLogo !== '/logo/fyurl-logo-tp.png' && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setQrLogo('/logo/fyurl-logo-tp.png');
+                            if (fileInputRef.current) fileInputRef.current.value = '';
+                          }}
+                          className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl border border-red-200 transition-colors shrink-0"
+                          title="Remove custom logo"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 
                 <button
@@ -367,7 +411,7 @@ export default function Home() {
                         includeMargin={true}
                         className="rounded-lg"
                         imageSettings={{
-                          src: '/logo/fyurl-logo.png',
+                          src: qrLogo,
                           height: 200,
                           width: 200,
                           excavate: true,
