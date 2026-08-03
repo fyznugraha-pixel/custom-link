@@ -45,9 +45,14 @@ export async function GET(request: Request) {
       }
 
       const cacheKey = `domain:${domain}:code:${code}`;
-      await redis.setex(cacheKey, ttl, link.longUrl);
-
-      return NextResponse.json({ longUrl: link.longUrl });
+      
+      if (link.password) {
+        await redis.setex(cacheKey, ttl, 'PROTECTED');
+        return NextResponse.json({ isProtected: true });
+      } else {
+        await redis.setex(cacheKey, ttl, link.longUrl);
+        return NextResponse.json({ longUrl: link.longUrl });
+      }
     }
 
     return NextResponse.json({ error: 'Not found' }, { status: 404 });

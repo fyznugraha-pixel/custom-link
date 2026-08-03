@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,7 +20,7 @@ export default function Home() {
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
-  const [expiresIn, setExpiresIn] = useState('7d');
+  const [expiresIn, setExpiresIn] = useState('3d');
   const [customDays, setCustomDays] = useState('60');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [qrFgColor, setQrFgColor] = useState('#000000');
@@ -30,6 +30,9 @@ export default function Home() {
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
   const [copied, setCopied] = useState(false);
+  const [requirePassword, setRequirePassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [wordIndex, setWordIndex] = useState(0);
 
@@ -61,7 +64,12 @@ export default function Home() {
       const res = await fetch('/api/links', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ longUrl: finalUrl, customAlias: customAlias || undefined, expiresIn: finalExpiresIn || undefined }),
+        body: JSON.stringify({ 
+          longUrl: finalUrl, 
+          customAlias: customAlias || undefined, 
+          expiresIn: finalExpiresIn || undefined,
+          password: requirePassword && password ? password : undefined
+        }),
       });
       
       const data = await res.json();
@@ -196,7 +204,7 @@ export default function Home() {
                         id="longUrl"
                         type="text"
                         required
-                        placeholder="e.g. instagram.com/fayiz or https://..."
+                        placeholder="https://your-very-long-url.com/some/path"
                         value={longUrl}
                         onChange={(e) => setLongUrl(e.target.value)}
                         className="block w-full pl-12 pr-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
@@ -344,6 +352,65 @@ export default function Home() {
                         </button>
                       )}
                     </div>
+                  </div>
+
+                  {/* Password Protection */}
+                  <div className="pt-2 border-t border-border">
+                    <label className="flex items-center gap-3 cursor-pointer group mb-2">
+                      <div className="relative flex items-center justify-center">
+                        <input 
+                          type="checkbox" 
+                          checked={requirePassword}
+                          onChange={(e) => setRequirePassword(e.target.checked)}
+                          className="w-5 h-5 rounded border-border text-primary-600 focus:ring-primary-500 transition-all cursor-pointer peer appearance-none checked:bg-primary-600 checked:border-primary-600"
+                        />
+                        <CheckCircle2 className="w-3.5 h-3.5 text-white absolute pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Lock className={`w-4 h-4 ${requirePassword ? 'text-primary-600' : 'text-muted-foreground'}`} />
+                        <span className={`font-semibold transition-colors ${requirePassword ? 'text-primary-700' : 'text-foreground'}`}>
+                          Require Password
+                        </span>
+                        <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full font-bold ml-2">PRO</span>
+                      </div>
+                    </label>
+
+                    <AnimatePresence>
+                      {requirePassword && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                          animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                              <Lock className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <input
+                              type={showPassword ? "text" : "password"}
+                              required={requirePassword}
+                              placeholder="Set a strong password..."
+                              value={password}
+                              onChange={(e) => setPassword(e.target.value)}
+                              className="block w-full pl-11 pr-12 py-3 text-sm border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
+                            <ShieldAlert className="w-3 h-3 mt-0.5 shrink-0" />
+                            Visitors will need this password to unlock the link.
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
                 

@@ -1,4 +1,5 @@
 import { ILinkRepository } from "@/repositories/link.repository";
+import bcrypt from "bcryptjs";
 
 function generateShortCode(length = 7): string {
   const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -15,6 +16,7 @@ export interface CreateLinkDTO {
   userId?: string;
   domainId?: string;
   expiresIn?: string; // '1d', '3d', '7d', '30d'
+  password?: string;
 }
 
 export class CreateLinkUseCase {
@@ -95,10 +97,17 @@ export class CreateLinkUseCase {
       throw new Error("Invalid expiration format");
     }
 
-    // 4. Save to database
+    // 4. Hash Password (if any)
+    let passwordHash = null;
+    if (data.password) {
+      passwordHash = await bcrypt.hash(data.password, 10);
+    }
+
+    // 5. Save to database
     const link = await this.linkRepository.create({
       longUrl: parsedUrl.toString(),
       shortCode: shortCode as string,
+      password: passwordHash,
       user: data.userId ? { connect: { id: data.userId } } : undefined,
       domain: data.domainId ? { connect: { id: data.domainId } } : undefined,
       expiresAt: expiresAt as Date | undefined,

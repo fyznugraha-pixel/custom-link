@@ -27,6 +27,7 @@ export async function middleware(request: NextRequest) {
     url.pathname.startsWith('/dashboard') ||
     url.pathname.startsWith('/logo') ||
     url.pathname.startsWith('/report') ||
+    url.pathname.startsWith('/unlock') ||
     url.pathname === '/' ||
     url.pathname === '/favicon.ico' ||
     url.pathname === '/icon.png' ||
@@ -49,6 +50,10 @@ export async function middleware(request: NextRequest) {
     const longUrl = await redis.get<string>(cacheKey);
 
     if (longUrl) {
+      if (longUrl === 'PROTECTED') {
+        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}`, request.url));
+      }
+
       // CACHE HIT -> Redirect
       // 3. Async click logging
       // Fire and forget via waitUntil (Vercel Edge support)
@@ -76,6 +81,11 @@ export async function middleware(request: NextRequest) {
     const res = await fetch(`${url.origin}/api/lookup?domain=${cleanHostname}&code=${shortCode}`);
     if (res.ok) {
       const data = await res.json();
+      
+      if (data.isProtected) {
+        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}`, request.url));
+      }
+
       if (data.longUrl) {
         // Async click log
         fetch(`${url.origin}/api/log-click`, {

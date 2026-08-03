@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { longUrl, customAlias, domainId, expiresIn } = body;
+    const { longUrl, customAlias, domainId, expiresIn, password } = body;
 
     if (!longUrl) {
       return NextResponse.json({ error: "longUrl is required" }, { status: 400 });
@@ -53,6 +53,7 @@ export async function POST(request: Request) {
       customAlias,
       domainId,
       expiresIn,
+      password,
     });
 
     return NextResponse.json({ 
