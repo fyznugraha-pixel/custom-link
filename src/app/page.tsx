@@ -9,8 +9,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 const TAGLINE_WORDS = ["count.", "short.", "easy.", "yours.", "trackable.", "powerful."];
 const EXPIRATION_OPTIONS = [
   { value: '1d', label: '1 Day' },
-  { value: '3d', label: '3 Days' },
-  { value: '7d', label: '7 Days (Default)' },
+  { value: '3d', label: '3 Days (Default)' },
+  { value: '7d', label: '7 Days' },
   { value: '30d', label: '30 Days' },
   { value: 'custom', label: 'Custom...' },
 ];
