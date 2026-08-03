@@ -356,22 +356,18 @@ export default function Home() {
 
                   {/* Password Protection */}
                   <div className="pt-2 border-t border-border">
-                    <label className="flex items-center gap-3 cursor-pointer group mb-2">
-                      <div className="relative flex items-center justify-center">
-                        <input 
-                          type="checkbox" 
-                          checked={requirePassword}
-                          onChange={(e) => setRequirePassword(e.target.checked)}
-                          className="w-5 h-5 rounded border-border text-primary-600 focus:ring-primary-500 transition-all cursor-pointer peer appearance-none checked:bg-primary-600 checked:border-primary-600"
-                        />
-                        <CheckCircle2 className="w-3.5 h-3.5 text-white absolute pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity" />
-                      </div>
+                    <label className="flex items-center gap-3 cursor-pointer group mb-2 w-fit">
+                      <input 
+                        type="checkbox" 
+                        checked={requirePassword}
+                        onChange={(e) => setRequirePassword(e.target.checked)}
+                        className="w-5 h-5 rounded border-gray-300 text-primary-600 focus:ring-primary-500 transition-all cursor-pointer accent-primary-600"
+                      />
                       <div className="flex items-center gap-2">
                         <Lock className={`w-4 h-4 ${requirePassword ? 'text-primary-600' : 'text-muted-foreground'}`} />
                         <span className={`font-semibold transition-colors ${requirePassword ? 'text-primary-700' : 'text-foreground'}`}>
-                          Require Password
+                          Set Password
                         </span>
-                        <span className="text-xs bg-primary-100 text-primary-700 px-2 py-0.5 rounded-full font-bold ml-2">PRO</span>
                       </div>
                     </label>
 
