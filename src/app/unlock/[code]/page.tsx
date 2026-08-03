@@ -157,7 +157,10 @@ export default function UnlockPage() {
           <div className="mt-8 flex justify-center">
             <Link href="/" className="flex items-center gap-2 group">
               <span className="text-xs text-slate-500 font-medium group-hover:text-slate-400 transition-colors">Secured by</span>
-              <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-4 object-contain opacity-70 group-hover:opacity-100 transition-opacity" />
+              <div className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
+                <img src="/logo/fyurl-logo-tp.png" alt="Fyurl Logo" className="h-4 w-4 object-contain brightness-0 invert" />
+                <span className="text-sm font-bold text-slate-300 tracking-wide">Fyurl</span>
+              </div>
             </Link>
           </div>
         </div>
