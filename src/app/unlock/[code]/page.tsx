@@ -154,8 +154,11 @@ export default function UnlockPage() {
             </button>
           </form>
           
-          <div className="mt-8 text-center">
-            <p className="text-xs text-slate-500 font-medium">Secured by <Link href="/" className="text-slate-400 hover:text-primary-400 transition-colors">Fyurl</Link></p>
+          <div className="mt-8 flex justify-center">
+            <Link href="/" className="flex items-center gap-2 group">
+              <span className="text-xs text-slate-500 font-medium group-hover:text-slate-400 transition-colors">Secured by</span>
+              <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-4 object-contain opacity-70 group-hover:opacity-100 transition-opacity" />
+            </Link>
           </div>
         </div>
       </motion.div>
