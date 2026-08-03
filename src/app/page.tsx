@@ -434,12 +434,13 @@ export default function Home() {
               </form>
             ) : (
               <div className="p-6 sm:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500 text-center">
-                <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6 mx-auto">
-                  <CheckCircle2 className="w-8 h-8 text-green-600" />
-                </div>
-                <h2 className="text-3xl font-bold text-foreground mb-8">Your link is ready!</h2>
-                
-                <div className="bg-primary-50/50 rounded-2xl border border-primary-100 p-6 flex flex-col md:flex-row gap-6 items-stretch text-left">
+                <div className="max-w-4xl mx-auto">
+                  <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6 mx-auto">
+                    <CheckCircle2 className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-foreground mb-8">Your link is ready!</h2>
+                  
+                  <div className="bg-primary-50/50 rounded-2xl border border-primary-100 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-stretch text-left">
                   <div className="flex-1 flex flex-col justify-center min-w-0">
                     <p className="text-sm font-semibold text-muted-foreground mb-3">Short Link</p>
                     <div className="flex shadow-sm rounded-xl overflow-hidden border border-primary-200 bg-white mb-6">
@@ -467,13 +468,13 @@ export default function Home() {
                     </button>
                   </div>
                   
-                  <div className="flex flex-col items-center justify-center bg-white p-4 rounded-2xl shadow-sm border border-border shrink-0 md:w-[180px]">
-                    <div className="mb-4 bg-muted/10 rounded-xl p-1">
+                  <div className="flex flex-col items-center justify-center bg-white p-6 rounded-2xl shadow-sm border border-border shrink-0 md:w-[280px] w-full max-w-[280px]">
+                    <div className="mb-6 bg-muted/10 rounded-xl p-2 w-full flex justify-center aspect-square">
                       <QRCodeCanvas 
                         id="qr-canvas"
                         value={`http://${result.domain}/${result.shortCode}`} 
                         size={1024}
-                        style={{ width: '130px', height: '130px' }}
+                        style={{ width: '100%', height: '100%', maxWidth: '220px', maxHeight: '220px' }}
                         level="H"
                         includeMargin={true}
                         className="rounded-lg"
@@ -493,6 +494,7 @@ export default function Home() {
                       Download QR
                     </button>
                   </div>
+                </div>
                 </div>
               </div>
               )
