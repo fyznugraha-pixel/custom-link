@@ -1,16 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Lock, Unlock, Loader2, ArrowRight, ShieldAlert } from 'lucide-react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { Lock, Unlock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
-export default function UnlockPage({ params }: { params: { code: string } }) {
+export default function UnlockPage() {
+  const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
   const domain = searchParams.get('domain') || '';
   
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -92,17 +95,25 @@ export default function UnlockPage({ params }: { params: { code: string } }) {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
+            <div className="relative">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 autoFocus
                 placeholder="Enter password..."
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading || success}
-                className="w-full px-5 py-4 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-center tracking-widest font-mono text-lg"
+                className="w-full pl-5 pr-12 py-4 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-center tracking-widest font-mono text-lg"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition-colors"
+                disabled={loading || success}
+              >
+                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+              </button>
             </div>
             
             <AnimatePresence>
@@ -144,7 +155,7 @@ export default function UnlockPage({ params }: { params: { code: string } }) {
           </form>
           
           <div className="mt-8 text-center">
-            <p className="text-xs text-slate-500 font-medium">Secured by <span className="text-slate-400">Fyurl</span></p>
+            <p className="text-xs text-slate-500 font-medium">Secured by <Link href="/" className="text-slate-400 hover:text-primary-400 transition-colors">Fyurl</Link></p>
           </div>
         </div>
       </motion.div>
