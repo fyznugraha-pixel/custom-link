@@ -47,45 +47,53 @@ export async function middleware(request: NextRequest) {
     // 1. Redis Lookup Cache
     // Cache key format: domain:{domain}:code:{shortCode}
     const cacheKey = `domain:${cleanHostname}:code:${shortCode}`;
-    const cacheData = await redis.get<string>(cacheKey);
+    const cacheData = await redis.get<any>(cacheKey);
 
     if (cacheData) {
-      if (cacheData.startsWith('{')) {
-        try {
-          const parsed = JSON.parse(cacheData);
-          if (parsed.locked) {
-            const unlockAtStr = parsed.unlockAt ? `&unlockAt=${encodeURIComponent(parsed.unlockAt)}` : '';
-            const hasPwdStr = parsed.hasPassword ? `&hasPassword=true` : '';
-            const titleStr = parsed.title ? `&title=${encodeURIComponent(parsed.title)}` : '';
-            return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
-          }
-        } catch (e) {
-          // ignore parsing error and continue
+      if (typeof cacheData === 'object') {
+        if (cacheData.locked || cacheData.isProtected) {
+          const unlockAtStr = cacheData.unlockAt ? `&unlockAt=${encodeURIComponent(cacheData.unlockAt)}` : '';
+          const hasPwdStr = (cacheData.hasPassword || cacheData.isProtected) ? `&hasPassword=true` : '';
+          const titleStr = cacheData.title ? `&title=${encodeURIComponent(cacheData.title)}` : '';
+          return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
         }
-      } else if (cacheData === 'PROTECTED') {
-        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}&hasPassword=true`, request.url));
+      } else if (typeof cacheData === 'string') {
+        if (cacheData === 'PROTECTED') {
+          return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}&hasPassword=true`, request.url));
+        } else if (cacheData.startsWith('{')) {
+          try {
+            const parsed = JSON.parse(cacheData);
+            if (parsed.locked) {
+              const unlockAtStr = parsed.unlockAt ? `&unlockAt=${encodeURIComponent(parsed.unlockAt)}` : '';
+              const hasPwdStr = parsed.hasPassword ? `&hasPassword=true` : '';
+              const titleStr = parsed.title ? `&title=${encodeURIComponent(parsed.title)}` : '';
+              return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
+            }
+          } catch (e) {}
+        }
       }
 
       // CACHE HIT -> Redirect
-      const longUrl = cacheData;
-      // 3. Async click logging
-      // Fire and forget via waitUntil (Vercel Edge support)
-      // Note: request.waitUntil is available in Edge Middleware, but we can also just use standard fetch without awaiting.
-      // NextFetchEvent can be passed if we export middleware properly, but fire-and-forget fetch usually works on Vercel too.
-      fetch(`${url.origin}/api/log-click`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          shortCode,
-          domain: cleanHostname,
-          referrer: request.headers.get('referer') || '',
-          userAgent: request.headers.get('user-agent') || '',
-          ip: request.headers.get('x-forwarded-for') || '',
-          country: request.headers.get('x-vercel-ip-country') || '',
-        }),
-      }).catch(console.error);
+      // If cacheData is an object, longUrl might be inside it, or it might just be the longUrl string.
+      const longUrl = typeof cacheData === 'string' ? cacheData : (cacheData.longUrl || null);
+      
+      if (longUrl) {
+        // 3. Async click logging
+        fetch(`${url.origin}/api/log-click`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            shortCode,
+            domain: cleanHostname,
+            referrer: request.headers.get('referer') || '',
+            userAgent: request.headers.get('user-agent') || '',
+            ip: request.headers.get('x-forwarded-for') || '',
+            country: request.headers.get('x-vercel-ip-country') || '',
+          }),
+        }).catch(console.error);
 
-      return NextResponse.redirect(new URL(longUrl), { status: 301 });
+        return NextResponse.redirect(new URL(longUrl), { status: 301 });
+      }
     }
 
     // 2. DB Fallback (Cache Miss)
