@@ -1,18 +1,21 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Lock, Unlock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
-export default function UnlockPage() {
-  const params = useParams();
-  const searchParams = useSearchParams();
-  const domain = searchParams.get('domain') || '';
-  const unlockAtParam = searchParams.get('unlockAt');
-  const hasPasswordParam = searchParams.get('hasPassword') === 'true';
-  const titleParam = searchParams.get('title');
+export default function UnlockPage({ 
+  params, 
+  searchParams 
+}: { 
+  params: { code: string }, 
+  searchParams: { [key: string]: string | string[] | undefined } 
+}) {
+  const domain = typeof searchParams.domain === 'string' ? searchParams.domain : '';
+  const unlockAtParam = typeof searchParams.unlockAt === 'string' ? searchParams.unlockAt : null;
+  const hasPasswordParam = searchParams.hasPassword === 'true';
+  const titleParam = typeof searchParams.title === 'string' ? searchParams.title : null;
   
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
