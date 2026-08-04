@@ -89,43 +89,52 @@ export async function middleware(request: NextRequest) {
     }
 
     // 2. DB Fallback (Cache Miss)
-    // Since Edge middleware cannot easily query Postgres with standard Prisma,
-    // we query our own internal API route to handle the DB lookup and Redis Cache SET.
-    const res = await fetch(`${url.origin}/api/lookup?domain=${cleanHostname}&code=${shortCode}`);
-    if (res.ok) {
-      const data = await res.json();
-      
-      if (data.locked || data.isProtected) {
-        const unlockAtStr = data.unlockAt ? `&unlockAt=${encodeURIComponent(data.unlockAt)}` : '';
-        const hasPwdStr = (data.hasPassword || data.isProtected) ? `&hasPassword=true` : '';
-        const titleStr = data.title ? `&title=${encodeURIComponent(data.title)}` : '';
-        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
-      }
+    const protocol = request.headers.get('x-forwarded-proto') || 'https';
+    const baseUrl = `${protocol}://${hostname}`;
+    const fetchUrl = `${baseUrl}/api/lookup?domain=${cleanHostname}&code=${shortCode}`;
+    
+    try {
+      const res = await fetch(fetchUrl);
+      if (res.ok) {
+        const data = await res.json();
+        
+        if (data.locked || data.isProtected) {
+          const unlockAtStr = data.unlockAt ? `&unlockAt=${encodeURIComponent(data.unlockAt)}` : '';
+          const hasPwdStr = (data.hasPassword || data.isProtected) ? `&hasPassword=true` : '';
+          const titleStr = data.title ? `&title=${encodeURIComponent(data.title)}` : '';
+          return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
+        }
 
-      if (data.longUrl) {
-        // Async click log
-        fetch(`${url.origin}/api/log-click`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-             shortCode, 
-             domain: cleanHostname, 
-             referrer: request.headers.get('referer') || '',
-             userAgent: request.headers.get('user-agent') || '', 
-             ip: request.headers.get('x-forwarded-for') || '',
-             country: request.headers.get('x-vercel-ip-country') || ''
-          })
-        }).catch(console.error);
+        if (data.longUrl) {
+          // Async click log
+          fetch(`${baseUrl}/api/log-click`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+               shortCode, 
+               domain: cleanHostname, 
+               referrer: request.headers.get('referer') || '',
+               userAgent: request.headers.get('user-agent') || '', 
+               ip: request.headers.get('x-forwarded-for') || '',
+               country: request.headers.get('x-vercel-ip-country') || ''
+            })
+          }).catch(console.error);
 
-        return NextResponse.redirect(new URL(data.longUrl), { status: 301 });
+          return NextResponse.redirect(new URL(data.longUrl), { status: 301 });
+        }
+      } else {
+        const text = await res.text();
+        return NextResponse.redirect(new URL(`/?error=lookup_failed&status=${res.status}&msg=${encodeURIComponent(text.substring(0,50))}`, request.url));
       }
+    } catch (e: any) {
+      return NextResponse.redirect(new URL(`/?error=fetch_exception&msg=${encodeURIComponent(e.message)}`, request.url));
     }
 
     // Not found
     return NextResponse.rewrite(new URL('/404', request.url));
-  } catch (error) {
+  } catch (error: any) {
     console.error('Middleware Error:', error);
-    return NextResponse.next();
+    return NextResponse.redirect(new URL(`/?error=middleware_exception&msg=${encodeURIComponent(error.message)}`, request.url));
   }
 }
 
