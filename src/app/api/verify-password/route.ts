@@ -6,8 +6,8 @@ export async function POST(request: Request) {
   try {
     const { shortCode, domain, password } = await request.json();
 
-    if (!shortCode || !password) {
-      return NextResponse.json({ success: false, error: 'Missing required fields' }, { status: 400 });
+    if (!shortCode) {
+      return NextResponse.json({ success: false, error: 'Missing shortCode' }, { status: 400 });
     }
 
     let domainId = null;
@@ -29,14 +29,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'Link not found' }, { status: 404 });
     }
 
-    if (!link.password) {
-      return NextResponse.json({ success: false, error: 'Link is not password protected' }, { status: 400 });
+    if (link.unlockAt && link.unlockAt > new Date()) {
+      return NextResponse.json({ success: false, error: 'Link is still locked' }, { status: 403 });
     }
 
-    const isValid = await bcrypt.compare(password, link.password);
-    
-    if (!isValid) {
-      return NextResponse.json({ success: false, error: 'Incorrect password' }, { status: 401 });
+    if (link.password) {
+      if (!password) {
+        return NextResponse.json({ success: false, error: 'Password required' }, { status: 400 });
+      }
+      const isValid = await bcrypt.compare(password, link.password);
+      
+      if (!isValid) {
+        return NextResponse.json({ success: false, error: 'Incorrect password' }, { status: 401 });
+      }
     }
 
     return NextResponse.json({ success: true, longUrl: link.longUrl });

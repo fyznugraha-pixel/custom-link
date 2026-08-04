@@ -47,14 +47,26 @@ export async function middleware(request: NextRequest) {
     // 1. Redis Lookup Cache
     // Cache key format: domain:{domain}:code:{shortCode}
     const cacheKey = `domain:${cleanHostname}:code:${shortCode}`;
-    const longUrl = await redis.get<string>(cacheKey);
+    const cacheData = await redis.get<string>(cacheKey);
 
-    if (longUrl) {
-      if (longUrl === 'PROTECTED') {
-        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}`, request.url));
+    if (cacheData) {
+      if (cacheData.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(cacheData);
+          if (parsed.locked) {
+            const unlockAtStr = parsed.unlockAt ? `&unlockAt=${encodeURIComponent(parsed.unlockAt)}` : '';
+            const hasPwdStr = parsed.hasPassword ? `&hasPassword=true` : '';
+            return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}`, request.url));
+          }
+        } catch (e) {
+          // ignore parsing error and continue
+        }
+      } else if (cacheData === 'PROTECTED') {
+        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}&hasPassword=true`, request.url));
       }
 
       // CACHE HIT -> Redirect
+      const longUrl = cacheData;
       // 3. Async click logging
       // Fire and forget via waitUntil (Vercel Edge support)
       // Note: request.waitUntil is available in Edge Middleware, but we can also just use standard fetch without awaiting.
@@ -82,8 +94,10 @@ export async function middleware(request: NextRequest) {
     if (res.ok) {
       const data = await res.json();
       
-      if (data.isProtected) {
-        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}`, request.url));
+      if (data.locked || data.isProtected) {
+        const unlockAtStr = data.unlockAt ? `&unlockAt=${encodeURIComponent(data.unlockAt)}` : '';
+        const hasPwdStr = (data.hasPassword || data.isProtected) ? `&hasPassword=true` : '';
+        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}`, request.url));
       }
 
       if (data.longUrl) {

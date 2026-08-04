@@ -2,15 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { Lock, Unlock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff } from 'lucide-react';
+import { Lock, Unlock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 
 export default function UnlockPage() {
   const params = useParams();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const domain = searchParams.get('domain') || '';
+  const unlockAtParam = searchParams.get('unlockAt');
+  const hasPasswordParam = searchParams.get('hasPassword') === 'true';
   
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -18,11 +19,32 @@ export default function UnlockPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [shake, setShake] = useState(false);
+  
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [hasAttemptedAutoUnlock, setHasAttemptedAutoUnlock] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!password) return;
+  useEffect(() => {
+    if (!unlockAtParam) return;
     
+    const targetDate = new Date(unlockAtParam).getTime();
+    if (isNaN(targetDate)) return;
+    
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+      if (difference <= 0) {
+        setTimeLeft(0);
+      } else {
+        setTimeLeft(difference);
+      }
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+    return () => clearInterval(timer);
+  }, [unlockAtParam]);
+
+  const verifyLock = async (pwd?: string) => {
     setLoading(true);
     setError('');
 
@@ -30,21 +52,22 @@ export default function UnlockPage() {
       const res = await fetch('/api/verify-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ shortCode: params.code, domain, password }),
+        body: JSON.stringify({ shortCode: params.code, domain, password: pwd }),
       });
       
       const data = await res.json();
       
       if (res.ok && data.success) {
         setSuccess(true);
-        // Wait a tiny bit for the unlock animation before redirecting
         setTimeout(() => {
           window.location.href = data.longUrl;
         }, 800);
       } else {
-        setError(data.error || 'Incorrect password');
-        setShake(true);
-        setTimeout(() => setShake(false), 500);
+        setError(data.error || 'Link is locked');
+        if (pwd) {
+          setShake(true);
+          setTimeout(() => setShake(false), 500);
+        }
       }
     } catch (err: any) {
       setError('An error occurred. Please try again.');
@@ -52,6 +75,34 @@ export default function UnlockPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (timeLeft === 0 && !hasPasswordParam && !success && !hasAttemptedAutoUnlock) {
+      setHasAttemptedAutoUnlock(true);
+      verifyLock();
+    }
+  }, [timeLeft, hasPasswordParam, success, hasAttemptedAutoUnlock]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!password) return;
+    await verifyLock(password);
+  };
+
+  const formatTime = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const days = Math.floor(totalSeconds / (3600 * 24));
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    
+    if (days > 0) {
+      return `${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const isTimeLocked = timeLeft !== null && timeLeft > 0;
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 selection:bg-primary-500 selection:text-white relative overflow-hidden">
@@ -76,6 +127,15 @@ export default function UnlockPage() {
                   >
                     <Unlock className="w-10 h-10" />
                   </motion.div>
+                ) : isTimeLocked ? (
+                  <motion.div
+                    key="clock"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="text-amber-400"
+                  >
+                    <Clock className="w-10 h-10 animate-pulse" />
+                  </motion.div>
                 ) : (
                   <motion.div
                     key="lock"
@@ -88,72 +148,88 @@ export default function UnlockPage() {
                 )}
               </AnimatePresence>
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Protected Link</h1>
+            
+            <h1 className="text-2xl font-bold text-white mb-2">
+              {isTimeLocked ? 'Link is Scheduled' : (hasPasswordParam ? 'Protected Link' : 'Unlocking...')}
+            </h1>
             <p className="text-slate-400 text-sm">
-              This link is secured by the owner. Please enter the password to continue.
+              {isTimeLocked 
+                ? 'This link will become available when the countdown finishes.' 
+                : (hasPasswordParam ? 'This link is secured. Please enter the password to continue.' : 'Please wait while we redirect you...')}
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                required
-                autoFocus
-                placeholder="Enter password..."
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading || success}
-                className="w-full pl-5 pr-12 py-4 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all text-center tracking-widest font-mono text-lg"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition-colors"
-                disabled={loading || success}
+          <AnimatePresence mode="wait">
+            {isTimeLocked ? (
+              <motion.div
+                key="countdown"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="flex flex-col items-center justify-center py-6"
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-              </button>
-            </div>
-            
-            <AnimatePresence>
-              {error && (
-                <motion.div 
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden"
-                >
-                  <div className="flex items-center justify-center gap-2 text-red-400 text-sm font-medium bg-red-400/10 p-3 rounded-xl border border-red-400/20">
-                    <ShieldAlert className="w-4 h-4" />
-                    {error}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+                <div className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-400 tracking-wider font-mono">
+                  {formatTime(timeLeft)}
+                </div>
+              </motion.div>
+            ) : hasPasswordParam ? (
+              <motion.form 
+                key="password-form"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                onSubmit={handleSubmit} 
+                className="space-y-6"
+              >
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter password..."
+                    disabled={loading || success}
+                    className="block w-full pl-5 pr-12 py-4 text-base bg-slate-900/50 border border-slate-700/50 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all disabled:opacity-50"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading || success}
+                    className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
+                </div>
 
-            <button
-              type="submit"
-              disabled={loading || !password || success}
-              className={`w-full py-4 rounded-xl font-bold text-white transition-all flex items-center justify-center group ${
-                success 
-                  ? 'bg-green-500 hover:bg-green-600' 
-                  : 'bg-primary-600 hover:bg-primary-500'
-              } disabled:opacity-50 disabled:cursor-not-allowed`}
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : success ? (
-                'Unlocked!'
-              ) : (
-                <>
-                  Unlock Link
-                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </button>
-          </form>
-          
+                {error && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-start gap-3"
+                  >
+                    <ShieldAlert className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+                    <p className="text-sm text-red-400">{error}</p>
+                  </motion.div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading || !password || success}
+                  className="w-full relative group overflow-hidden rounded-2xl bg-primary-600 px-8 py-4 transition-all hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    {loading ? (
+                      <Loader2 className="w-5 h-5 text-white animate-spin" />
+                    ) : (
+                      <>
+                        <span className="font-semibold text-white">Unlock Link</span>
+                        <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </div>
+                </button>
+              </motion.form>
+            ) : null}
+          </AnimatePresence>
+
           <div className="mt-8 flex justify-center">
             <Link href="/" className="flex items-center gap-2 group">
               <span className="text-xs text-slate-500 font-medium group-hover:text-slate-400 transition-colors">Secured by</span>

@@ -46,9 +46,17 @@ export async function GET(request: Request) {
 
       const cacheKey = `domain:${domain}:code:${code}`;
       
-      if (link.password) {
-        await redis.setex(cacheKey, ttl, 'PROTECTED');
-        return NextResponse.json({ isProtected: true });
+      const isTimeLocked = link.unlockAt ? link.unlockAt > new Date() : false;
+      const isLocked = !!link.password || isTimeLocked;
+
+      if (isLocked) {
+        const lockData = {
+          locked: true,
+          hasPassword: !!link.password,
+          unlockAt: link.unlockAt ? link.unlockAt.toISOString() : null,
+        };
+        await redis.setex(cacheKey, ttl, JSON.stringify(lockData));
+        return NextResponse.json(lockData);
       } else {
         await redis.setex(cacheKey, ttl, link.longUrl);
         return NextResponse.json({ longUrl: link.longUrl });

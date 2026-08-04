@@ -64,6 +64,7 @@ model Link {
   password     String?
   clicks       Int          @default(0)
   expiresAt    DateTime?
+  unlockAt     DateTime?
   createdAt    DateTime     @default(now())
   
   user         User?        @relation(fields: [userId], references: [id])

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -34,6 +34,8 @@ export default function Home() {
   const [requirePassword, setRequirePassword] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [requireSchedule, setRequireSchedule] = useState(false);
+  const [unlockAt, setUnlockAt] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [wordIndex, setWordIndex] = useState(0);
 
@@ -69,7 +71,8 @@ export default function Home() {
           longUrl: finalUrl, 
           customAlias: customAlias || undefined, 
           expiresIn: finalExpiresIn || undefined,
-          password: requirePassword && password ? password : undefined
+          password: requirePassword && password ? password : undefined,
+          unlockAt: requireSchedule && unlockAt ? new Date(unlockAt).toISOString() : undefined
         }),
       });
       
@@ -367,6 +370,50 @@ export default function Home() {
                           <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
                             <ShieldAlert className="w-3 h-3 mt-0.5 shrink-0" />
                             Visitors will need this password to unlock the link.
+                          </p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Time-Lock / Scheduled Access */}
+                  <div className="pt-4 mt-2 border-t border-border">
+                    <div className="flex items-center justify-between mb-2 cursor-pointer" onClick={() => setRequireSchedule(!requireSchedule)}>
+                      <div className="flex items-center gap-2">
+                        <Clock className={`w-4 h-4 ${requireSchedule ? 'text-primary-600' : 'text-muted-foreground'}`} />
+                        <span className={`font-semibold transition-colors ${requireSchedule ? 'text-primary-700' : 'text-foreground'}`}>
+                          Set Schedule (Time-Lock)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={requireSchedule}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${requireSchedule ? 'bg-primary-600' : 'bg-slate-200'}`}
+                      >
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${requireSchedule ? 'translate-x-6' : 'translate-x-1'}`} />
+                      </button>
+                    </div>
+
+                    <AnimatePresence>
+                      {requireSchedule && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                          animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <input
+                            type="datetime-local"
+                            required={requireSchedule}
+                            value={unlockAt}
+                            onChange={(e) => setUnlockAt(e.target.value)}
+                            min={new Date().toISOString().slice(0, 16)}
+                            className="block w-full px-4 py-3 text-sm border border-border rounded-xl focus:outline-none focus:border-primary-500 transition-all bg-muted/30 focus:bg-white"
+                          />
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            Link will show a countdown and remain locked until this time.
                           </p>
                         </motion.div>
                       )}
