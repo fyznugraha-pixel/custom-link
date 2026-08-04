@@ -1,12 +1,12 @@
 import { headers } from 'next/headers';
 import UnlockClient from './UnlockClient';
 
-export default function UnlockPage({ 
+export default async function UnlockPage({ 
   params 
 }: { 
   params: { code: string }
 }) {
-  const headersList = headers();
+  const headersList = await headers();
   
   const domain = headersList.get('x-domain') || '';
   const unlockAtParam = headersList.get('x-unlock-at');
