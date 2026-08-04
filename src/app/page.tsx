@@ -328,13 +328,14 @@ export default function Home() {
                     <AnimatePresence>
                       {expiresIn === 'custom' && (
                         <motion.div
-                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                          animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
-                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
+                          style={{ willChange: "height, opacity" }}
                         >
-                          <div className="flex items-center gap-3">
+                          <div className="pt-3 flex items-center gap-3">
                             <input
                               type="number"
                               min="1"
@@ -372,14 +373,15 @@ export default function Home() {
                     <AnimatePresence>
                       {requirePassword && (
                         <motion.div
-                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                          animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
-                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
+                          style={{ willChange: "height, opacity" }}
                         >
-                          <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                          <div className="pt-3 relative">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none pt-3">
                               <Lock className="h-4 w-4 text-muted-foreground" />
                             </div>
                             <input
@@ -393,7 +395,7 @@ export default function Home() {
                             <button
                               type="button"
                               onClick={() => setShowPassword(!showPassword)}
-                              className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors"
+                              className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors pt-3"
                             >
                               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                             </button>
@@ -429,16 +431,18 @@ export default function Home() {
                     <AnimatePresence>
                       {requireSchedule && (
                         <motion.div
-                          initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                          animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
-                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
+                          style={{ willChange: "height, opacity" }}
                         >
-                          <div className="relative border border-border rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all bg-muted/30 focus-within:bg-white">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                              <Calendar className="h-4 w-4 text-muted-foreground" />
-                            </div>
+                          <div className="pt-3">
+                            <div className="relative border border-border rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all bg-muted/30 focus-within:bg-white">
+                              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                              </div>
                             <input
                               type="datetime-local"
                               required={requireSchedule}
@@ -448,10 +452,11 @@ export default function Home() {
                               className="block w-full pl-10 pr-4 py-3 text-[15px] sm:text-base text-slate-900 bg-transparent border-0 focus:outline-none focus:ring-0 outline-none appearance-none min-h-[50px]"
                               style={{ colorScheme: 'light' }}
                             />
+                            </div>
+                            <p className="mt-2 text-xs text-muted-foreground">
+                              {t.scheduleDesc}
+                            </p>
                           </div>
-                          <p className="mt-2 text-xs text-muted-foreground">
-                            {t.scheduleDesc}
-                          </p>
                         </motion.div>
                       )}
                     </AnimatePresence>
