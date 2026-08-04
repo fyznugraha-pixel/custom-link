@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Lock, Unlock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { dictionaries, Language } from '@/lib/i18n';
 
 export default function UnlockClient({
   code,
@@ -24,6 +25,9 @@ export default function UnlockClient({
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [shake, setShake] = useState(false);
+  
+  const [lang, setLang] = useState<Language>('en');
+  const t = dictionaries[lang];
   
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [hasAttemptedAutoUnlock, setHasAttemptedAutoUnlock] = useState(false);
@@ -68,14 +72,14 @@ export default function UnlockClient({
           window.location.href = data.longUrl;
         }, 800);
       } else {
-        setError(data.error || 'Link is locked');
+        setError(data.error || t.linkLocked);
         if (pwd) {
           setShake(true);
           setTimeout(() => setShake(false), 500);
         }
       }
     } catch (err: any) {
-      setError('An error occurred. Please try again.');
+      setError(t.errorOccurred);
     } finally {
       setLoading(false);
     }
@@ -154,14 +158,14 @@ export default function UnlockClient({
             </div>
             
             <h1 className="text-2xl font-bold text-white mb-2">
-              {titleParam || (isTimeLocked ? 'Link is Scheduled' : (hasPasswordParam ? 'Protected Link' : 'Unlocking...'))}
+              {titleParam || (isTimeLocked ? t.linkScheduled : (hasPasswordParam ? t.protectedLink : t.unlocking))}
             </h1>
             <p className="text-slate-400 text-sm">
               {titleParam 
-                ? (isTimeLocked ? 'This event link will become available when the countdown finishes.' : 'This event link is secured. Please enter the password to continue.')
+                ? (isTimeLocked ? t.eventScheduledDesc : t.eventProtectedDesc)
                 : (isTimeLocked 
-                  ? 'This link will become available when the countdown finishes.' 
-                  : (hasPasswordParam ? 'This link is secured. Please enter the password to continue.' : 'Please wait while we redirect you...'))}
+                  ? t.linkScheduledDesc 
+                  : (hasPasswordParam ? t.linkProtectedDesc : t.redirectingDesc))}
             </p>
           </div>
 
@@ -191,7 +195,7 @@ export default function UnlockClient({
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter password..."
+                    placeholder={t.enterPassword}
                     disabled={loading || success}
                     className="block w-full pl-5 pr-12 py-4 text-base bg-slate-900/50 border border-slate-700/50 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all disabled:opacity-50"
                   />
@@ -226,7 +230,7 @@ export default function UnlockClient({
                       <Loader2 className="w-5 h-5 text-white animate-spin" />
                     ) : (
                       <>
-                        <span className="font-semibold text-white">Unlock Link</span>
+                        <span className="font-semibold text-white">{t.unlockLinkBtn}</span>
                         <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
@@ -236,9 +240,15 @@ export default function UnlockClient({
             ) : null}
           </AnimatePresence>
 
-          <div className="mt-8 flex justify-center">
+          <div className="mt-8 flex flex-col items-center gap-4">
+            <button
+              onClick={() => setLang(lang === 'en' ? 'id' : 'en')}
+              className="text-xs font-semibold text-slate-500 hover:text-slate-400 transition-colors uppercase tracking-wider"
+            >
+              {lang === 'en' ? 'ID / EN' : 'EN / ID'}
+            </button>
             <Link href="/" className="flex items-center gap-2 group">
-              <span className="text-xs text-slate-500 font-medium group-hover:text-slate-400 transition-colors">Secured by</span>
+              <span className="text-xs text-slate-500 font-medium group-hover:text-slate-400 transition-colors">{t.securedBy}</span>
               <div className="flex items-center gap-1.5 opacity-70 group-hover:opacity-100 transition-opacity">
                 <img src="/logo/fyurl-logo-tp.png" alt="Fyurl Logo" className="h-4 w-4 object-contain brightness-0 invert" />
                 <span className="text-sm font-bold text-slate-300 tracking-wide">Fyurl</span>

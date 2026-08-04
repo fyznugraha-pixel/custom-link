@@ -5,17 +5,20 @@ import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loade
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const TAGLINE_WORDS = ["count.", "short.", "easy.", "yours.", "trackable.", "powerful."];
-const EXPIRATION_OPTIONS = [
-  { value: '1d', label: '1 Day' },
-  { value: '3d', label: '3 Days (Default)' },
-  { value: '7d', label: '7 Days' },
-  { value: '30d', label: '30 Days' },
-  { value: 'custom', label: 'Custom...' },
-];
+import { dictionaries, Language } from '@/lib/i18n';
 
 export default function Home() {
+  const [lang, setLang] = useState<Language>('en');
+  const t = dictionaries[lang];
+
+  const EXPIRATION_OPTIONS = [
+    { value: '1d', label: t.exp1d },
+    { value: '3d', label: t.exp3d },
+    { value: '7d', label: t.exp7d },
+    { value: '30d', label: t.exp30d },
+    { value: 'custom', label: t.expCustom },
+  ];
+
   const [activeTab, setActiveTab] = useState<'shortener' | 'qr'>('shortener');
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
@@ -45,10 +48,10 @@ export default function Home() {
   useEffect(() => {
     setDefaultDomain(window.location.host.replace(/^www\./, ''));
     const interval = setInterval(() => {
-      setWordIndex((prev) => (prev + 1) % TAGLINE_WORDS.length);
+      setWordIndex((prev) => (prev + 1) % t.taglines.length);
     }, 2500);
     return () => clearInterval(interval);
-  }, []);
+  }, [t.taglines.length]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,9 +132,17 @@ export default function Home() {
             <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
           </div>
           
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
+            <button
+              onClick={() => setLang(lang === 'en' ? 'id' : 'en')}
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Globe className="w-4 h-4" />
+              <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN / ID' : 'ID / EN'}</span>
+              <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
+            </button>
             <a href="https://saweria.co/payes" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5">
-              Donation
+              {t.donation}
             </a>
           </div>
         </div>
@@ -142,10 +153,10 @@ export default function Home() {
         <div className="text-center max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-sm font-medium mb-8 border border-primary-100">
             <Zap className="w-4 h-4 text-primary-600" />
-            Free to use
+            {t.freeToUse}
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-tight">
-            <span>Make every link</span>
+            <span>{t.makeEveryLink}</span>
             <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative">
               <AnimatePresence mode="popLayout">
                 <motion.span
@@ -156,13 +167,13 @@ export default function Home() {
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                   className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 p-2 -m-2 inline-block whitespace-nowrap"
                 >
-                  {TAGLINE_WORDS[wordIndex]}
+                  {t.taglines[wordIndex]}
                 </motion.span>
               </AnimatePresence>
             </div>
           </h1>
           <p className="text-lg sm:text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto">
-            Redefine how you share. Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes. Fast, secure, and ready to use. No account needed.
+            {t.heroDesc}
           </p>
         </div>
 
@@ -175,14 +186,14 @@ export default function Home() {
               onClick={() => setActiveTab('shortener')}
               className={`px-6 py-3 text-sm font-semibold rounded-t-xl transition-colors ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border border-border border-b-white' : 'text-muted-foreground hover:text-foreground'}`}
             >
-              Shorten Link
+              {t.shortenLink}
             </button>
             <button
               onClick={() => setActiveTab('qr')}
               className={`px-6 py-3 text-sm font-semibold rounded-t-xl transition-colors flex items-center ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border border-border border-b-white' : 'text-muted-foreground hover:text-foreground'}`}
             >
               <QrCode className="w-4 h-4 mr-2" />
-              QR Generator
+              {t.qrGenerator}
             </button>
           </div>
 
@@ -201,7 +212,7 @@ export default function Home() {
                 <div className="space-y-6">
                   <div>
                     <label htmlFor="longUrl" className="block text-sm font-semibold text-foreground mb-2">
-                      Destination URL <span className="text-red-500">*</span>
+                      {t.destinationUrl} <span className="text-red-500">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -221,11 +232,11 @@ export default function Home() {
                   
                   <div>
                     <label htmlFor="customAlias" className="block text-sm font-semibold text-foreground mb-2">
-                      Custom Alias <span className="text-muted-foreground font-normal">(Optional)</span>
+                      {t.customAlias} <span className="text-muted-foreground font-normal">{t.optional}</span>
                     </label>
                     <div className="flex shadow-sm rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
                       <span className="inline-flex items-center px-4 border border-r-0 border-border bg-muted/50 text-muted-foreground text-sm sm:text-base whitespace-nowrap">
-                        {defaultDomain}
+                        {defaultDomain}/
                       </span>
                       <input
                         id="customAlias"
@@ -239,30 +250,30 @@ export default function Home() {
                       />
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
-                      Leave blank to auto-generate a random short code.
+                      {t.leaveBlankAuto}
                     </p>
                   </div>
 
                   <div>
                     <label htmlFor="title" className="block text-sm font-semibold text-foreground mb-2">
-                      Link Title / Event Name <span className="text-muted-foreground font-normal">(Optional)</span>
+                      {t.linkTitle} <span className="text-muted-foreground font-normal">{t.optional}</span>
                     </label>
                     <input
                       id="title"
                       type="text"
-                      placeholder="e.g., Webinar Registration, John's Birthday"
+                      placeholder={t.titlePlaceholder}
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       className="block w-full px-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
                     />
                     <p className="mt-2 text-xs text-muted-foreground">
-                      This title will be displayed to visitors on the unlock page if the link is protected or scheduled.
+                      {t.titleDesc}
                     </p>
                   </div>
 
                   <div>
                     <label className="block text-sm font-semibold text-foreground mb-2">
-                      Link Expiration <span className="text-red-500">*</span>
+                      {t.linkExpiration} <span className="text-red-500">*</span>
                     </label>
                     <div 
                       className="relative" 
@@ -279,7 +290,7 @@ export default function Home() {
                         className={`flex items-center justify-between w-full px-4 py-4 text-base text-left border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all ${isDropdownOpen ? 'border-primary-500 bg-white ring-2 ring-primary-500 ring-opacity-20' : 'border-border bg-muted/30 hover:bg-white'}`}
                       >
                         <span className="text-foreground font-medium">
-                          {EXPIRATION_OPTIONS.find(opt => opt.value === expiresIn)?.label || '7 Days (Default)'}
+                          {EXPIRATION_OPTIONS.find(opt => opt.value === expiresIn)?.label || t.exp7d}
                         </span>
                         <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                       </button>
@@ -332,7 +343,7 @@ export default function Home() {
                               onChange={(e) => setCustomDays(e.target.value)}
                               className="block w-24 px-4 py-3 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white text-center font-medium shadow-inner shadow-primary-900/5"
                             />
-                            <span className="text-muted-foreground font-medium text-sm">Days</span>
+                            <span className="text-muted-foreground font-medium text-sm">{t.days}</span>
                           </div>
                         </motion.div>
                       )}
@@ -345,7 +356,7 @@ export default function Home() {
                       <div className="flex items-center gap-2">
                         <Lock className={`w-4 h-4 ${requirePassword ? 'text-primary-600' : 'text-muted-foreground'}`} />
                         <span className={`font-semibold transition-colors ${requirePassword ? 'text-primary-700' : 'text-foreground'}`}>
-                          Set Password
+                          {t.setPassword}
                         </span>
                       </div>
                       <button
@@ -374,7 +385,7 @@ export default function Home() {
                             <input
                               type={showPassword ? "text" : "password"}
                               required={requirePassword}
-                              placeholder="Set a strong password..."
+                              placeholder={t.passwordPlaceholder}
                               value={password}
                               onChange={(e) => setPassword(e.target.value)}
                               className="block w-full pl-11 pr-12 py-3 text-sm border border-border rounded-xl focus:outline-none focus:border-primary-500 transition-all bg-muted/30 focus:bg-white"
@@ -389,7 +400,7 @@ export default function Home() {
                           </div>
                           <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
                             <ShieldAlert className="w-3 h-3 mt-0.5 shrink-0" />
-                            Visitors will need this password to unlock the link.
+                            {t.passwordDesc}
                           </p>
                         </motion.div>
                       )}
@@ -402,7 +413,7 @@ export default function Home() {
                       <div className="flex items-center gap-2">
                         <Clock className={`w-4 h-4 ${requireSchedule ? 'text-primary-600' : 'text-muted-foreground'}`} />
                         <span className={`font-semibold transition-colors ${requireSchedule ? 'text-primary-700' : 'text-foreground'}`}>
-                          Set Schedule (Time-Lock)
+                          {t.setSchedule}
                         </span>
                       </div>
                       <button
@@ -434,7 +445,7 @@ export default function Home() {
                             style={{ colorScheme: 'light' }}
                           />
                           <p className="mt-2 text-xs text-muted-foreground">
-                            Link will show a countdown and remain locked until this time.
+                            {t.scheduleDesc}
                           </p>
                         </motion.div>
                       )}
@@ -443,7 +454,7 @@ export default function Home() {
 
                   {/* QR Code Logo */}
                   <div className="pt-4 mt-2 border-t border-border">
-                    <label className="block text-sm font-semibold text-foreground mb-2">QR Code Logo <span className="text-muted-foreground font-normal">(Optional)</span></label>
+                    <label className="block text-sm font-semibold text-foreground mb-2">{t.qrCodeLogo} <span className="text-muted-foreground font-normal">{t.optional}</span></label>
                     <div className="flex items-center gap-2">
                       <input 
                         ref={fileInputRef}
@@ -490,11 +501,11 @@ export default function Home() {
                   {loading ? (
                     <>
                       <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      Shortening...
+                      {t.shortening}
                     </>
                   ) : (
                     <>
-                      Shorten URL
+                      {t.shortenUrl}
                       <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
@@ -506,11 +517,11 @@ export default function Home() {
                   <div className="flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6 mx-auto">
                     <CheckCircle2 className="w-8 h-8 text-green-600" />
                   </div>
-                  <h2 className="text-3xl font-bold text-foreground mb-8">Your link is ready!</h2>
+                  <h2 className="text-3xl font-bold text-foreground mb-8">{t.linkReady}</h2>
                   
                   <div className="bg-primary-50/50 rounded-2xl border border-primary-100 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-stretch text-left">
                   <div className="flex-1 flex flex-col justify-center min-w-0">
-                    <p className="text-sm font-semibold text-muted-foreground mb-3">Short Link</p>
+                    <p className="text-sm font-semibold text-muted-foreground mb-3">{t.shortLinkText}</p>
                     <div className="flex shadow-sm rounded-xl overflow-hidden border border-primary-200 bg-white mb-6">
                       <div className="flex-1 px-4 py-3 truncate text-primary-700 font-medium text-base sm:text-lg flex items-center min-w-0">
                         <span className="truncate">{result.domain.replace(/^www\./, '')}/{result.shortCode}</span>
@@ -520,9 +531,9 @@ export default function Home() {
                         className="px-4 sm:px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium transition-colors flex items-center shrink-0"
                       >
                         {copied ? (
-                          <><CheckCircle2 className="w-5 h-5 sm:mr-2" /> <span className="hidden sm:inline">Copied</span></>
+                          <><CheckCircle2 className="w-5 h-5 sm:mr-2" /> <span className="hidden sm:inline">{t.copied}</span></>
                         ) : (
-                          <><Copy className="w-5 h-5 sm:mr-2" /> <span className="hidden sm:inline">Copy</span></>
+                          <><Copy className="w-5 h-5 sm:mr-2" /> <span className="hidden sm:inline">{t.copy}</span></>
                         )}
                       </button>
                     </div>
@@ -532,7 +543,7 @@ export default function Home() {
                       className="text-primary-600 hover:text-primary-700 font-medium flex items-center transition-colors group w-fit"
                     >
                       <ArrowRight className="w-4 h-4 mr-2 rotate-180 group-hover:-translate-x-1 transition-transform" />
-                      Create another link
+                      {t.createAnother}
                     </button>
                   </div>
                   
@@ -559,7 +570,7 @@ export default function Home() {
                       className="inline-flex items-center justify-center px-4 py-2 border border-border rounded-xl text-xs font-semibold text-foreground hover:bg-muted transition-colors w-full"
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      Download QR
+                      {t.downloadQR}
                     </button>
                   </div>
                 </div>
@@ -572,11 +583,11 @@ export default function Home() {
               <div className="p-6 sm:p-10 animate-in fade-in duration-300">
                 <div className="mb-8">
                   <label htmlFor="qrText" className="block text-sm font-semibold text-foreground mb-2">
-                    Text or URL <span className="text-red-500">*</span>
+                    {t.textOrUrl} <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     id="qrText"
-                    placeholder="Enter any text or URL to generate a QR code instantly..."
+                    placeholder={t.textOrUrlPlaceholder}
                     value={qrText}
                     onChange={(e) => setQrText(e.target.value)}
                     className="block w-full px-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white resize-none min-h-[120px]"
@@ -585,7 +596,7 @@ export default function Home() {
 
                 <div className="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
                   <div className="col-span-2 sm:col-span-2">
-                    <label className="block text-sm font-semibold text-foreground mb-2">Upload Custom Logo (Max 2MB)</label>
+                    <label className="block text-sm font-semibold text-foreground mb-2">{t.uploadLogo}</label>
                     <div className="flex items-center gap-2">
                       <input 
                         ref={fileInputRef}
@@ -623,7 +634,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="col-span-1">
-                    <label className="block text-sm font-semibold text-foreground mb-2">QR Color</label>
+                    <label className="block text-sm font-semibold text-foreground mb-2">{t.qrColor}</label>
                     <div className="flex items-center gap-3">
                       <input 
                         type="color" 
@@ -634,7 +645,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="col-span-1">
-                    <label className="block text-sm font-semibold text-foreground mb-2">Background</label>
+                    <label className="block text-sm font-semibold text-foreground mb-2">{t.background}</label>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                       <div className="flex items-center gap-2">
                         <input 
@@ -652,7 +663,7 @@ export default function Home() {
                           onChange={(e) => setTransparentBg(e.target.checked)} 
                           className="w-4 h-4 rounded border-gray-300 accent-primary-600 cursor-pointer" 
                         />
-                        Transparent
+                        {t.transparent}
                       </label>
                     </div>
                   </div>
@@ -692,13 +703,13 @@ export default function Home() {
                         className="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none"
                       >
                         <Download className="w-4 h-4 mr-2" />
-                        Download QR Code
+                        {t.downloadQRCode}
                       </button>
                     </>
                   ) : (
                     <div className="text-center text-muted-foreground flex flex-col items-center py-8">
                       <QrCode className="w-12 h-12 mb-4 opacity-20" />
-                      <p>Type something above to see your QR code</p>
+                      <p>{t.typeSomething}</p>
                     </div>
                   )}
                 </div>
@@ -725,7 +736,7 @@ export default function Home() {
                 <img src="/logo/fyurl-horizontal.png" alt="Fyurl Logo" className="h-8 md:h-10 object-contain" />
               </div>
               <p className="text-primary-100 font-medium text-xs md:text-sm text-left max-w-xs">
-                Shorten, customize, and track your links with premium aesthetics and advanced security.
+                {t.footerDesc}
               </p>
             </div>
           </div>
@@ -747,7 +758,7 @@ export default function Home() {
               
               <Link href="/report" className="flex items-center gap-1.5 text-primary-200 hover:text-white transition-colors text-sm font-medium">
                 <ShieldAlert className="w-4 h-4" />
-                Report Abuse
+                {t.reportAbuse}
               </Link>
             </div>
             
