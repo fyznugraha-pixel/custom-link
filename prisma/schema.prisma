@@ -58,6 +58,7 @@ model Link {
   id           String       @id @default(cuid())
   shortCode    String
   longUrl      String
+  title        String?
   userId       String?
   domainId     String?
   redirectType Int          @default(301)

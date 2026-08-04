@@ -54,6 +54,7 @@ export async function GET(request: Request) {
           locked: true,
           hasPassword: !!link.password,
           unlockAt: link.unlockAt ? link.unlockAt.toISOString() : null,
+          title: link.title || null,
         };
         await redis.setex(cacheKey, ttl, JSON.stringify(lockData));
         return NextResponse.json(lockData);

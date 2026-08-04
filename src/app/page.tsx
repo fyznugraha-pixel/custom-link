@@ -20,6 +20,7 @@ export default function Home() {
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
+  const [title, setTitle] = useState('');
   const [expiresIn, setExpiresIn] = useState('3d');
   const [customDays, setCustomDays] = useState('60');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -69,6 +70,7 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           longUrl: finalUrl, 
+          title: title || undefined,
           customAlias: customAlias || undefined, 
           expiresIn: finalExpiresIn || undefined,
           password: requirePassword && password ? password : undefined,
@@ -90,6 +92,7 @@ export default function Home() {
       // Clear form except for result
       setLongUrl('');
       setCustomAlias('');
+      setTitle('');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -237,6 +240,23 @@ export default function Home() {
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
                       Leave blank to auto-generate a random short code.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label htmlFor="title" className="block text-sm font-semibold text-foreground mb-2">
+                      Link Title / Event Name <span className="text-muted-foreground font-normal">(Optional)</span>
+                    </label>
+                    <input
+                      id="title"
+                      type="text"
+                      placeholder="e.g., Webinar Registration, John's Birthday"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className="block w-full px-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
+                    />
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      This title will be displayed to visitors on the unlock page if the link is protected or scheduled.
                     </p>
                   </div>
 

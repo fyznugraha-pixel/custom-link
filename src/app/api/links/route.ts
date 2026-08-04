@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { longUrl, customAlias, domainId, expiresIn, password, unlockAt } = body;
+    const { longUrl, customAlias, domainId, expiresIn, password, unlockAt, title } = body;
 
     if (!longUrl) {
       return NextResponse.json({ error: "longUrl is required" }, { status: 400 });
@@ -50,6 +50,7 @@ export async function POST(request: Request) {
 
     const link = await createLinkUseCase.execute({
       longUrl,
+      title,
       customAlias,
       domainId,
       expiresIn,

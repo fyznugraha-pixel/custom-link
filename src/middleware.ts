@@ -56,7 +56,8 @@ export async function middleware(request: NextRequest) {
           if (parsed.locked) {
             const unlockAtStr = parsed.unlockAt ? `&unlockAt=${encodeURIComponent(parsed.unlockAt)}` : '';
             const hasPwdStr = parsed.hasPassword ? `&hasPassword=true` : '';
-            return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}`, request.url));
+            const titleStr = parsed.title ? `&title=${encodeURIComponent(parsed.title)}` : '';
+            return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
           }
         } catch (e) {
           // ignore parsing error and continue
@@ -97,7 +98,8 @@ export async function middleware(request: NextRequest) {
       if (data.locked || data.isProtected) {
         const unlockAtStr = data.unlockAt ? `&unlockAt=${encodeURIComponent(data.unlockAt)}` : '';
         const hasPwdStr = (data.hasPassword || data.isProtected) ? `&hasPassword=true` : '';
-        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}`, request.url));
+        const titleStr = data.title ? `&title=${encodeURIComponent(data.title)}` : '';
+        return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
       }
 
       if (data.longUrl) {

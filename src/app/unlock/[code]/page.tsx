@@ -12,6 +12,7 @@ export default function UnlockPage() {
   const domain = searchParams.get('domain') || '';
   const unlockAtParam = searchParams.get('unlockAt');
   const hasPasswordParam = searchParams.get('hasPassword') === 'true';
+  const titleParam = searchParams.get('title');
   
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -150,12 +151,14 @@ export default function UnlockPage() {
             </div>
             
             <h1 className="text-2xl font-bold text-white mb-2">
-              {isTimeLocked ? 'Link is Scheduled' : (hasPasswordParam ? 'Protected Link' : 'Unlocking...')}
+              {titleParam || (isTimeLocked ? 'Link is Scheduled' : (hasPasswordParam ? 'Protected Link' : 'Unlocking...'))}
             </h1>
             <p className="text-slate-400 text-sm">
-              {isTimeLocked 
-                ? 'This link will become available when the countdown finishes.' 
-                : (hasPasswordParam ? 'This link is secured. Please enter the password to continue.' : 'Please wait while we redirect you...')}
+              {titleParam 
+                ? (isTimeLocked ? 'This event link will become available when the countdown finishes.' : 'This event link is secured. Please enter the password to continue.')
+                : (isTimeLocked 
+                  ? 'This link will become available when the countdown finishes.' 
+                  : (hasPasswordParam ? 'This link is secured. Please enter the password to continue.' : 'Please wait while we redirect you...'))}
             </p>
           </div>
 

@@ -12,6 +12,7 @@ function generateShortCode(length = 7): string {
 
 export interface CreateLinkDTO {
   longUrl: string;
+  title?: string;
   customAlias?: string;
   userId?: string;
   domainId?: string;
@@ -107,6 +108,7 @@ export class CreateLinkUseCase {
     // 5. Save to database
     const link = await this.linkRepository.create({
       longUrl: parsedUrl.toString(),
+      title: data.title,
       shortCode: shortCode as string,
       password: passwordHash,
       user: data.userId ? { connect: { id: data.userId } } : undefined,
