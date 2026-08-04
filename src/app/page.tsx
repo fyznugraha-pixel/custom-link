@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -435,15 +435,20 @@ export default function Home() {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
                         >
-                          <input
-                            type="datetime-local"
-                            required={requireSchedule}
-                            value={unlockAt}
-                            onChange={(e) => setUnlockAt(e.target.value)}
-                            min={new Date().toISOString().slice(0, 16)}
-                            className="block w-full px-2 sm:px-4 py-3 text-[15px] sm:text-base text-slate-900 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white min-h-[50px]"
-                            style={{ colorScheme: 'light' }}
-                          />
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                              <Calendar className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                            <input
+                              type="datetime-local"
+                              required={requireSchedule}
+                              value={unlockAt}
+                              onChange={(e) => setUnlockAt(e.target.value)}
+                              min={new Date().toISOString().slice(0, 16)}
+                              className="block w-full pl-10 pr-4 py-3 text-[15px] sm:text-base text-slate-900 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white min-h-[50px] appearance-none"
+                              style={{ colorScheme: 'light' }}
+                            />
+                          </div>
                           <p className="mt-2 text-xs text-muted-foreground">
                             {t.scheduleDesc}
                           </p>
