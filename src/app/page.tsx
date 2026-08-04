@@ -5,6 +5,8 @@ import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loade
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 const TAGLINE_WORDS = ["count.", "short.", "easy.", "yours.", "trackable.", "powerful."];
 const EXPIRATION_OPTIONS = [
@@ -36,7 +38,7 @@ export default function Home() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [requireSchedule, setRequireSchedule] = useState(false);
-  const [unlockAt, setUnlockAt] = useState('');
+  const [unlockAt, setUnlockAt] = useState<Date | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [wordIndex, setWordIndex] = useState(0);
 
@@ -74,7 +76,7 @@ export default function Home() {
           customAlias: customAlias || undefined, 
           expiresIn: finalExpiresIn || undefined,
           password: requirePassword && password ? password : undefined,
-          unlockAt: requireSchedule && unlockAt ? new Date(unlockAt).toISOString() : undefined
+          unlockAt: requireSchedule && unlockAt ? unlockAt.toISOString() : undefined
         }),
       });
       
@@ -424,14 +426,21 @@ export default function Home() {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
                         >
-                          <input
-                            type="datetime-local"
-                            required={requireSchedule}
-                            value={unlockAt}
-                            onChange={(e) => setUnlockAt(e.target.value)}
-                            min={new Date().toISOString().slice(0, 16)}
-                            className="block w-full px-4 py-3 text-sm border border-border rounded-xl focus:outline-none focus:border-primary-500 transition-all bg-muted/30 focus:bg-white"
-                          />
+                          <div className="w-full relative">
+                            <DatePicker
+                              selected={unlockAt}
+                              onChange={(date: Date | null) => setUnlockAt(date)}
+                              showTimeSelect
+                              timeFormat="HH:mm"
+                              timeIntervals={15}
+                              timeCaption="Time"
+                              dateFormat="MMMM d, yyyy h:mm aa"
+                              minDate={new Date()}
+                              placeholderText="Select date and time"
+                              wrapperClassName="w-full"
+                              className="block w-full px-4 py-3 text-sm border border-border rounded-xl focus:outline-none focus:border-primary-500 transition-all bg-muted/30 focus:bg-white"
+                            />
+                          </div>
                           <p className="mt-2 text-xs text-muted-foreground">
                             Link will show a countdown and remain locked until this time.
                           </p>
