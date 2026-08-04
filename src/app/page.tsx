@@ -441,7 +441,7 @@ export default function Home() {
                             value={unlockAt}
                             onChange={(e) => setUnlockAt(e.target.value)}
                             min={new Date().toISOString().slice(0, 16)}
-                            className="block w-full px-2 sm:px-4 py-3 text-[15px] sm:text-base text-slate-900 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white min-h-[50px] appearance-none"
+                            className="block w-full px-2 sm:px-4 py-3 text-[15px] sm:text-base text-slate-900 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white min-h-[50px]"
                             style={{ colorScheme: 'light' }}
                           />
                           <p className="mt-2 text-xs text-muted-foreground">
