@@ -124,7 +124,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white selection:bg-primary-100 selection:text-primary-900 font-sans">
+    <div className="min-h-screen bg-white selection:bg-primary-100 selection:text-primary-900 font-sans overflow-x-hidden relative w-full">
       {/* Navigation */}
       <nav className="border-b border-border bg-white fixed top-0 w-full z-50 transition-all">
         <div className="w-full px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
@@ -441,7 +441,7 @@ export default function Home() {
                             value={unlockAt}
                             onChange={(e) => setUnlockAt(e.target.value)}
                             min={new Date().toISOString().slice(0, 16)}
-                            className="block w-full px-4 py-3 text-sm border border-border rounded-xl focus:outline-none focus:border-primary-500 transition-all bg-muted/30 focus:bg-white color-scheme-light"
+                            className="block w-full px-4 py-3 text-base text-slate-900 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white min-h-[50px]"
                             style={{ colorScheme: 'light' }}
                           />
                           <p className="mt-2 text-xs text-muted-foreground">
