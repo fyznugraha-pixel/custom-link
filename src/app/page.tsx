@@ -435,7 +435,7 @@ export default function Home() {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden"
                         >
-                          <div className="relative">
+                          <div className="relative border border-border rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all bg-muted/30 focus-within:bg-white">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                               <Calendar className="h-4 w-4 text-muted-foreground" />
                             </div>
@@ -445,7 +445,7 @@ export default function Home() {
                               value={unlockAt}
                               onChange={(e) => setUnlockAt(e.target.value)}
                               min={new Date().toISOString().slice(0, 16)}
-                              className="block w-full pl-10 pr-4 py-3 text-[15px] sm:text-base text-slate-900 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white min-h-[50px] appearance-none"
+                              className="block w-full pl-10 pr-4 py-3 text-[15px] sm:text-base text-slate-900 bg-transparent border-0 focus:outline-none focus:ring-0 outline-none appearance-none min-h-[50px]"
                               style={{ colorScheme: 'light' }}
                             />
                           </div>
