@@ -4,8 +4,9 @@ import UnlockClient from './UnlockClient';
 export default async function UnlockPage({ 
   params 
 }: { 
-  params: { code: string }
+  params: Promise<{ code: string }>
 }) {
+  const resolvedParams = await params;
   const headersList = await headers();
   
   const domain = headersList.get('x-domain') || '';
@@ -15,7 +16,7 @@ export default async function UnlockPage({
 
   return (
     <UnlockClient
-      code={params.code}
+      code={resolvedParams.code}
       domain={domain}
       unlockAtParam={unlockAtParam}
       hasPasswordParam={hasPasswordParam}
