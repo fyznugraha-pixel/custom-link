@@ -52,22 +52,37 @@ export async function middleware(request: NextRequest) {
     if (cacheData) {
       if (typeof cacheData === 'object') {
         if (cacheData.locked || cacheData.isProtected) {
-          const unlockAtStr = cacheData.unlockAt ? `&unlockAt=${encodeURIComponent(cacheData.unlockAt)}` : '';
-          const hasPwdStr = (cacheData.hasPassword || cacheData.isProtected) ? `&hasPassword=true` : '';
-          const titleStr = cacheData.title ? `&title=${encodeURIComponent(cacheData.title)}` : '';
-          return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
+          const requestHeaders = new Headers(request.headers);
+          requestHeaders.set('x-domain', cleanHostname);
+          if (cacheData.unlockAt) requestHeaders.set('x-unlock-at', cacheData.unlockAt);
+          if (cacheData.hasPassword || cacheData.isProtected) requestHeaders.set('x-has-password', 'true');
+          if (cacheData.title) requestHeaders.set('x-title', cacheData.title);
+
+          return NextResponse.rewrite(new URL(`/unlock/${shortCode}`, request.url), {
+            request: { headers: requestHeaders },
+          });
         }
       } else if (typeof cacheData === 'string') {
         if (cacheData === 'PROTECTED') {
-          return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}&hasPassword=true`, request.url));
+          const requestHeaders = new Headers(request.headers);
+          requestHeaders.set('x-domain', cleanHostname);
+          requestHeaders.set('x-has-password', 'true');
+          return NextResponse.rewrite(new URL(`/unlock/${shortCode}`, request.url), {
+            request: { headers: requestHeaders },
+          });
         } else if (cacheData.startsWith('{')) {
           try {
             const parsed = JSON.parse(cacheData);
             if (parsed.locked) {
-              const unlockAtStr = parsed.unlockAt ? `&unlockAt=${encodeURIComponent(parsed.unlockAt)}` : '';
-              const hasPwdStr = parsed.hasPassword ? `&hasPassword=true` : '';
-              const titleStr = parsed.title ? `&title=${encodeURIComponent(parsed.title)}` : '';
-              return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
+              const requestHeaders = new Headers(request.headers);
+              requestHeaders.set('x-domain', cleanHostname);
+              if (parsed.unlockAt) requestHeaders.set('x-unlock-at', parsed.unlockAt);
+              if (parsed.hasPassword) requestHeaders.set('x-has-password', 'true');
+              if (parsed.title) requestHeaders.set('x-title', parsed.title);
+
+              return NextResponse.rewrite(new URL(`/unlock/${shortCode}`, request.url), {
+                request: { headers: requestHeaders },
+              });
             }
           } catch (e) {}
         }
@@ -107,10 +122,15 @@ export async function middleware(request: NextRequest) {
         const data = await res.json();
         
         if (data.locked || data.isProtected) {
-          const unlockAtStr = data.unlockAt ? `&unlockAt=${encodeURIComponent(data.unlockAt)}` : '';
-          const hasPwdStr = (data.hasPassword || data.isProtected) ? `&hasPassword=true` : '';
-          const titleStr = data.title ? `&title=${encodeURIComponent(data.title)}` : '';
-          return NextResponse.rewrite(new URL(`/unlock/${shortCode}?domain=${cleanHostname}${unlockAtStr}${hasPwdStr}${titleStr}`, request.url));
+          const requestHeaders = new Headers(request.headers);
+          requestHeaders.set('x-domain', cleanHostname);
+          if (data.unlockAt) requestHeaders.set('x-unlock-at', data.unlockAt);
+          if (data.hasPassword || data.isProtected) requestHeaders.set('x-has-password', 'true');
+          if (data.title) requestHeaders.set('x-title', data.title);
+
+          return NextResponse.rewrite(new URL(`/unlock/${shortCode}`, request.url), {
+            request: { headers: requestHeaders },
+          });
         }
 
         if (data.longUrl) {
