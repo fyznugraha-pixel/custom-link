@@ -9,7 +9,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://fyurl.fun'),
+  metadataBase: new URL('https://fylink.fun'),
   title: {
     default: "Fyurl | Advanced URL Shortener & QR Code Generator",
     template: "%s | Fyurl"
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://fyurl.fun",
+    url: "https://fylink.fun",
     title: "Fyurl | Advanced URL Shortener",
     description: "Transform your long, ugly links into clean, trackable short URLs. Generate custom QR codes and manage your links efficiently.",
     siteName: "Fyurl",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://fyurl.fun",
+    canonical: "https://fylink.fun",
   }
 };
 
@@ -66,7 +66,7 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Person",
-      "@id": "https://fyurl.fun/#fayiz",
+      "@id": "https://fylink.fun/#fayiz",
       "name": "Fayiz Apriwansyah Nugraha",
       "url": "https://byfayiz.web.id/portofolio",
       "jobTitle": "Web Developer",
@@ -76,11 +76,11 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://fyurl.fun/#website",
-      "url": "https://fyurl.fun",
+      "@id": "https://fylink.fun/#website",
+      "url": "https://fylink.fun",
       "name": "Fyurl",
-      "author": { "@id": "https://fyurl.fun/#fayiz" },
-      "publisher": { "@id": "https://fyurl.fun/#fayiz" },
+      "author": { "@id": "https://fylink.fun/#fayiz" },
+      "publisher": { "@id": "https://fylink.fun/#fayiz" },
       "description": "Enterprise-grade URL shortener with custom domains and analytics.",
     },
     {
@@ -94,8 +94,8 @@ const jsonLd = {
         "priceCurrency": "USD"
       },
       "description": "An advanced URL shortener platform allowing users to shrink long URLs, use custom domains, track clicks, and generate QR codes for free.",
-      "author": { "@id": "https://fyurl.fun/#fayiz" },
-      "creator": { "@id": "https://fyurl.fun/#fayiz" }
+      "author": { "@id": "https://fylink.fun/#fayiz" },
+      "creator": { "@id": "https://fylink.fun/#fayiz" }
     }
   ]
 };
