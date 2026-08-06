@@ -20,8 +20,9 @@ export const metadata: Metadata = {
     "shorten link", "link management", "branded links", "free url shortener",
     "persingkat URL", "pemendek link", "short link gratis", "custom domains", "Fyurl"
   ],
-  authors: [{ name: "Fyurl Team" }],
-  creator: "Fyurl",
+  authors: [{ name: "Fayiz Apriwansyah Nugraha", url: "https://byfayiz.web.id/portofolio" }],
+  creator: "Fayiz Apriwansyah Nugraha",
+  publisher: "Fayiz Apriwansyah Nugraha",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -64,10 +65,22 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Person",
+      "@id": "https://fyurl.fun/#fayiz",
+      "name": "Fayiz Apriwansyah Nugraha",
+      "url": "https://byfayiz.web.id/portofolio",
+      "jobTitle": "Web Developer",
+      "sameAs": [
+        "https://instagram.com/faizngraha"
+      ]
+    },
+    {
       "@type": "WebSite",
       "@id": "https://fyurl.fun/#website",
       "url": "https://fyurl.fun",
       "name": "Fyurl",
+      "author": { "@id": "https://fyurl.fun/#fayiz" },
+      "publisher": { "@id": "https://fyurl.fun/#fayiz" },
       "description": "Enterprise-grade URL shortener with custom domains and analytics.",
     },
     {
@@ -80,7 +93,9 @@ const jsonLd = {
         "price": "0",
         "priceCurrency": "USD"
       },
-      "description": "An advanced URL shortener platform allowing users to shrink long URLs, use custom domains, track clicks, and generate QR codes for free."
+      "description": "An advanced URL shortener platform allowing users to shrink long URLs, use custom domains, track clicks, and generate QR codes for free.",
+      "author": { "@id": "https://fyurl.fun/#fayiz" },
+      "creator": { "@id": "https://fyurl.fun/#fayiz" }
     }
   ]
 };

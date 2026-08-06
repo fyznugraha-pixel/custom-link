@@ -772,8 +772,9 @@ export default function Home() {
               </Link>
             </div>
             
-            <div className="text-sm text-primary-100 font-medium text-center md:text-right">
-              Made by <a href="https://byfayiz.web.id/portofolio" target="_blank" rel="noopener noreferrer" className="font-bold text-white text-base block sm:inline mt-1 sm:mt-0 hover:text-blue-100 transition-colors cursor-pointer">Fayiz Apriwansyah Nugraha</a>
+            <div className="text-sm text-primary-100 font-medium text-center md:text-right" itemScope itemType="https://schema.org/Person">
+              Made by <a itemProp="url" href="https://byfayiz.web.id/portofolio" target="_blank" rel="author noopener noreferrer" className="font-bold text-white text-base block sm:inline mt-1 sm:mt-0 hover:text-blue-100 transition-colors cursor-pointer"><span itemProp="name">Fayiz Apriwansyah Nugraha</span></a>
+              <meta itemProp="jobTitle" content="Web Developer" />
             </div>
           </div>
         </div>
