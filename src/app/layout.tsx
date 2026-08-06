@@ -58,6 +58,9 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: "https://fylink.fun",
+  },
+  verification: {
+    google: "lZTeeEIIitxfak5hZ14H8RZjHSjqHL6fnjuDCZbL-S4",
   }
 };
 
