@@ -93,6 +93,40 @@ export async function middleware(request: NextRequest) {
       const longUrl = typeof cacheData === 'string' ? cacheData : (cacheData.longUrl || null);
       
       if (longUrl) {
+        // Check for Custom OG and Bot User-Agent
+        const hasCustomOg = typeof cacheData === 'object' && cacheData.hasCustomOg;
+        if (hasCustomOg) {
+          const userAgent = request.headers.get('user-agent') || '';
+          const isBot = /bot|facebook|twitter|whatsapp|telegram|pinterest|linkedin|discord/i.test(userAgent);
+          
+          if (isBot) {
+            const ogTitle = cacheData.ogTitle || 'Fyurl | Custom Link';
+            const ogDesc = cacheData.ogDescription || '';
+            const ogImageHtml = cacheData.hasOgImage 
+              ? `<meta property="og:image" content="https://${cleanHostname}/api/og/${shortCode}" />\n<meta name="twitter:image" content="https://${cleanHostname}/api/og/${shortCode}" />`
+              : '';
+
+            const html = `<!DOCTYPE html>
+<html>
+<head>
+  <title>${ogTitle}</title>
+  <meta property="og:title" content="${ogTitle}" />
+  <meta name="twitter:title" content="${ogTitle}" />
+  ${ogDesc ? `<meta property="og:description" content="${ogDesc}" />\n  <meta name="twitter:description" content="${ogDesc}" />` : ''}
+  ${ogImageHtml}
+  <meta property="og:url" content="https://${cleanHostname}/${shortCode}" />
+  <meta name="twitter:card" content="summary_large_image" />
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>`;
+            return new NextResponse(html, {
+              headers: { 'Content-Type': 'text/html' },
+            });
+          }
+        }
+
         // 3. Async click logging
         fetch(`${url.origin}/api/log-click`, {
           method: 'POST',
@@ -134,6 +168,38 @@ export async function middleware(request: NextRequest) {
         }
 
         if (data.longUrl) {
+          if (data.hasCustomOg) {
+            const userAgent = request.headers.get('user-agent') || '';
+            const isBot = /bot|facebook|twitter|whatsapp|telegram|pinterest|linkedin|discord/i.test(userAgent);
+            
+            if (isBot) {
+              const ogTitle = data.ogTitle || 'Fyurl | Custom Link';
+              const ogDesc = data.ogDescription || '';
+              const ogImageHtml = data.hasOgImage 
+                ? `<meta property="og:image" content="https://${cleanHostname}/api/og/${shortCode}" />\n<meta name="twitter:image" content="https://${cleanHostname}/api/og/${shortCode}" />`
+                : '';
+
+              const html = `<!DOCTYPE html>
+<html>
+<head>
+  <title>${ogTitle}</title>
+  <meta property="og:title" content="${ogTitle}" />
+  <meta name="twitter:title" content="${ogTitle}" />
+  ${ogDesc ? `<meta property="og:description" content="${ogDesc}" />\n  <meta name="twitter:description" content="${ogDesc}" />` : ''}
+  ${ogImageHtml}
+  <meta property="og:url" content="https://${cleanHostname}/${shortCode}" />
+  <meta name="twitter:card" content="summary_large_image" />
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>`;
+              return new NextResponse(html, {
+                headers: { 'Content-Type': 'text/html' },
+              });
+            }
+          }
+
           // Async click log
           fetch(`${baseUrl}/api/log-click`, {
             method: 'POST',

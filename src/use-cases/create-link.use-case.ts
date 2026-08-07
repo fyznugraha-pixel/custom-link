@@ -19,6 +19,9 @@ export interface CreateLinkDTO {
   expiresIn?: string; // '1d', '3d', '7d', '30d'
   password?: string;
   unlockAt?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  ogImage?: string;
 }
 
 export class CreateLinkUseCase {
@@ -115,6 +118,9 @@ export class CreateLinkUseCase {
       domain: data.domainId ? { connect: { id: data.domainId } } : undefined,
       expiresAt: expiresAt as Date | undefined,
       unlockAt: data.unlockAt ? new Date(data.unlockAt) : undefined,
+      ogTitle: data.ogTitle,
+      ogDescription: data.ogDescription,
+      ogImage: data.ogImage,
     });
 
     // 4. Set to Redis Cache (TODO - to be implemented with Edge Middleware setup)

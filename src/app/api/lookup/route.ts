@@ -48,6 +48,7 @@ export async function GET(request: Request) {
       
       const isTimeLocked = link.unlockAt ? link.unlockAt > new Date() : false;
       const isLocked = !!link.password || isTimeLocked;
+      const hasCustomOg = !!link.ogTitle || !!link.ogDescription || !!link.ogImage;
 
       if (isLocked) {
         const lockData = {
@@ -58,6 +59,16 @@ export async function GET(request: Request) {
         };
         await redis.setex(cacheKey, ttl, JSON.stringify(lockData));
         return NextResponse.json(lockData);
+      } else if (hasCustomOg) {
+        const ogData = {
+          hasCustomOg: true,
+          longUrl: link.longUrl,
+          ogTitle: link.ogTitle,
+          ogDescription: link.ogDescription,
+          hasOgImage: !!link.ogImage,
+        };
+        await redis.setex(cacheKey, ttl, JSON.stringify(ogData));
+        return NextResponse.json(ogData);
       } else {
         await redis.setex(cacheKey, ttl, link.longUrl);
         return NextResponse.json({ longUrl: link.longUrl });

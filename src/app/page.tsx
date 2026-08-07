@@ -40,6 +40,13 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const [requireSchedule, setRequireSchedule] = useState(false);
   const [unlockAt, setUnlockAt] = useState('');
+  
+  // Custom OG state
+  const [requireOg, setRequireOg] = useState(false);
+  const [ogTitle, setOgTitle] = useState('');
+  const [ogDescription, setOgDescription] = useState('');
+  const [ogImage, setOgImage] = useState<string | null>(null);
+  
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [wordIndex, setWordIndex] = useState(0);
 
@@ -77,7 +84,10 @@ export default function Home() {
           customAlias: customAlias || undefined, 
           expiresIn: finalExpiresIn || undefined,
           password: requirePassword && password ? password : undefined,
-          unlockAt: requireSchedule && unlockAt ? new Date(unlockAt).toISOString() : undefined
+          unlockAt: requireSchedule && unlockAt ? new Date(unlockAt).toISOString() : undefined,
+          ogTitle: requireOg && ogTitle ? ogTitle : undefined,
+          ogDescription: requireOg && ogDescription ? ogDescription : undefined,
+          ogImage: requireOg && ogImage ? ogImage : undefined,
         }),
       });
       
@@ -456,6 +466,130 @@ export default function Home() {
                             <p className="mt-2 text-xs text-muted-foreground">
                               {t.scheduleDesc}
                             </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Custom Link Preview (OG) Toggle */}
+                  <div className="bg-muted/10 p-4 rounded-xl border border-border/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-primary-500/10 p-2.5 rounded-lg border border-primary-500/20">
+                          <Globe className="h-5 w-5 text-primary-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-[15px]">Custom Link Preview (SEO)</h3>
+                          <p className="text-xs text-muted-foreground mt-0.5">Customize title, description, and image for social media</p>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={requireOg}
+                        onClick={() => setRequireOg(!requireOg)}
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                          requireOg ? 'bg-primary-500' : 'bg-slate-200'
+                        }`}
+                      >
+                        <span
+                          aria-hidden="true"
+                          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                            requireOg ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+                    
+                    <AnimatePresence>
+                      {requireOg && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                          style={{ willChange: "height, opacity" }}
+                        >
+                          <div className="pt-4 space-y-4">
+                            <div>
+                              <label className="block text-xs font-medium text-slate-700 mb-1">
+                                Preview Title
+                              </label>
+                              <input
+                                type="text"
+                                value={ogTitle}
+                                onChange={(e) => setOgTitle(e.target.value)}
+                                placeholder="E.g. Download My New App!"
+                                className="block w-full px-4 py-2 text-sm text-slate-900 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-slate-700 mb-1">
+                                Preview Description
+                              </label>
+                              <textarea
+                                value={ogDescription}
+                                onChange={(e) => setOgDescription(e.target.value)}
+                                placeholder="E.g. Check out the latest features in our new app release..."
+                                rows={2}
+                                className="block w-full px-4 py-2 text-sm text-slate-900 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-xs font-medium text-slate-700 mb-1">
+                                Preview Image (Max 2MB)
+                              </label>
+                              <div className="mt-1 flex items-center justify-center w-full">
+                                <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors relative overflow-hidden">
+                                  {ogImage ? (
+                                    <div className="absolute inset-0 w-full h-full">
+                                      <img src={ogImage} alt="Preview" className="w-full h-full object-cover" />
+                                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                                        <span className="text-white text-xs font-medium bg-black/50 px-2 py-1 rounded">Click to change</span>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="flex flex-col items-center justify-center pt-4 pb-4">
+                                      <svg className="w-6 h-6 mb-2 text-slate-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                      </svg>
+                                      <p className="mb-1 text-xs text-slate-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                                      <p className="text-[10px] text-slate-500">PNG or JPG (MAX. 2MB)</p>
+                                    </div>
+                                  )}
+                                  <input 
+                                    type="file" 
+                                    className="hidden" 
+                                    accept="image/png, image/jpeg"
+                                    onChange={(e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        if (file.size > 2 * 1024 * 1024) {
+                                          alert("File is too large. Max size is 2MB.");
+                                          return;
+                                        }
+                                        const reader = new FileReader();
+                                        reader.onload = (event) => {
+                                          setOgImage(event.target?.result as string);
+                                        };
+                                        reader.readAsDataURL(file);
+                                      }
+                                    }}
+                                  />
+                                </label>
+                              </div>
+                              {ogImage && (
+                                <button
+                                  type="button"
+                                  onClick={() => setOgImage(null)}
+                                  className="mt-2 text-xs text-red-500 hover:text-red-600 flex items-center justify-end w-full"
+                                >
+                                  Remove Image
+                                </button>
+                              )}
+                            </div>
                           </div>
                         </motion.div>
                       )}
