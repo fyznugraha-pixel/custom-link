@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from '@vercel/analytics/react';
+import Script from 'next/script';
 import "./globals.css";
 
 const inter = Inter({
@@ -115,10 +116,17 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <meta name="google-adsense-account" content="ca-pub-3303348584536351" />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         {children}
         <Analytics />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3303348584536351"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
