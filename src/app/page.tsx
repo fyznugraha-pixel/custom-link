@@ -142,7 +142,7 @@ export default function Home() {
         <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-400/10 blur-[150px]" />
       </div>
       {/* Navigation */}
-      <nav className="border-b border-border/40 bg-white/60 backdrop-blur-lg fixed top-0 w-full z-50 transition-all">
+      <nav className="border-b border-border bg-white fixed top-0 w-full z-50 transition-all">
         <div className="w-full px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
             <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
