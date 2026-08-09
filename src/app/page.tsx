@@ -134,9 +134,15 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white selection:bg-primary-100 selection:text-primary-900 font-sans overflow-x-hidden relative w-full">
+    <div className="min-h-screen bg-slate-50 selection:bg-primary-100 selection:text-primary-900 font-sans overflow-x-hidden relative w-full">
+      {/* Background Decorative Orbs */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary-400/20 blur-[120px]" />
+        <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] rounded-full bg-blue-400/20 blur-[100px]" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-400/10 blur-[150px]" />
+      </div>
       {/* Navigation */}
-      <nav className="border-b border-border bg-white fixed top-0 w-full z-50 transition-all">
+      <nav className="border-b border-border/40 bg-white/60 backdrop-blur-lg fixed top-0 w-full z-50 transition-all">
         <div className="w-full px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
             <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
@@ -159,13 +165,13 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-32 pb-16 px-6 sm:px-10 lg:px-16 w-full flex-1 flex flex-col justify-center">
-        <div className="text-center max-w-3xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-50 text-primary-700 text-sm font-medium mb-8 border border-primary-100">
-            <Zap className="w-4 h-4 text-primary-600" />
+      <main className="pt-36 pb-20 px-6 sm:px-10 lg:px-16 w-full flex-1 flex flex-col justify-center relative z-10">
+        <div className="text-center max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm shadow-sm border border-slate-200/60 text-primary-700 text-sm font-semibold mb-8 hover:scale-105 transition-transform cursor-default">
+            <span className="flex h-2 w-2 rounded-full bg-primary-600 animate-pulse"></span>
             {t.freeToUse}
           </div>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-foreground tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-tight">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-[1.1]">
             <span>{t.makeEveryLink}</span>
             <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative">
               <AnimatePresence mode="popLayout">
@@ -175,14 +181,14 @@ export default function Home() {
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ y: 40, opacity: 0, scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-blue-500 p-2 -m-2 inline-block whitespace-nowrap"
+                  className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block whitespace-nowrap drop-shadow-sm"
                 >
                   {t.taglines[wordIndex]}
                 </motion.span>
               </AnimatePresence>
             </div>
           </h1>
-          <p className="text-lg sm:text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-slate-600 mb-14 leading-relaxed max-w-2xl mx-auto font-medium">
             {t.heroDesc}
           </p>
         </div>
@@ -191,23 +197,25 @@ export default function Home() {
         <div className="w-full max-w-[1400px] mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
           
           {/* Tabs */}
-          <div className="flex bg-white/50 backdrop-blur-md p-1 rounded-t-2xl border border-border border-b-0 w-fit mx-auto sm:mx-0">
+          <div className="flex bg-white/70 backdrop-blur-lg p-1.5 rounded-t-2xl border border-slate-200/60 border-b-0 w-fit mx-auto sm:mx-0 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
             <button
               onClick={() => setActiveTab('shortener')}
-              className={`px-6 py-3 text-sm font-semibold rounded-t-xl transition-colors ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border border-border border-b-white' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-7 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-sm border border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 scale-95'}`}
             >
               {t.shortenLink}
             </button>
             <button
               onClick={() => setActiveTab('qr')}
-              className={`px-6 py-3 text-sm font-semibold rounded-t-xl transition-colors flex items-center ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] border border-border border-b-white' : 'text-muted-foreground hover:text-foreground'}`}
+              className={`px-7 py-3 text-sm font-bold rounded-xl transition-all duration-300 flex items-center ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-sm border border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 scale-95'}`}
             >
               <QrCode className="w-4 h-4 mr-2" />
               {t.qrGenerator}
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl rounded-tl-none shadow-xl shadow-primary-900/5 border border-border relative">
+          <div className="bg-white/80 backdrop-blur-xl rounded-2xl rounded-tl-none shadow-2xl shadow-slate-200/50 border border-slate-200/60 relative overflow-hidden">
+            {/* Soft inner glow */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
             
             {activeTab === 'shortener' && (
               !result ? (
