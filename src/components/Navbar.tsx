@@ -29,13 +29,22 @@ export default function Navbar() {
               <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-10 w-auto object-contain" />
             </Link>
             <div className="hidden sm:ml-10 sm:flex sm:space-x-8">
-              <Link href="/dashboard" className="border-primary-600 text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+              <Link 
+                href="/dashboard" 
+                className={`${pathname === '/dashboard' ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
+              >
                 Links
               </Link>
-              <Link href="/dashboard/analytics" className="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+              <Link 
+                href="/dashboard/analytics" 
+                className={`${pathname?.startsWith('/dashboard/analytics') ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
+              >
                 Global Analytics
               </Link>
-              <Link href="/dashboard/domains" className="border-transparent text-muted-foreground hover:border-border hover:text-foreground inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors">
+              <Link 
+                href="/dashboard/domains" 
+                className={`${pathname?.startsWith('/dashboard/domains') ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
+              >
                 Custom Domains
               </Link>
             </div>
