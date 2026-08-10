@@ -3,13 +3,13 @@ import { MetadataRoute } from 'next';
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://fylink.fun',
+      url: 'https://fyurl.fun',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'daily',
       priority: 1,
     },
     {
-      url: 'https://fylink.fun/dashboard/login',
+      url: 'https://fyurl.fun/dashboard/login',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,

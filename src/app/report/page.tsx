@@ -74,7 +74,7 @@ export default function ReportPage() {
                   <input
                     type="url"
                     required
-                    placeholder="https://fylink.fun/badlink"
+                    placeholder="https://fyurl.fun/badlink"
                     value={shortUrl}
                     onChange={(e) => setShortUrl(e.target.value)}
                     className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500 transition-colors"

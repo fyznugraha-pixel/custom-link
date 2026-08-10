@@ -7,9 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: [
         '/dashboard/',
-        '/api/',
+        '/api/admin/',
       ],
     },
-    sitemap: 'https://fylink.fun/sitemap.xml',
+    sitemap: 'https://fyurl.fun/sitemap.xml',
   };
 }

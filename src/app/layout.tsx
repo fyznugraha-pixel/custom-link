@@ -10,12 +10,12 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://fylink.fun'),
+  metadataBase: new URL('https://fyurl.fun'),
   title: {
     default: "Fyurl | Advanced URL Shortener & QR Code Generator",
     template: "%s | Fyurl"
   },
-  description: "Redefine how you share. Shrink endless URLs into clean, memorable links and instantly generate stunning QR codes. Fast, secure, and free to use.",
+  description: "A fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes. Free to use, trackable, and secure. Built by Fayiz Apriwansyah Nugraha.",
   keywords: [
     "url shortener", "link shortener", "custom url", "qr code generator", 
     "shorten link", "link management", "branded links", "free url shortener",
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://fylink.fun",
+    url: "https://fyurl.fun",
     title: "Fyurl | Advanced URL Shortener",
-    description: "Transform your long, ugly links into clean, trackable short URLs. Generate custom QR codes and manage your links efficiently.",
+    description: "A fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes. Free to use, trackable, and secure.",
     siteName: "Fyurl",
     images: [
       {
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Fyurl | Advanced URL Shortener",
-    description: "Transform your long, ugly links into clean, trackable short URLs.",
+    description: "A fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes.",
     images: ["/logo/fyurl-horizontal.png"],
   },
   robots: {
@@ -58,7 +58,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://fylink.fun",
+    canonical: "https://fyurl.fun",
   },
   verification: {
     google: "lZTeeEIIitxfak5hZ14H8RZjHSjqHL6fnjuDCZbL-S4",
@@ -70,7 +70,7 @@ const jsonLd = {
   "@graph": [
     {
       "@type": "Person",
-      "@id": "https://fylink.fun/#fayiz",
+      "@id": "https://fyurl.fun/#fayiz",
       "name": "Fayiz Apriwansyah Nugraha",
       "url": "https://byfayiz.web.id/portofolio",
       "jobTitle": "Web Developer",
@@ -80,11 +80,11 @@ const jsonLd = {
     },
     {
       "@type": "WebSite",
-      "@id": "https://fylink.fun/#website",
-      "url": "https://fylink.fun",
+      "@id": "https://fyurl.fun/#website",
+      "url": "https://fyurl.fun",
       "name": "Fyurl",
-      "author": { "@id": "https://fylink.fun/#fayiz" },
-      "publisher": { "@id": "https://fylink.fun/#fayiz" },
+      "author": { "@id": "https://fyurl.fun/#fayiz" },
+      "publisher": { "@id": "https://fyurl.fun/#fayiz" },
       "description": "Enterprise-grade URL shortener with custom domains and analytics.",
     },
     {
@@ -98,8 +98,8 @@ const jsonLd = {
         "priceCurrency": "USD"
       },
       "description": "An advanced URL shortener platform allowing users to shrink long URLs, use custom domains, track clicks, and generate QR codes for free.",
-      "author": { "@id": "https://fylink.fun/#fayiz" },
-      "creator": { "@id": "https://fylink.fun/#fayiz" }
+      "author": { "@id": "https://fyurl.fun/#fayiz" },
+      "creator": { "@id": "https://fyurl.fun/#fayiz" }
     }
   ]
 };

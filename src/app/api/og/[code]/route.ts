@@ -12,7 +12,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ code
     let domainId: string | undefined = undefined;
     
     // Only lookup custom domain if it's not the primary domain
-    if (cleanHostname && !cleanHostname.includes('fylink.fun') && !cleanHostname.includes('localhost')) {
+    if (cleanHostname && !cleanHostname.includes('fyurl.fun') && !cleanHostname.includes('localhost')) {
       const customDomain = await prisma.customDomain.findUnique({
         where: { domain: cleanHostname }
       });
