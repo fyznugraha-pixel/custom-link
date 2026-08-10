@@ -27,7 +27,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
       link.longUrl.toLowerCase().includes(search.toLowerCase())
   );
 
-  const defaultDomain = typeof window !== 'undefined' ? window.location.host : 'go.link.com';
+  const defaultDomain = typeof window !== 'undefined' ? window.location.host : 'fyurl.fun';
 
   const handleCopy = (link: any) => {
     const domainToUse = link.domain?.domain || defaultDomain;
@@ -101,14 +101,72 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
       <div className="bg-white border border-border rounded-xl shadow-sm overflow-hidden flex relative min-h-[400px]">
         {/* Table View */}
         <div className={`flex-1 transition-all duration-300 ${selectedLink ? 'hidden lg:block lg:w-2/3 border-r border-border' : 'w-full'}`}>
-          <div className="overflow-x-auto">
+          <div className="block md:hidden border-b border-border">
+            {filteredLinks.length === 0 ? (
+              <div className="px-6 py-12 text-center text-muted-foreground">
+                No links found. Create your first link to get started!
+              </div>
+            ) : (
+              <div className="divide-y divide-border">
+                {filteredLinks.map((link) => (
+                  <div
+                    key={link.id}
+                    onClick={() => setSelectedLink(link)}
+                    className={`p-4 hover:bg-primary-50/50 cursor-pointer transition-colors ${selectedLink?.id === link.id ? 'bg-primary-50' : ''}`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <div className="text-sm font-semibold text-primary-600 truncate mr-2" title={`${link.domain?.domain || defaultDomain}/${link.shortCode}`}>
+                        {link.domain?.domain || defaultDomain}/<span className="font-bold">{link.shortCode}</span>
+                      </div>
+                      <div className="flex items-center text-xs font-medium text-foreground bg-muted px-2 py-1 rounded-full shrink-0">
+                        <BarChart3 className="w-3 h-3 mr-1 text-primary-500" />
+                        {link.clicks.toLocaleString()}
+                      </div>
+                    </div>
+                    <div className="text-xs text-muted-foreground truncate mb-3">
+                      {link.longUrl}
+                    </div>
+                    <div className="flex items-center justify-end space-x-4 border-t border-border pt-3">
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); handleCopy(link); }}
+                        className="text-muted-foreground hover:text-primary-600 transition-colors p-1"
+                        title="Copy Link"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </button>
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); setQrModalLink(link); }}
+                        className="text-muted-foreground hover:text-primary-600 transition-colors p-1"
+                        title="Generate QR Code"
+                      >
+                        <QrCode className="h-4 w-4" />
+                      </button>
+                      <a 
+                        href={link.longUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-muted-foreground hover:text-primary-600 transition-colors p-1"
+                        title="Visit Original URL"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </a>
+                      <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${selectedLink?.id === link.id ? 'transform rotate-90' : ''}`} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-border">
               <thead className="bg-muted/50">
                 <tr>
                   <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Short Link
                   </th>
-                  <th scope="col" className="hidden md:table-cell px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     Original URL
                   </th>
                   <th scope="col" className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
@@ -135,12 +193,12 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="text-sm font-semibold text-primary-600 truncate max-w-[150px]" title={`${link.domain?.domain || defaultDomain}/${link.shortCode}`}>
+                          <div className="text-sm font-semibold text-primary-600 truncate max-w-[150px] lg:max-w-[200px]" title={`${link.domain?.domain || defaultDomain}/${link.shortCode}`}>
                             {link.domain?.domain || defaultDomain}/<span className="font-bold">{link.shortCode}</span>
                           </div>
                         </div>
                       </td>
-                      <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap max-w-[200px] xl:max-w-xs truncate text-sm text-muted-foreground">
+                      <td className="px-6 py-4 whitespace-nowrap max-w-[200px] xl:max-w-xs truncate text-sm text-muted-foreground">
                         {link.longUrl}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

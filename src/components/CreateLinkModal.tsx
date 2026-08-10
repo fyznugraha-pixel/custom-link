@@ -45,7 +45,7 @@ export default function CreateLinkModal({ isOpen, onClose, onSuccess, customDoma
     }
   };
 
-  const defaultDomain = typeof window !== 'undefined' ? window.location.host : 'go.link.com';
+  const defaultDomain = typeof window !== 'undefined' ? window.location.host : 'fyurl.fun';
   const selectedDomainDisplay = domainId ? customDomains?.find(d => d.id === domainId)?.domain || defaultDomain : defaultDomain;
 
   return (

@@ -71,7 +71,7 @@ export default async function GlobalAnalyticsPage() {
                     <div className="flex justify-between items-start gap-4">
                       <div className="overflow-hidden">
                         <Link href={`/dashboard/analytics/${link.id}`} className="font-semibold text-primary-600 hover:underline block truncate text-sm mb-1">
-                          {link.domain?.domain || 'go.link.com'}/{link.shortCode}
+                          {link.domain?.domain || 'fyurl.fun'}/{link.shortCode}
                         </Link>
                         <p className="text-xs text-muted-foreground truncate">{link.longUrl}</p>
                       </div>
@@ -103,7 +103,7 @@ export default async function GlobalAnalyticsPage() {
                   <li key={click.id} className="p-4 text-sm hover:bg-muted/30 transition-colors">
                     <div className="flex justify-between mb-2">
                       <span className="font-medium text-foreground">
-                        {click.link.domain?.domain || 'go.link.com'}/{click.link.shortCode}
+                        {click.link.domain?.domain || 'fyurl.fun'}/{click.link.shortCode}
                       </span>
                       <span className="text-muted-foreground text-xs">
                         {new Date(click.createdAt).toLocaleString(undefined, { 
