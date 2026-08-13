@@ -19,6 +19,17 @@ export const metadata: Metadata = {
     default: "Fyurl | Advanced URL Shortener & QR Code Generator",
     template: "%s | Fyurl"
   },
+  icons: {
+    icon: [
+      { url: '/icon.png' },
+      new URL('/icon.png', 'https://fyurl.fun'),
+    ],
+    shortcut: '/icon.png',
+    apple: [
+      { url: '/icon.png' },
+      { url: '/icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
   description: "Fyurl (formerly Fylink) is a fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes. Free to use, trackable, and secure. Built by Fayiz Apriwansyah Nugraha.",
   keywords: [
     "url shortener", "link shortener", "custom url", "qr code generator", 
