@@ -1,9 +1,8 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Heart, Globe, HandCoins } from 'lucide-react';
+import { X, Globe, HandCoins } from 'lucide-react';
 import { dictionaries, Language } from '@/lib/i18n';
-import Image from 'next/image';
 
 interface DonationModalProps {
   isOpen: boolean;
@@ -53,14 +52,11 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
               </div>
 
               <div className="px-6 py-5 flex flex-col items-center border-t border-slate-100 bg-slate-50/50">
-                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block relative w-56 h-56 sm:w-72 sm:h-72">
-                  <Image 
-                    src="/QRIS/qris.png" 
+                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block w-56 h-56 sm:w-72 sm:h-72">
+                  <img 
+                    src="/QRIS/qris.webp" 
                     alt="QRIS Donation" 
-                    fill
-                    className="object-contain rounded-xl"
-                    sizes="(max-width: 640px) 224px, 288px"
-                    priority
+                    className="w-full h-full object-contain rounded-xl"
                   />
                 </div>
                 <p className="text-xs sm:text-sm text-slate-500 font-medium text-center px-4">

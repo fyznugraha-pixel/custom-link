@@ -286,7 +286,7 @@ export default function Home() {
             {t.freeToUse}
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-[1.1]">
-            <span>{t.makeEveryLink}</span>
+            <span className="text-[1.2em]">{t.makeEveryLink}</span>
             <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative w-full md:w-auto px-4 md:px-0">
               <AnimatePresence mode="popLayout">
                 <motion.span
