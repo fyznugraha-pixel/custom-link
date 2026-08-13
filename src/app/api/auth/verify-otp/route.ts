@@ -30,10 +30,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid OTP code' }, { status: 400 });
     }
 
-    // Update user
-    await prisma.user.update({
-      where: { email },
-      data: { emailVerified: new Date() },
+    // Create user now that OTP is verified
+    await prisma.user.create({
+      data: {
+        email,
+        name: otpRecord.name,
+        password: otpRecord.password,
+        emailVerified: new Date(),
+      }
     });
 
     // Delete OTP

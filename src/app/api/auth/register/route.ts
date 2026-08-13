@@ -23,15 +23,6 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // Create user with unverified email
-    await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-      },
-    });
-
     // Generate 6-digit OTP
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
@@ -41,12 +32,14 @@ export async function POST(req: Request) {
       where: { email },
     });
 
-    // Save OTP
+    // Save OTP along with pending user data
     await prisma.otpCode.create({
       data: {
         email,
         code,
         expiresAt,
+        name,
+        password: hashedPassword,
       },
     });
 

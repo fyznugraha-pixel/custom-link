@@ -85,6 +85,10 @@ model OtpCode {
   code      String
   expiresAt DateTime
   createdAt DateTime @default(now())
+  
+  // Pending registration data
+  name      String?
+  password  String?
 
   @@index([email])
 }
