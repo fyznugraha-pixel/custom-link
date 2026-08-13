@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams } from 'next/navigation';
 import { Users, Link as LinkIcon, BarChart3, Activity, Clock } from "lucide-react";
 import LinkTableClient from "./LinkTableClient";
 
@@ -17,46 +17,11 @@ type AdminDashboardProps = {
 };
 
 export default function AdminDashboardClient({ stats, users, links, customDomains }: AdminDashboardProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'links'>('overview');
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'overview';
 
   return (
     <div className="w-full">
-      {/* Tabs */}
-      <div className="border-b border-slate-200 mb-8 overflow-x-auto">
-        <nav className="-mb-px flex space-x-8" aria-label="Tabs">
-          <button
-            onClick={() => setActiveTab('overview')}
-            className={`${
-              activeTab === 'overview'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
-          >
-            <BarChart3 className="w-4 h-4 mr-2" /> Overview
-          </button>
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`${
-              activeTab === 'users'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
-          >
-            <Users className="w-4 h-4 mr-2" /> Users
-          </button>
-          <button
-            onClick={() => setActiveTab('links')}
-            className={`${
-              activeTab === 'links'
-                ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-            } whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm flex items-center`}
-          >
-            <LinkIcon className="w-4 h-4 mr-2" /> Links Management
-          </button>
-        </nav>
-      </div>
-
       {/* Tab Content */}
       {activeTab === 'overview' && (
         <div className="space-y-6">

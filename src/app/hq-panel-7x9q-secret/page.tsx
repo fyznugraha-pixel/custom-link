@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from 'next/navigation';
 import AdminDashboardClient from '@/components/AdminDashboardClient';
+import { Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
 
@@ -78,12 +79,14 @@ export default async function AdminPage() {
         </div>
       </div>
       
-      <AdminDashboardClient 
-        stats={stats} 
-        users={serializedUsers} 
-        links={serializedLinks} 
-        customDomains={customDomains} 
-      />
+      <Suspense fallback={<div className="p-8 text-center text-slate-500">Loading dashboard...</div>}>
+        <AdminDashboardClient 
+          stats={stats} 
+          users={serializedUsers} 
+          links={serializedLinks} 
+          customDomains={customDomains} 
+        />
+      </Suspense>
     </div>
   );
 }
