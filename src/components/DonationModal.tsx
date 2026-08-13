@@ -34,7 +34,7 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md sm:max-w-lg md:max-w-xl z-[101] p-4 sm:p-0"
           >
-            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col relative border border-slate-100">
+            <div className="bg-white rounded-3xl shadow-2xl flex flex-col relative border border-slate-100 max-h-[90vh] sm:max-h-[95vh] overflow-y-auto">
               
               <button 
                 onClick={onClose}
@@ -56,13 +56,13 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
               </div>
 
               <div className="px-6 py-5 flex flex-col items-center border-t border-slate-100 bg-slate-50/50">
-                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block relative w-48 h-48 sm:w-64 sm:h-64">
+                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block relative w-56 h-56 sm:w-72 sm:h-72">
                   <Image 
                     src="/QRIS/qris.png" 
                     alt="QRIS Donation" 
                     fill
                     className="object-contain rounded-xl"
-                    sizes="(max-width: 640px) 192px, 256px"
+                    sizes="(max-width: 640px) 224px, 288px"
                     priority
                   />
                 </div>
