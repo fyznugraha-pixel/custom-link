@@ -285,7 +285,7 @@ export default function Home() {
             <span className="flex h-2 w-2 rounded-full bg-primary-600 animate-pulse"></span>
             {t.freeToUse}
           </div>
-          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[6.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-[1.1] max-w-full">
+          <h1 className="w-full text-4xl sm:text-6xl md:text-7xl lg:text-[6.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-[1.1] max-w-full">
             <span>{t.makeEveryLink}</span>
             <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative w-full md:w-auto px-4 md:px-0">
               <AnimatePresence mode="popLayout">
