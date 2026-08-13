@@ -373,7 +373,7 @@ export default function Home() {
                             <button
                               type="button"
                               onClick={() => setIsDomainDropdownOpen(!isDomainDropdownOpen)}
-                              className="inline-flex items-center justify-between pl-4 pr-3 py-4 border border-r-0 border-slate-300 rounded-l-xl bg-slate-50 text-black font-medium text-sm sm:text-base focus:outline-none min-w-[150px] sm:min-w-[180px] max-w-[180px] sm:max-w-[240px] hover:bg-slate-100 transition-colors"
+                              className="inline-flex items-center justify-between pl-4 pr-3 py-4 border border-r-0 border-slate-300 rounded-l-xl bg-slate-50 text-black font-medium text-sm sm:text-base focus:outline-none w-auto max-w-[240px] hover:bg-slate-100 transition-colors"
                             >
                               <span className="truncate mr-2">
                                 {domainId ? customDomains.find(d => d.id === domainId)?.domain : defaultDomain}
