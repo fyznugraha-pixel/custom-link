@@ -22,6 +22,12 @@ export async function GET(request: Request) {
       }
     }
 
+    // Ensure admin domains are verified
+    await prisma.customDomain.updateMany({
+      where: { userId: 'admin-system', status: 'pending' },
+      data: { status: 'verified' }
+    });
+
     // If an admin requests this API, they still get system domains
     const domains = await prisma.customDomain.findMany({
       where: {
@@ -90,6 +96,7 @@ export async function POST(request: Request) {
     const customDomain = await prisma.customDomain.create({
       data: {
         domain: cleanDomain,
+        status: isAdmin ? 'verified' : 'pending',
         user: {
           connectOrCreate: {
             where: { id: userId },
