@@ -6,6 +6,7 @@ export interface ILinkRepository {
   findByShortCode(shortCode: string, domainId?: string): Promise<Link | null>;
   checkAliasExists(shortCode: string, domainId?: string): Promise<boolean>;
   delete(id: string): Promise<void>;
+  archive(id: string, shortCode: string): Promise<void>;
 }
 
 export class LinkRepository implements ILinkRepository {
@@ -42,6 +43,13 @@ export class LinkRepository implements ILinkRepository {
   async delete(id: string): Promise<void> {
     await prisma.link.delete({
       where: { id }
+    });
+  }
+
+  async archive(id: string, shortCode: string): Promise<void> {
+    await prisma.link.update({
+      where: { id },
+      data: { shortCode: `archived_${shortCode}_${Date.now()}` }
     });
   }
 }

@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { Mail, ArrowRight, Loader2, AlertCircle, KeyRound, ArrowLeft } from 'lucide-react';
+import { useGeoLang } from '@/hooks/useGeoLang';
+import { dictionaries } from '@/lib/i18n';
 
 function VerifyEmailForm() {
   const router = useRouter();
@@ -16,6 +18,9 @@ function VerifyEmailForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+
+  const { lang } = useGeoLang();
+  const t = dictionaries[lang];
 
   useEffect(() => {
     if (emailParam) {
@@ -81,8 +86,8 @@ function VerifyEmailForm() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h3 className="text-lg leading-6 font-medium text-slate-900">Email Verified!</h3>
-          <p className="mt-2 text-sm text-slate-500">Redirecting you to login...</p>
+          <h3 className="text-lg leading-6 font-medium text-slate-900">{t.emailVerified}</h3>
+          <p className="mt-2 text-sm text-slate-500">{t.redirectingLogin}</p>
         </div>
       ) : (
         <form className="space-y-6" onSubmit={handleVerify}>
@@ -94,7 +99,7 @@ function VerifyEmailForm() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-slate-700">Email address</label>
+            <label className="block text-sm font-medium text-slate-700">{t.emailAddr}</label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-slate-400" />
@@ -112,7 +117,7 @@ function VerifyEmailForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700">6-Digit OTP Code</label>
+            <label className="block text-sm font-medium text-slate-700">{t.otpCode}</label>
             <div className="mt-1 relative rounded-md shadow-sm">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <KeyRound className="h-5 w-5 text-slate-400" />
@@ -127,7 +132,7 @@ function VerifyEmailForm() {
                 placeholder="000000"
               />
             </div>
-            <p className="mt-2 text-xs text-slate-500">Check your email inbox (and spam folder) for the verification code.</p>
+            <p className="mt-2 text-xs text-slate-500">{t.checkInbox}</p>
           </div>
 
           <button
@@ -138,7 +143,7 @@ function VerifyEmailForm() {
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
             ) : (
-              <>Verify & Continue <ArrowRight className="ml-2 w-4 h-4" /></>
+              <>{t.verifyAndContinue} <ArrowRight className="ml-2 w-4 h-4" /></>
             )}
           </button>
         </form>
@@ -146,7 +151,7 @@ function VerifyEmailForm() {
 
       <div className="mt-8 text-center text-sm">
         <Link href="/login" className="font-semibold text-primary-600 hover:text-primary-500">
-          Back to login
+          {t.backToLogin}
         </Link>
       </div>
     </div>
@@ -154,13 +159,16 @@ function VerifyEmailForm() {
 }
 
 export default function VerifyEmailPage() {
+  const { lang } = useGeoLang();
+  const t = dictionaries[lang];
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       
       {/* Back Button */}
       <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
         <Link href="/" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors bg-white/50 hover:bg-white/80 px-3 py-2 rounded-full backdrop-blur-sm border border-slate-200/50 shadow-sm">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+          <ArrowLeft className="w-4 h-4 mr-2" /> {t.backToHome}
         </Link>
       </div>
 
@@ -175,10 +183,10 @@ export default function VerifyEmailPage() {
           <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-12 w-auto object-contain" />
         </Link>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
-          Verify your email
+          {t.verifyEmailTitle}
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
-          We sent a 6-digit code to your email
+          {t.weSentCode}
         </p>
       </div>
 

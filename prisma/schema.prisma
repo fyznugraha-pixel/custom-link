@@ -18,6 +18,10 @@ model User {
   links         Link[]
   customDomains CustomDomain[]
   createdAt     DateTime  @default(now())
+  
+  // Analytics and Role
+  role          String    @default("user")
+  lastActiveAt  DateTime?
 }
 
 model Account {

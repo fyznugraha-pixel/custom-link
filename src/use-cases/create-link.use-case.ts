@@ -64,8 +64,9 @@ export class CreateLinkUseCase {
       if (existingLink) {
         const now = new Date();
         if (existingLink.expiresAt && existingLink.expiresAt < now) {
-          // Link is expired! Auto-recycle it.
-          await this.linkRepository.delete(existingLink.id);
+          // Link is expired! Soft-delete it by archiving the shortcode
+          // This frees up the alias for reuse while preserving the old analytics!
+          await this.linkRepository.archive(existingLink.id, existingLink.shortCode);
         } else {
           // Link is still active. Calculate remaining time for the error message.
           if (!existingLink.expiresAt) {

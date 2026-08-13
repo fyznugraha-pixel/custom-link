@@ -75,6 +75,23 @@ export const dictionaries = {
     backToHome: "Back to Home",
     language: "Language",
     
+    // Register
+    createAccount: "Create an account",
+    fullName: "Full Name",
+    confirmPassword: "Confirm Password",
+    passwordsDoNotMatch: "Passwords do not match",
+    alreadyHaveAccount: "Already have an account?",
+    
+    // Verify Email
+    verifyEmailTitle: "Verify your email",
+    weSentCode: "We sent a 6-digit code to your email",
+    otpCode: "6-Digit OTP Code",
+    checkInbox: "Check your email inbox (and spam folder) for the verification code.",
+    verifyAndContinue: "Verify & Continue",
+    backToLogin: "Back to login",
+    emailVerified: "Email Verified!",
+    redirectingLogin: "Redirecting you to login...",
+    
     // User Navbar
     navHome: "Home",
     navLinks: "My Links",
@@ -162,6 +179,23 @@ export const dictionaries = {
     signUp: "Daftar",
     backToHome: "Kembali ke Beranda",
     language: "Bahasa",
+    
+    // Register
+    createAccount: "Buat akun baru",
+    fullName: "Nama Lengkap",
+    confirmPassword: "Konfirmasi Sandi",
+    passwordsDoNotMatch: "Kata sandi tidak cocok",
+    alreadyHaveAccount: "Sudah punya akun?",
+    
+    // Verify Email
+    verifyEmailTitle: "Verifikasi email Anda",
+    weSentCode: "Kami mengirimkan kode 6 digit ke email Anda",
+    otpCode: "Kode OTP 6-Digit",
+    checkInbox: "Cek kotak masuk email Anda (dan folder spam) untuk kode verifikasi.",
+    verifyAndContinue: "Verifikasi & Lanjutkan",
+    backToLogin: "Kembali ke login",
+    emailVerified: "Email Terverifikasi!",
+    redirectingLogin: "Mengarahkan Anda ke halaman login...",
 
     // User Navbar
     navHome: "Beranda",

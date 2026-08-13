@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, User, ArrowRight, Loader2, AlertCircle, ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { useGeoLang } from '@/hooks/useGeoLang';
+import { dictionaries } from '@/lib/i18n';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -16,13 +18,16 @@ export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const { lang, isLoaded } = useGeoLang();
+  const t = dictionaries[lang];
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError(t.passwordsDoNotMatch);
       setIsLoading(false);
       return;
     }
@@ -57,7 +62,7 @@ export default function RegisterPage() {
       {/* Back Button */}
       <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
         <Link href="/" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors bg-white/50 hover:bg-white/80 px-3 py-2 rounded-full backdrop-blur-sm border border-slate-200/50 shadow-sm">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+          <ArrowLeft className="w-4 h-4 mr-2" /> {t.backToHome}
         </Link>
       </div>
 
@@ -72,10 +77,10 @@ export default function RegisterPage() {
           <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-12 w-auto object-contain" />
         </Link>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
-          Create an account
+          {t.createAccount}
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
-          Start shrinking links and managing domains for free
+          {t.loginDesc}
         </p>
       </div>
 
@@ -91,7 +96,7 @@ export default function RegisterPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-700">Full Name</label>
+              <label className="block text-sm font-medium text-slate-700">{t.fullName}</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <User className="h-5 w-5 text-slate-400" />
@@ -108,7 +113,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700">Email address</label>
+              <label className="block text-sm font-medium text-slate-700">{t.emailAddr}</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-slate-400" />
@@ -125,7 +130,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700">Password</label>
+              <label className="block text-sm font-medium text-slate-700">{t.passwordStr}</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-slate-400" />
@@ -154,7 +159,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700">Confirm Password</label>
+              <label className="block text-sm font-medium text-slate-700">{t.confirmPassword}</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-slate-400" />
@@ -185,7 +190,7 @@ export default function RegisterPage() {
                 </button>
               </div>
               {confirmPassword.length > 0 && password !== confirmPassword && (
-                <p className="mt-2 text-sm text-red-600">Passwords do not match</p>
+                <p className="mt-2 text-sm text-red-600">{t.passwordsDoNotMatch}</p>
               )}
             </div>
 
@@ -197,15 +202,15 @@ export default function RegisterPage() {
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <>Create account <ArrowRight className="ml-2 w-4 h-4" /></>
+                <>{t.createAccount} <ArrowRight className="ml-2 w-4 h-4" /></>
               )}
             </button>
           </form>
 
           <div className="mt-8 text-center text-sm">
-            <span className="text-slate-500">Already have an account? </span>
+            <span className="text-slate-500">{t.alreadyHaveAccount} </span>
             <Link href="/login" className="font-semibold text-primary-600 hover:text-primary-500">
-              Sign in
+              {t.signIn}
             </Link>
           </div>
         </div>
