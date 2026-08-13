@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Users, Link as LinkIcon, BarChart3, Activity, Clock } from "lucide-react";
+import { Users, Link as LinkIcon, BarChart3, Activity, Clock, Globe } from "lucide-react";
 import LinkTableClient from "./LinkTableClient";
 import DashboardGrowthChart from "./DashboardGrowthChart";
 
