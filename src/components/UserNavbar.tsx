@@ -43,7 +43,6 @@ export default function UserNavbar({ user }: { user: any }) {
     const newLang = lang === 'en' ? 'id' : 'en';
     setLang(newLang);
     localStorage.setItem('fyurl_lang', newLang);
-    window.location.reload();
   };
 
   return (
@@ -110,11 +109,12 @@ export default function UserNavbar({ user }: { user: any }) {
               </div>
               <button
                 onClick={toggleLanguage}
-                className="inline-flex items-center justify-center p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-2 sm:mr-4"
                 title={t.language}
               >
-                <Languages className="w-4 h-4 text-slate-500" />
-                <span className="ml-1.5 hidden sm:inline-block text-xs uppercase font-bold">{lang}</span>
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN / ID' : 'ID / EN'}</span>
+                <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
               </button>
               <button 
                 onClick={() => signOut({ callbackUrl: '/' })}
