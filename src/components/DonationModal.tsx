@@ -32,7 +32,7 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-[101] p-4 sm:p-0"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md sm:max-w-lg md:max-w-xl z-[101] p-4 sm:p-0"
           >
             <div className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col relative border border-slate-100">
               
@@ -50,23 +50,23 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">
                   {t.donationTitle || (lang === 'id' ? 'Makasih Banget Support-nya!' : 'Thank You For Your Support!')}
                 </h3>
-                <p className="text-sm text-slate-600 max-w-sm">
+                <p className="text-sm text-slate-600 sm:text-base max-w-md">
                   {t.donationDesc || (lang === 'id' ? 'Donasi kamu ngebantu banget buat bayar server supaya Fyurl bisa terus gratis dipake siapa aja.' : 'Your donation means the world to us and helps keep our servers running and this platform free for everyone.')}
                 </p>
               </div>
 
-              <div className="px-6 py-4 flex flex-col items-center border-t border-slate-100 bg-slate-50/50">
-                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block relative w-48 h-48 sm:w-56 sm:h-56">
+              <div className="px-6 py-5 flex flex-col items-center border-t border-slate-100 bg-slate-50/50">
+                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block relative w-48 h-48 sm:w-64 sm:h-64">
                   <Image 
                     src="/QRIS/qris.png" 
                     alt="QRIS Donation" 
                     fill
                     className="object-contain rounded-xl"
-                    sizes="(max-width: 640px) 192px, 224px"
+                    sizes="(max-width: 640px) 192px, 256px"
                     priority
                   />
                 </div>
-                <p className="text-xs text-slate-500 font-medium text-center px-4">
+                <p className="text-xs sm:text-sm text-slate-500 font-medium text-center px-4">
                   {t.scanQrisText || (lang === 'id' ? 'Tinggal scan aja QRIS di atas pakai e-wallet atau m-banking andalan kamu.' : 'Scan the QRIS code above using your favorite e-wallet or m-banking app.')}
                 </p>
               </div>
