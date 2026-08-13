@@ -43,9 +43,23 @@ function VerifyEmailForm() {
 
       setSuccess(true);
       
-      // Auto login is tricky without the password here (since we don't store it client-side).
-      // We will just redirect them to login page with a success message, 
-      // OR they can login manually. Let's redirect to login.
+      const tempPassword = sessionStorage.getItem('temp_reg_password');
+      if (tempPassword) {
+        sessionStorage.removeItem('temp_reg_password'); // clean up immediately
+        
+        const signInResult = await signIn('credentials', {
+          redirect: false,
+          email,
+          password: tempPassword,
+        });
+
+        if (signInResult?.ok) {
+          router.push('/dashboard');
+          return; // Stop here, don't do the fallback redirect
+        }
+      }
+      
+      // Fallback if password was lost (e.g. they opened in a new tab)
       setTimeout(() => {
         router.push('/login?verified=true');
       }, 2000);

@@ -40,6 +40,8 @@ export default function RegisterPage() {
         throw new Error(data.error || 'Failed to register');
       }
 
+      // Store password temporarily in session storage for auto-login after OTP success
+      sessionStorage.setItem('temp_reg_password', password);
       // Redirect to OTP verification
       router.push(`/verify-email?email=${encodeURIComponent(email)}`);
     } catch (err: any) {
