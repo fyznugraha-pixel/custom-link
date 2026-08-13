@@ -102,6 +102,7 @@ export default function AdminDashboardClient({ stats, users, links, customDomain
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Name & Email</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Country</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Joined</th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Last Active</th>
                 </tr>
@@ -125,6 +126,16 @@ export default function AdminDashboardClient({ stats, users, links, customDomain
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Verified</span>
                       ) : (
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-amber-100 text-amber-800">Unverified</span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                      {user.country && user.country !== 'Unknown' ? (
+                        <div className="flex items-center font-medium">
+                          <Globe className="w-4 h-4 mr-1 text-slate-400" />
+                          {user.country}
+                        </div>
+                      ) : (
+                        <span className="text-slate-400 italic">Unknown</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500">

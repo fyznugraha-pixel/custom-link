@@ -38,6 +38,7 @@ export default async function AdminPage() {
       emailVerified: true,
       createdAt: true,
       lastActiveAt: true,
+      country: true,
     }
   });
 
@@ -61,6 +62,7 @@ export default async function AdminPage() {
     ...user,
     createdAt: user.createdAt.toISOString(),
     lastActiveAt: user.lastActiveAt?.toISOString() || null,
+    country: user.country || 'Unknown',
   }));
 
   const stats = {

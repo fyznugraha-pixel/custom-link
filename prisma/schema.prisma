@@ -22,6 +22,7 @@ model User {
   // Analytics and Role
   role          String    @default("user")
   lastActiveAt  DateTime?
+  country       String?
 }
 
 model Account {
