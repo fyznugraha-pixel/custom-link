@@ -321,13 +321,13 @@ export default function Home() {
           <div className="flex bg-white/70 backdrop-blur-lg p-1.5 rounded-t-2xl border border-slate-200/60 border-b-0 w-fit mx-auto sm:mx-0 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
             <button
               onClick={() => setActiveTab('shortener')}
-              className={`px-7 py-3 text-sm font-bold rounded-xl transition-all duration-300 ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-sm border border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 scale-95'}`}
+              className={`px-7 py-3 text-sm font-bold rounded-xl transition-all duration-300 border whitespace-nowrap ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-sm border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
             >
               {t.shortenLink}
             </button>
             <button
               onClick={() => setActiveTab('qr')}
-              className={`px-7 py-3 text-sm font-bold rounded-xl transition-all duration-300 flex items-center ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-sm border border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 scale-95'}`}
+              className={`px-7 py-3 text-sm font-bold rounded-xl transition-all duration-300 flex items-center justify-center border whitespace-nowrap ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-sm border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
             >
               <QrCode className="w-4 h-4 mr-2" />
               {t.qrGenerator}
