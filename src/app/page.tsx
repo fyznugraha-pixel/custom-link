@@ -285,7 +285,7 @@ export default function Home() {
             <span className="flex h-2 w-2 rounded-full bg-primary-600 animate-pulse"></span>
             {t.freeToUse}
           </div>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[6.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-3 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-[1.1]">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[6.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-[1.1] max-w-full">
             <span>{t.makeEveryLink}</span>
             <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative w-full md:w-auto px-4 md:px-0">
               <AnimatePresence mode="popLayout">
@@ -295,7 +295,7 @@ export default function Home() {
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ y: 40, opacity: 0, scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block whitespace-nowrap drop-shadow-sm text-center text-[0.85em]"
+                  className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block whitespace-nowrap drop-shadow-sm text-center text-[0.7em] sm:text-[0.85em]"
                 >
                   {t.taglines[wordIndex]}
                 </motion.span>
