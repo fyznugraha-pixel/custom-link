@@ -44,9 +44,6 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
               </button>
 
               <div className="bg-gradient-to-br from-primary-50 to-white px-6 pt-10 pb-6 flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4 shadow-sm border border-red-100">
-                  <Heart className="w-8 h-8 fill-red-500" />
-                </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">
                   {t.donationTitle || (lang === 'id' ? 'Makasih Banget Support-nya!' : 'Thank You For Your Support!')}
                 </h3>

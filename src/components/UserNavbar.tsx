@@ -86,6 +86,16 @@ export default function UserNavbar({ user }: { user: any }) {
             </div>
             
             <div className="flex items-center space-x-3 sm:space-x-4">
+              <button
+                onClick={toggleLanguage}
+                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-2 sm:mr-4"
+                title={t.language}
+              >
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN / ID' : 'ID / EN'}</span>
+                <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
+              </button>
+              
               <button 
                 onClick={() => setShowDonationModal(true)}
                 className="inline-flex items-center justify-center p-2 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5"
@@ -107,15 +117,7 @@ export default function UserNavbar({ user }: { user: any }) {
                 />
                 <span className="hidden sm:inline-block">{user?.name || user?.email}</span>
               </div>
-              <button
-                onClick={toggleLanguage}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-2 sm:mr-4"
-                title={t.language}
-              >
-                <Globe className="w-4 h-4" />
-                <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN / ID' : 'ID / EN'}</span>
-                <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
-              </button>
+
               <button 
                 onClick={() => signOut({ callbackUrl: '/' })}
                 className="inline-flex items-center justify-center p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
