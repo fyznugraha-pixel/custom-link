@@ -15,11 +15,11 @@ export const metadata: Metadata = {
     default: "Fyurl | Advanced URL Shortener & QR Code Generator",
     template: "%s | Fyurl"
   },
-  description: "A fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes. Free to use, trackable, and secure. Built by Fayiz Apriwansyah Nugraha.",
+  description: "Fyurl (formerly Fylink) is a fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes. Free to use, trackable, and secure. Built by Fayiz Apriwansyah Nugraha.",
   keywords: [
     "url shortener", "link shortener", "custom url", "qr code generator", 
     "shorten link", "link management", "branded links", "free url shortener",
-    "persingkat URL", "pemendek link", "short link gratis", "custom domains", "Fyurl"
+    "persingkat URL", "pemendek link", "short link gratis", "custom domains", "Fyurl", "Fylink", "fylink.fun"
   ],
   authors: [{ name: "Fayiz Apriwansyah Nugraha", url: "https://byfayiz.web.id/portofolio" }],
   creator: "Fayiz Apriwansyah Nugraha",
@@ -28,8 +28,8 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://fyurl.fun",
-    title: "Fyurl | Advanced URL Shortener",
-    description: "A fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes. Free to use, trackable, and secure.",
+    title: "Fyurl (formerly Fylink) | Advanced URL Shortener",
+    description: "Fyurl (formerly Fylink) is a fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes. Free to use, trackable, and secure.",
     siteName: "Fyurl",
     images: [
       {
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fyurl | Advanced URL Shortener",
-    description: "A fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes.",
+    title: "Fyurl (formerly Fylink) | Advanced URL Shortener",
+    description: "Fyurl (formerly Fylink) is a fast, no-nonsense tool to shorten long URLs, create custom aliases, and generate QR codes.",
     images: ["/logo/fyurl-horizontal.png"],
   },
   robots: {
@@ -83,6 +83,7 @@ const jsonLd = {
       "@id": "https://fyurl.fun/#website",
       "url": "https://fyurl.fun",
       "name": "Fyurl",
+      "alternateName": "Fylink",
       "author": { "@id": "https://fyurl.fun/#fayiz" },
       "publisher": { "@id": "https://fyurl.fun/#fayiz" },
       "description": "Enterprise-grade URL shortener with custom domains and analytics.",
@@ -90,6 +91,7 @@ const jsonLd = {
     {
       "@type": "SoftwareApplication",
       "name": "Fyurl",
+      "alternateName": "Fylink",
       "operatingSystem": "Web",
       "applicationCategory": "UtilitiesApplication",
       "offers": {
