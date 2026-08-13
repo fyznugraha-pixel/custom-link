@@ -163,7 +163,11 @@ export default function RegisterPage() {
                   minLength={8}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 pr-10 sm:text-sm border-slate-300 rounded-lg py-2.5 transition-colors"
+                  className={`block w-full pl-10 pr-10 sm:text-sm rounded-lg py-2.5 transition-colors ${
+                    confirmPassword.length > 0 && password !== confirmPassword
+                      ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500'
+                      : 'border-slate-300 focus:ring-primary-500 focus:border-primary-500'
+                  }`}
                   placeholder="Confirm password"
                 />
                 <button
@@ -178,6 +182,9 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+              {confirmPassword.length > 0 && password !== confirmPassword && (
+                <p className="mt-2 text-sm text-red-600">Passwords do not match</p>
+              )}
             </div>
 
             <button
