@@ -5,6 +5,8 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, ArrowRight, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { dictionaries, Language } from '@/lib/i18n';
+import { useEffect } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,6 +14,34 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  const [lang, setLang] = useState<Language>('en');
+  const t = dictionaries[lang];
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem('fyurl_lang');
+    if (savedLang === 'id' || savedLang === 'en') {
+      setLang(savedLang);
+    } else {
+      fetch('https://ipapi.co/json/')
+        .then(res => res.json())
+        .then(data => {
+          if (data.country_code === 'ID') {
+            setLang('id');
+            localStorage.setItem('fyurl_lang', 'id');
+          } else {
+            setLang('en');
+            localStorage.setItem('fyurl_lang', 'en');
+          }
+        })
+        .catch(() => {
+          if (navigator.language.toLowerCase().includes('id')) {
+            setLang('id');
+            localStorage.setItem('fyurl_lang', 'id');
+          }
+        });
+    }
+  }, []);
 
   const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +78,7 @@ export default function LoginPage() {
       {/* Back Button */}
       <div className="absolute top-4 left-4 sm:top-8 sm:left-8 z-20">
         <Link href="/" className="inline-flex items-center text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors bg-white/50 hover:bg-white/80 px-3 py-2 rounded-full backdrop-blur-sm border border-slate-200/50 shadow-sm">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Home
+          <ArrowLeft className="w-4 h-4 mr-2" /> {t.backToHome}
         </Link>
       </div>
 
@@ -63,10 +93,10 @@ export default function LoginPage() {
           <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-12 w-auto object-contain" />
         </Link>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
-          Welcome back
+          {t.welcomeBack}
         </h2>
         <p className="mt-2 text-center text-sm text-slate-600">
-          Sign in to manage your links and custom domains
+          {t.loginDesc}
         </p>
       </div>
 
@@ -82,7 +112,7 @@ export default function LoginPage() {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-700">Email address</label>
+              <label className="block text-sm font-medium text-slate-700">{t.emailAddr}</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-slate-400" />
@@ -99,7 +129,7 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700">Password</label>
+              <label className="block text-sm font-medium text-slate-700">{t.passwordStr}</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-slate-400" />
@@ -123,7 +153,7 @@ export default function LoginPage() {
               {isLoading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <>Sign in <ArrowRight className="ml-2 w-4 h-4" /></>
+                <>{t.signIn} <ArrowRight className="ml-2 w-4 h-4" /></>
               )}
             </button>
           </form>
@@ -134,7 +164,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-slate-200" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-slate-500">Or continue with</span>
+                <span className="px-2 bg-white text-slate-500">{t.orContinueWith}</span>
               </div>
             </div>
 
@@ -157,9 +187,9 @@ export default function LoginPage() {
           </div>
           
           <div className="mt-8 text-center text-sm">
-            <span className="text-slate-500">Don't have an account? </span>
+            <span className="text-slate-500">{t.noAccount} </span>
             <Link href="/register" className="font-semibold text-primary-600 hover:text-primary-500">
-              Sign up
+              {t.signUp}
             </Link>
           </div>
         </div>

@@ -61,7 +61,26 @@ export const dictionaries = {
     linkLocked: "Link is locked",
     errorOccurred: "An error occurred. Please try again.",
     unlockLinkBtn: "Unlock Link",
-    securedBy: "Secured by"
+    securedBy: "Secured by",
+    
+    // Login & Navbar
+    welcomeBack: "Welcome back",
+    loginDesc: "Sign in to manage your links and custom domains",
+    emailAddr: "Email address",
+    passwordStr: "Password",
+    signIn: "Sign in",
+    orContinueWith: "Or continue with",
+    noAccount: "Don't have an account?",
+    signUp: "Sign up",
+    backToHome: "Back to Home",
+    language: "Language",
+    
+    // User Navbar
+    navHome: "Home",
+    navLinks: "My Links",
+    navAnalytics: "Analytics",
+    navDomains: "Custom Domains",
+    navDonation: "Donation"
   },
   id: {
     donation: "Donasi",
@@ -123,6 +142,25 @@ export const dictionaries = {
     linkLocked: "Tautan terkunci",
     errorOccurred: "Terjadi kesalahan. Silakan coba lagi.",
     unlockLinkBtn: "Buka Link",
-    securedBy: "Diamankan oleh"
+    securedBy: "Diamankan oleh",
+
+    // Login & Navbar
+    welcomeBack: "Selamat datang kembali",
+    loginDesc: "Masuk untuk mengelola tautan dan domain kustom Anda",
+    emailAddr: "Alamat Email",
+    passwordStr: "Kata Sandi",
+    signIn: "Masuk",
+    orContinueWith: "Atau lanjutkan dengan",
+    noAccount: "Belum punya akun?",
+    signUp: "Daftar",
+    backToHome: "Kembali ke Beranda",
+    language: "Bahasa",
+
+    // User Navbar
+    navHome: "Beranda",
+    navLinks: "Link Saya",
+    navAnalytics: "Analitik",
+    navDomains: "Domain Kustom",
+    navDonation: "Donasi"
   }
 };

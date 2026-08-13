@@ -104,11 +104,7 @@ export default function Home() {
       .then(res => res.json())
       .then(data => {
         if (data.data) {
-           const hostDomain = window.location.host.replace(/^www\./, '');
-           const verifiedDomains = data.data.filter((d: any) => 
-             (d.status === 'verified' || d.status === 'active' || d.status === 'Active') && 
-             d.domain !== hostDomain
-           );
+           const verifiedDomains = data.data.filter((d: any) => d.status === 'verified' || d.status === 'active' || d.status === 'Active');
            setCustomDomains(verifiedDomains);
            const primary = verifiedDomains.find((d: any) => d.isPrimary);
            if (primary) {

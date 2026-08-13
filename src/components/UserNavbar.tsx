@@ -2,13 +2,49 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, UserCircle, Link as LinkIcon, BarChart3, Globe, Home, HandCoins } from 'lucide-react';
+import { LogOut, UserCircle, Link as LinkIcon, BarChart3, Globe, Home, HandCoins, Languages } from 'lucide-react';
 import { signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { dictionaries, Language } from '@/lib/i18n';
 
 export default function UserNavbar({ user }: { user: any }) {
   const pathname = usePathname();
   const [imageError, setImageError] = useState(false);
+  
+  const [lang, setLang] = useState<Language>('en');
+  const t = dictionaries[lang];
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem('fyurl_lang');
+    if (savedLang === 'id' || savedLang === 'en') {
+      setLang(savedLang);
+    } else {
+      fetch('https://ipapi.co/json/')
+        .then(res => res.json())
+        .then(data => {
+          if (data.country_code === 'ID') {
+            setLang('id');
+            localStorage.setItem('fyurl_lang', 'id');
+          } else {
+            setLang('en');
+            localStorage.setItem('fyurl_lang', 'en');
+          }
+        })
+        .catch(() => {
+          if (navigator.language.toLowerCase().includes('id')) {
+            setLang('id');
+            localStorage.setItem('fyurl_lang', 'id');
+          }
+        });
+    }
+  }, []);
+
+  const toggleLanguage = () => {
+    const newLang = lang === 'en' ? 'id' : 'en';
+    setLang(newLang);
+    localStorage.setItem('fyurl_lang', newLang);
+    window.location.reload();
+  };
 
   return (
     <>
@@ -25,25 +61,25 @@ export default function UserNavbar({ user }: { user: any }) {
                   href="/" 
                   className={`${pathname === '/' ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
                 >
-                  <Home className="w-4 h-4 mr-2" /> Home
+                  <Home className="w-4 h-4 mr-2" /> {t.navHome}
                 </Link>
                 <Link 
                   href="/dashboard" 
                   className={`${pathname === '/dashboard' ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
                 >
-                  <LinkIcon className="w-4 h-4 mr-2" /> My Links
+                  <LinkIcon className="w-4 h-4 mr-2" /> {t.navLinks}
                 </Link>
                 <Link 
                   href="/dashboard/analytics" 
                   className={`${pathname?.startsWith('/dashboard/analytics') ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
                 >
-                  <BarChart3 className="w-4 h-4 mr-2" /> Analytics
+                  <BarChart3 className="w-4 h-4 mr-2" /> {t.navAnalytics}
                 </Link>
                 <Link 
                   href="/dashboard/domains" 
                   className={`${pathname?.startsWith('/dashboard/domains') ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
                 >
-                  <Globe className="w-4 h-4 mr-2" /> Custom Domains
+                  <Globe className="w-4 h-4 mr-2" /> {t.navDomains}
                 </Link>
               </div>
             </div>
@@ -57,7 +93,7 @@ export default function UserNavbar({ user }: { user: any }) {
                 title="Donation"
               >
                 <HandCoins className="w-4 h-4 sm:mr-2" />
-                <span className="hidden sm:inline-block">Donation</span>
+                <span className="hidden sm:inline-block">{t.navDonation}</span>
               </a>
 
               <div className="flex items-center text-sm font-medium text-slate-700">
@@ -72,6 +108,14 @@ export default function UserNavbar({ user }: { user: any }) {
                 />
                 <span className="hidden sm:inline-block">{user?.name || user?.email}</span>
               </div>
+              <button
+                onClick={toggleLanguage}
+                className="inline-flex items-center justify-center p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                title={t.language}
+              >
+                <Languages className="w-4 h-4 text-slate-500" />
+                <span className="ml-1.5 hidden sm:inline-block text-xs uppercase font-bold">{lang}</span>
+              </button>
               <button 
                 onClick={() => signOut({ callbackUrl: '/' })}
                 className="inline-flex items-center justify-center p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
@@ -92,28 +136,28 @@ export default function UserNavbar({ user }: { user: any }) {
             className={`flex flex-col items-center justify-center w-full h-full ${pathname === '/' ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
           >
             <Home className="w-6 h-6 mb-1" />
-            <span className="text-[10px] font-medium">Home</span>
+            <span className="text-[10px] font-medium">{t.navHome}</span>
           </Link>
           <Link 
             href="/dashboard" 
             className={`flex flex-col items-center justify-center w-full h-full ${pathname === '/dashboard' ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
           >
             <LinkIcon className="w-6 h-6 mb-1" />
-            <span className="text-[10px] font-medium">Links</span>
+            <span className="text-[10px] font-medium">{t.navLinks}</span>
           </Link>
           <Link 
             href="/dashboard/analytics" 
             className={`flex flex-col items-center justify-center w-full h-full ${pathname?.startsWith('/dashboard/analytics') ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
           >
             <BarChart3 className="w-6 h-6 mb-1" />
-            <span className="text-[10px] font-medium">Analytics</span>
+            <span className="text-[10px] font-medium">{t.navAnalytics}</span>
           </Link>
           <Link 
             href="/dashboard/domains" 
             className={`flex flex-col items-center justify-center w-full h-full ${pathname?.startsWith('/dashboard/domains') ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
           >
             <Globe className="w-6 h-6 mb-1" />
-            <span className="text-[10px] font-medium">Domains</span>
+            <span className="text-[10px] font-medium">{t.navDomains}</span>
           </Link>
         </div>
       </div>
