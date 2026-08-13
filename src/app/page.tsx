@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { dictionaries, Language } from '@/lib/i18n';
 import { useSession, signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
+import DonationModal from '@/components/DonationModal';
 
 export default function Home() {
   const { data: session } = useSession();
@@ -41,6 +42,7 @@ export default function Home() {
   }, []);
 
   const [showFeatureModal, setShowFeatureModal] = useState(false);
+  const [showDonationModal, setShowDonationModal] = useState(false);
   useEffect(() => {
     if (!session) {
       const timer = setTimeout(() => {
@@ -258,10 +260,14 @@ export default function Home() {
               <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
             </button>
             <div className="flex items-center gap-2">
-              <a href="https://saweria.co/payes" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center p-2 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5" title={t.donation}>
+              <button 
+                onClick={() => setShowDonationModal(true)}
+                className="inline-flex items-center justify-center p-2 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5" 
+                title={t.donation}
+              >
                 <HandCoins className="w-5 h-5 sm:w-4 sm:h-4 sm:mr-2" />
                 <span className="hidden sm:inline-block">{t.donation}</span>
-              </a>
+              </button>
               <button onClick={() => signIn()} className="inline-flex items-center justify-center px-4 py-2 border border-slate-200 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-200 hover:shadow-md hover:-translate-y-0.5">
                 Login
               </button>
@@ -1154,6 +1160,13 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Donation Modal */}
+      <DonationModal 
+        isOpen={showDonationModal} 
+        onClose={() => setShowDonationModal(false)} 
+        lang={lang} 
+      />
     </div>
   );
 }

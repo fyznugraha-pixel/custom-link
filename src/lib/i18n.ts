@@ -80,7 +80,14 @@ export const dictionaries = {
     navLinks: "My Links",
     navAnalytics: "Analytics",
     navDomains: "Custom Domains",
-    navDonation: "Donation"
+    navDonation: "Donation",
+    
+    // Donation Modal
+    donationTitle: "Thank You For Your Support!",
+    donationDesc: "Your donation means the world to us and helps keep our servers running and this platform free for everyone.",
+    scanQrisText: "Scan the QRIS code above using your favorite e-wallet or m-banking app.",
+    outsideIndo: "Are you outside Indonesia?",
+    donateSaweria: "Donate via Saweria"
   },
   id: {
     donation: "Donasi",
@@ -161,6 +168,13 @@ export const dictionaries = {
     navLinks: "Link Saya",
     navAnalytics: "Analitik",
     navDomains: "Domain Kustom",
-    navDonation: "Donasi"
+    navDonation: "Donasi",
+
+    // Donation Modal
+    donationTitle: "Terima Kasih Atas Dukungan Anda!",
+    donationDesc: "Donasi Anda sangat berarti untuk membantu kami mempertahankan server dan membuat platform ini tetap gratis untuk semua.",
+    scanQrisText: "Scan kode QRIS di atas menggunakan aplikasi e-wallet atau m-banking Anda.",
+    outsideIndo: "Atau Anda berada di luar Indonesia?",
+    donateSaweria: "Donasi via Saweria"
   }
 };

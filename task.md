@@ -1,0 +1,19 @@
+- `[/]` Create custom login UI
+  - `[ ]` Build `/login` page with Email/Password form and Google button
+  - `[ ]` Build `/register` page
+  - `[ ]` Update `src/lib/auth.ts` to point `signIn` back to `/login`
+  - `[ ]` Update middleware to bypass `/login` and `/register`
+- `[ ]` Database Updates
+  - `[ ]` Add `password` to `User`
+  - `[ ]` Create `OtpCode` model
+  - `[ ]` Run `prisma db push`
+- `[ ]` Authentication Logic
+  - `[ ]` Add CredentialsProvider in `auth.ts`
+  - `[ ]` Create API route for Registration (`/api/auth/register`)
+  - `[ ]` Create API route for OTP Verification (`/api/auth/verify-otp`)
+- `[ ]` Email Sending
+  - `[ ]` Create `src/lib/mail.ts` with `nodemailer`
+  - `[ ]` Build `/verify-email` page
+- `[ ]` Testing
+  - `[ ]` Verify Google login still works
+  - `[ ]` Verify Email registration & login flow

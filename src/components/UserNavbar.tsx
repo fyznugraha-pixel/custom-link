@@ -6,10 +6,12 @@ import { LogOut, UserCircle, Link as LinkIcon, BarChart3, Globe, Home, HandCoins
 import { signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { dictionaries, Language } from '@/lib/i18n';
+import DonationModal from '@/components/DonationModal';
 
 export default function UserNavbar({ user }: { user: any }) {
   const pathname = usePathname();
   const [imageError, setImageError] = useState(false);
+  const [showDonationModal, setShowDonationModal] = useState(false);
   
   const [lang, setLang] = useState<Language>('en');
   const t = dictionaries[lang];
@@ -84,16 +86,14 @@ export default function UserNavbar({ user }: { user: any }) {
             </div>
             
             <div className="flex items-center space-x-3 sm:space-x-4">
-              <a 
-                href="https://saweria.co/payes" 
-                target="_blank" 
-                rel="noopener noreferrer" 
+              <button 
+                onClick={() => setShowDonationModal(true)}
                 className="inline-flex items-center justify-center p-2 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5"
-                title="Donation"
+                title={t.donation}
               >
                 <HandCoins className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline-block">{t.navDonation}</span>
-              </a>
+              </button>
 
               <div className="flex items-center text-sm font-medium text-slate-700">
                 <img 
@@ -161,6 +161,12 @@ export default function UserNavbar({ user }: { user: any }) {
           </Link>
         </div>
       </div>
+
+      <DonationModal 
+        isOpen={showDonationModal} 
+        onClose={() => setShowDonationModal(false)} 
+        lang={lang} 
+      />
     </>
   );
 }

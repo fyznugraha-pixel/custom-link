@@ -1,0 +1,92 @@
+'use client';
+
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Heart, Globe, HandCoins } from 'lucide-react';
+import { dictionaries, Language } from '@/lib/i18n';
+
+interface DonationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  lang: Language;
+}
+
+export default function DonationModal({ isOpen, onClose, lang }: DonationModalProps) {
+  const t = dictionaries[lang];
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+          />
+          
+          {/* Modal Content */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md z-[101] p-4 sm:p-0"
+          >
+            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col relative border border-slate-100">
+              
+              <button 
+                onClick={onClose}
+                className="absolute top-4 right-4 p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="bg-gradient-to-br from-primary-50 to-white px-6 pt-10 pb-6 flex flex-col items-center text-center">
+                <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4 shadow-sm border border-red-100">
+                  <Heart className="w-8 h-8 fill-red-500" />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">
+                  {t.donationTitle || (lang === 'id' ? 'Terima Kasih Atas Dukungan Anda!' : 'Thank You For Your Support!')}
+                </h3>
+                <p className="text-sm text-slate-600 max-w-sm">
+                  {t.donationDesc || (lang === 'id' ? 'Donasi Anda sangat berarti untuk membantu kami mempertahankan server dan membuat platform ini tetap gratis untuk semua.' : 'Your donation means the world to us and helps keep our servers running and this platform free for everyone.')}
+                </p>
+              </div>
+
+              <div className="px-6 py-4 flex flex-col items-center border-t border-slate-100 bg-slate-50/50">
+                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block">
+                  <img src="/QRIS/qris.png" alt="QRIS Donation" className="w-48 h-48 sm:w-56 sm:h-56 object-contain rounded-xl" />
+                </div>
+                <p className="text-xs text-slate-500 font-medium text-center px-4">
+                  {t.scanQrisText || (lang === 'id' ? 'Scan kode QRIS di atas menggunakan aplikasi e-wallet atau m-banking Anda.' : 'Scan the QRIS code above using your favorite e-wallet or m-banking app.')}
+                </p>
+              </div>
+
+              <div className="px-6 pb-6 pt-4 bg-slate-50/50 flex flex-col">
+                <div className="relative flex justify-center text-xs mb-4">
+                  <span className="bg-slate-50/50 px-2 text-slate-400 font-medium">
+                    {t.outsideIndo || (lang === 'id' ? 'Atau Anda Berada di Luar Indonesia?' : 'Are you outside Indonesia?')}
+                  </span>
+                  <div className="absolute inset-0 flex items-center -z-10">
+                    <div className="w-full border-t border-slate-200"></div>
+                  </div>
+                </div>
+
+                <a 
+                  href="https://saweria.co/payes" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold text-white bg-[#E5B53A] hover:bg-[#D4A633] transition-all focus:outline-none hover:shadow-md hover:-translate-y-0.5"
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  {t.donateSaweria || (lang === 'id' ? 'Donasi via Saweria' : 'Donate via Saweria')}
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
