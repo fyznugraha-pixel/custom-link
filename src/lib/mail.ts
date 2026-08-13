@@ -1,8 +1,8 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_for_build');
-
 export const sendOtpEmail = async (email: string, code: string) => {
+  const resend = new Resend(process.env.RESEND_API_KEY || 're_dummy_key_for_build');
+
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;">
       <h2 style="color: #0f172a; text-align: center;">Verify your email</h2>
@@ -24,7 +24,7 @@ export const sendOtpEmail = async (email: string, code: string) => {
     }
 
     const { data, error } = await resend.emails.send({
-      from: 'Fyurl <onboarding@resend.dev>',
+      from: 'onboarding@resend.dev',
       to: [email],
       subject: 'Your Verification Code',
       html: htmlContent,
