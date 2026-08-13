@@ -107,9 +107,9 @@ export default function AdminDashboardClient({ stats, users, links, customDomain
 
           {/* Growth Chart Section */}
           <div className="mt-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
               <h2 className="text-lg font-medium text-slate-900">Pertumbuhan & Aktivitas</h2>
-              <div className="flex bg-slate-100 p-1 rounded-lg mt-2 sm:mt-0 overflow-x-auto max-w-full">
+              <div className="flex bg-slate-100 p-1 rounded-lg overflow-x-auto w-full sm:w-auto snap-x hide-scrollbar">
                 {RANGES.map(range => (
                   <button
                     key={range.value}

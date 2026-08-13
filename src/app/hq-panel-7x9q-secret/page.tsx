@@ -109,8 +109,8 @@ export default async function AdminPage(props: PageProps) {
   );
 
   return (
-    <div className="w-full px-6 sm:px-10 lg:px-16 py-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+    <div className="w-full px-4 sm:px-6 lg:px-10 py-6 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Admin Super Dashboard</h1>
           <p className="text-muted-foreground mt-1">Manage all platform data, users, and links.</p>
