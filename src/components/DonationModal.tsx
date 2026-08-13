@@ -54,7 +54,7 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
               <div className="px-6 py-5 flex flex-col items-center border-t border-slate-100 bg-slate-50/50">
                 <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block w-56 h-56 sm:w-72 sm:h-72">
                   <img 
-                    src="/QRIS/qris.webp" 
+                    src="/logo/qris.webp"
                     alt="QRIS Donation" 
                     className="w-full h-full object-contain rounded-xl"
                   />
