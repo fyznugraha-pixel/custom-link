@@ -30,7 +30,9 @@ export default function Home() {
   const [qrFgColor, setQrFgColor] = useState('#000000');
   const [qrBgColor, setQrBgColor] = useState('#ffffff');
   const [transparentBg, setTransparentBg] = useState(false);
-  const [qrLogo, setQrLogo] = useState('/logo/fyurl-logo-tp.png');
+  const [qrLogo, setQrLogo] = useState<string>('/logo/fyurl-logo-tp.png');
+  const [qrShortLink, setQrShortLink] = useState<string | null>(null);
+  const [isGeneratingQr, setIsGeneratingQr] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
@@ -59,6 +61,38 @@ export default function Home() {
     }, 2500);
     return () => clearInterval(interval);
   }, [t.taglines.length]);
+
+  const handleGenerateTrackableQr = async () => {
+    let finalUrl = qrText.trim();
+    if (!finalUrl) return;
+
+    if (!/^https?:\/\//i.test(finalUrl)) {
+      if (!finalUrl.includes('.') || finalUrl.includes(' ')) {
+         setQrShortLink(finalUrl);
+         return;
+      }
+      finalUrl = `https://${finalUrl}`;
+    }
+
+    setIsGeneratingQr(true);
+    try {
+      const res = await fetch('/api/links', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ longUrl: finalUrl }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setQrShortLink(`http://${defaultDomain}/${data.data.shortCode}`);
+      } else {
+        setQrShortLink(finalUrl);
+      }
+    } catch (err) {
+      setQrShortLink(finalUrl);
+    } finally {
+      setIsGeneratingQr(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -741,9 +775,25 @@ export default function Home() {
                     id="qrText"
                     placeholder={t.textOrUrlPlaceholder}
                     value={qrText}
-                    onChange={(e) => setQrText(e.target.value)}
+                    onChange={(e) => {
+                      setQrText(e.target.value);
+                      setQrShortLink(null);
+                    }}
                     className="block w-full px-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white resize-none min-h-[120px]"
                   />
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      onClick={handleGenerateTrackableQr}
+                      disabled={isGeneratingQr || !qrText.trim()}
+                      className="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                      {isGeneratingQr ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {lang === 'id' ? 'Memproses...' : 'Processing...'}</>
+                      ) : (
+                        lang === 'id' ? 'Buat QR Code' : 'Generate QR Code'
+                      )}
+                    </button>
+                  </div>
                 </div>
 
                 <div className="mb-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
@@ -822,12 +872,12 @@ export default function Home() {
                 </div>
 
                 <div className="flex flex-col items-center justify-center p-4 sm:p-8 bg-muted/20 rounded-2xl border border-border border-dashed min-h-[480px] w-full">
-                  {qrText.trim() ? (
+                  {qrShortLink ? (
                     <>
                       <div className="bg-white p-3 sm:p-4 rounded-2xl shadow-sm border border-border mb-6 w-full max-w-[340px] flex justify-center aspect-square">
                         <QRCodeCanvas 
                           id="qr-canvas-standalone"
-                          value={qrText} 
+                          value={qrShortLink} 
                           size={1024}
                           style={{ width: '100%', height: '100%', maxWidth: '300px', maxHeight: '300px' }}
                           level="H"
@@ -859,9 +909,9 @@ export default function Home() {
                       </button>
                     </>
                   ) : (
-                    <div className="text-center text-muted-foreground flex flex-col items-center py-8">
-                      <QrCode className="w-12 h-12 mb-4 opacity-20" />
-                      <p>{t.typeSomething}</p>
+                    <div className="flex flex-col items-center justify-center text-muted-foreground opacity-60">
+                      <QrCode className="w-16 h-16 mb-4 stroke-1" />
+                      <p className="font-medium text-center">{lang === 'id' ? 'Klik tombol Generate untuk membuat QR Code.' : 'Click Generate to create a QR Code.'}</p>
                     </div>
                   )}
                 </div>
