@@ -89,7 +89,7 @@ export default function LoginPage() {
         <div className="absolute top-[20%] -right-[10%] w-[30%] h-[30%] rounded-full bg-blue-400/20 blur-[100px]" />
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 mt-12 sm:mt-0">
         <Link href="/" className="flex justify-center mb-6">
           <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-12 w-auto object-contain" />
         </Link>
