@@ -110,7 +110,7 @@ export const dictionaries = {
     donation: "Donasi",
     freeToUse: "Gratis digunakan",
     makeEveryLink: "Bikin link",
-    taglines: ["lebih rapi.", "gampang diingat.", "bisa dilacak.", "pakai password.", "jadi QR code."],
+    taglines: ["makin rapi.", "mudah diingat.", "bisa dilacak.", "lebih aman.", "jadi QR."],
     heroDesc: "Singkat URL yang kepanjangan, pakai nama custom, atau bikin QR code dalam hitungan detik. Semuanya gratis, aman, dan nggak perlu daftar akun.",
     shortenLink: "Perpendek Link",
     qrGenerator: "Pembuat QR",
