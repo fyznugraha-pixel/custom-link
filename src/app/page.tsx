@@ -45,10 +45,7 @@ export default function Home() {
   const [showDonationModal, setShowDonationModal] = useState(false);
   useEffect(() => {
     if (!session) {
-      const timer = setTimeout(() => {
-        setShowFeatureModal(true);
-      }, 2000);
-      return () => clearTimeout(timer);
+      setShowFeatureModal(true);
     }
   }, [session]);
 
