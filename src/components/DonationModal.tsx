@@ -33,7 +33,7 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md sm:max-w-lg md:max-w-xl z-[101] p-4 sm:p-0"
           >
-            <div className="bg-white rounded-3xl shadow-2xl flex flex-col relative border border-slate-100 max-h-[90vh] sm:max-h-[95vh] overflow-y-auto custom-scrollbar">
+            <div className="bg-white rounded-3xl shadow-2xl flex flex-col relative border border-slate-100 max-h-[90dvh] sm:max-h-[95vh] overflow-y-auto custom-scrollbar">
               
               <button 
                 onClick={onClose}
@@ -55,7 +55,7 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
                 <img 
                   src="/logo/qris.webp" 
                   alt="QRIS Donation" 
-                  className="w-full max-w-sm h-auto object-contain rounded-xl mb-6 shadow-sm border border-slate-200"
+                  className="w-full max-w-sm max-h-[45vh] sm:max-h-[400px] h-auto object-contain rounded-xl mb-6 shadow-sm border border-slate-200"
                 />
                 <p className="text-xs sm:text-sm text-slate-500 font-medium text-center px-4">
                   {t.scanQrisText || (lang === 'id' ? 'Tinggal scan aja QRIS di atas pakai e-wallet atau m-banking andalan kamu.' : 'Scan the QRIS code above using your favorite e-wallet or m-banking app.')}
