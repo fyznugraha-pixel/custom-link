@@ -45,7 +45,7 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
 
               <div className="bg-gradient-to-br from-primary-50 to-white px-6 pt-10 pb-6 flex flex-col items-center text-center">
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                  {t.donationTitle || (lang === 'id' ? 'Makasih Banget Support-nya!' : 'Thank You For Your Support!')}
+                  {t.donationTitle || (lang === 'id' ? 'Makasi Supportnya!' : 'Thank You For Your Support!')}
                 </h3>
                 <p className="text-sm text-slate-600 sm:text-base max-w-md">
                   {t.donationDesc || (lang === 'id' ? 'Donasi kamu ngebantu banget buat bayar server supaya Fyurl bisa terus gratis dipake siapa aja.' : 'Your donation means the world to us and helps keep our servers running and this platform free for everyone.')}

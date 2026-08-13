@@ -171,7 +171,7 @@ export const dictionaries = {
     navDonation: "Donasi",
 
     // Donation Modal
-    donationTitle: "Makasih Banget Support-nya!",
+    donationTitle: "Makasi Supportnya!",
     donationDesc: "Donasi kamu ngebantu banget buat bayar server supaya Fyurl bisa terus gratis dipake siapa aja.",
     scanQrisText: "Tinggal scan aja QRIS di atas pakai e-wallet atau m-banking andalan kamu.",
     outsideIndo: "Atau kamu lagi di luar Indonesia?",
