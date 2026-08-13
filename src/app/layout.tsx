@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import AuthProvider from '@/components/AuthProvider';
 import Footer from '@/components/Footer';
 import { Toaster } from 'react-hot-toast';
+import NextTopLoader from 'nextjs-toploader';
 import "./globals.css";
 
 const inter = Inter({
@@ -148,6 +149,7 @@ export default function RootLayout({
         ></script>
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <NextTopLoader color="#0ea5e9" showSpinner={false} height={3} shadow="0 0 10px #0ea5e9,0 0 5px #0ea5e9" />
         <Toaster position="top-center" />
         <AuthProvider>
           {children}

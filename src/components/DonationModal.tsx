@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, Globe, HandCoins } from 'lucide-react';
 import { dictionaries, Language } from '@/lib/i18n';
+import Image from 'next/image';
 
 interface DonationModalProps {
   isOpen: boolean;
@@ -47,26 +48,33 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
                   <Heart className="w-8 h-8 fill-red-500" />
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                  {t.donationTitle || (lang === 'id' ? 'Terima Kasih Atas Dukungan Anda!' : 'Thank You For Your Support!')}
+                  {t.donationTitle || (lang === 'id' ? 'Makasih Banget Support-nya!' : 'Thank You For Your Support!')}
                 </h3>
                 <p className="text-sm text-slate-600 max-w-sm">
-                  {t.donationDesc || (lang === 'id' ? 'Donasi Anda sangat berarti untuk membantu kami mempertahankan server dan membuat platform ini tetap gratis untuk semua.' : 'Your donation means the world to us and helps keep our servers running and this platform free for everyone.')}
+                  {t.donationDesc || (lang === 'id' ? 'Donasi kamu ngebantu banget buat bayar server supaya Fyurl bisa terus gratis dipake siapa aja.' : 'Your donation means the world to us and helps keep our servers running and this platform free for everyone.')}
                 </p>
               </div>
 
               <div className="px-6 py-4 flex flex-col items-center border-t border-slate-100 bg-slate-50/50">
-                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block">
-                  <img src="/QRIS/qris.png" alt="QRIS Donation" className="w-48 h-48 sm:w-56 sm:h-56 object-contain rounded-xl" />
+                <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-4 inline-block relative w-48 h-48 sm:w-56 sm:h-56">
+                  <Image 
+                    src="/QRIS/qris.png" 
+                    alt="QRIS Donation" 
+                    fill
+                    className="object-contain rounded-xl"
+                    sizes="(max-width: 640px) 192px, 224px"
+                    priority
+                  />
                 </div>
                 <p className="text-xs text-slate-500 font-medium text-center px-4">
-                  {t.scanQrisText || (lang === 'id' ? 'Scan kode QRIS di atas menggunakan aplikasi e-wallet atau m-banking Anda.' : 'Scan the QRIS code above using your favorite e-wallet or m-banking app.')}
+                  {t.scanQrisText || (lang === 'id' ? 'Tinggal scan aja QRIS di atas pakai e-wallet atau m-banking andalan kamu.' : 'Scan the QRIS code above using your favorite e-wallet or m-banking app.')}
                 </p>
               </div>
 
               <div className="px-6 pb-6 pt-4 bg-slate-50/50 flex flex-col">
                 <div className="relative flex justify-center text-xs mb-4">
                   <span className="bg-slate-50/50 px-2 text-slate-400 font-medium">
-                    {t.outsideIndo || (lang === 'id' ? 'Atau Anda Berada di Luar Indonesia?' : 'Are you outside Indonesia?')}
+                    {t.outsideIndo || (lang === 'id' ? 'Atau kamu lagi di luar Indonesia?' : 'Are you outside Indonesia?')}
                   </span>
                   <div className="absolute inset-0 flex items-center -z-10">
                     <div className="w-full border-t border-slate-200"></div>

@@ -171,10 +171,10 @@ export const dictionaries = {
     navDonation: "Donasi",
 
     // Donation Modal
-    donationTitle: "Terima Kasih Atas Dukungan Anda!",
-    donationDesc: "Donasi Anda sangat berarti untuk membantu kami mempertahankan server dan membuat platform ini tetap gratis untuk semua.",
-    scanQrisText: "Scan kode QRIS di atas menggunakan aplikasi e-wallet atau m-banking Anda.",
-    outsideIndo: "Atau Anda berada di luar Indonesia?",
+    donationTitle: "Makasih Banget Support-nya!",
+    donationDesc: "Donasi kamu ngebantu banget buat bayar server supaya Fyurl bisa terus gratis dipake siapa aja.",
+    scanQrisText: "Tinggal scan aja QRIS di atas pakai e-wallet atau m-banking andalan kamu.",
+    outsideIndo: "Atau kamu lagi di luar Indonesia?",
     donateSaweria: "Donasi via Saweria"
   }
 };
