@@ -227,6 +227,13 @@ export default function Home() {
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+
+    // Track QR Download
+    fetch('/api/track-qr', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shortUrl: result?.shortCode })
+    }).catch(console.error);
   };
 
   return (

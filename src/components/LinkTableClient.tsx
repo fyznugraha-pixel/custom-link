@@ -51,6 +51,13 @@ export default function LinkTableClient({ initialLinks, customDomains = [], base
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+    
+    // Track QR Download
+    fetch('/api/track-qr', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shortUrl: qrModalLink?.shortCode })
+    }).catch(console.error);
   };
 
   const handleDelete = async (id: string) => {

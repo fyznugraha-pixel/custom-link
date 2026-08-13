@@ -4,12 +4,20 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from 'next/navigation';
 import AdminDashboardClient from '@/components/AdminDashboardClient';
 import { Suspense } from 'react';
+import { getStartDate, generateChartData } from '@/lib/analytics';
 
 export const dynamic = 'force-dynamic';
 
 const ADMIN_EMAIL = 'fyznugraha@gmail.com';
 
-export default async function AdminPage() {
+type PageProps = {
+  searchParams: Promise<{ tab?: string; range?: string }>;
+}
+
+export default async function AdminPage(props: PageProps) {
+  const resolvedParams = await props.searchParams;
+  const range = resolvedParams?.range || '7d';
+  
   const session = await getServerSession(authOptions);
   
   // Strict Auth Check
@@ -72,6 +80,34 @@ export default async function AdminPage() {
     totalClicks
   };
 
+  // 3. Analytics Growth Data
+  const startDate = getStartDate(range);
+  const clickEvents = await prisma.clickEvent.findMany({
+    where: { createdAt: { gte: startDate } },
+    select: { createdAt: true }
+  });
+  const pageViews = await prisma.pageView.findMany({
+    where: { createdAt: { gte: startDate } },
+    select: { createdAt: true }
+  });
+  const qrEvents = await prisma.qrEvent.findMany({
+    where: { createdAt: { gte: startDate } },
+    select: { createdAt: true }
+  });
+
+  const activeUsersData = users.filter(u => u.lastActiveAt).map(u => ({ lastActiveAt: u.lastActiveAt }));
+  
+  const chartData = generateChartData(
+    range,
+    startDate,
+    users, // users with createdAt
+    links, // links with createdAt
+    clickEvents,
+    activeUsersData,
+    pageViews,
+    qrEvents
+  );
+
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 py-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
@@ -87,6 +123,8 @@ export default async function AdminPage() {
           users={serializedUsers} 
           links={serializedLinks} 
           customDomains={customDomains} 
+          chartData={chartData}
+          currentRange={range}
         />
       </Suspense>
     </div>

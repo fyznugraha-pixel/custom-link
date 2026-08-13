@@ -1,8 +1,9 @@
 "use client";
 
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Users, Link as LinkIcon, BarChart3, Activity, Clock } from "lucide-react";
 import LinkTableClient from "./LinkTableClient";
+import DashboardGrowthChart from "./DashboardGrowthChart";
 
 type AdminDashboardProps = {
   stats: {
@@ -14,11 +15,27 @@ type AdminDashboardProps = {
   users: any[];
   links: any[];
   customDomains: any[];
+  chartData?: any[];
+  currentRange?: string;
 };
 
-export default function AdminDashboardClient({ stats, users, links, customDomains }: AdminDashboardProps) {
+export default function AdminDashboardClient({ stats, users, links, customDomains, chartData = [], currentRange = '7d' }: AdminDashboardProps) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'overview';
+
+  const handleRangeChange = (range: string) => {
+    router.push(`/hq-panel-7x9q-secret?tab=overview&range=${range}`);
+  };
+
+  const RANGES = [
+    { value: '24h', label: '24 Jam' },
+    { value: '3d', label: '3 Hari' },
+    { value: '7d', label: '7 Hari' },
+    { value: '1m', label: '1 Bulan' },
+    { value: '3m', label: '3 Bulan' },
+    { value: 'all', label: 'Semua' }
+  ];
 
   return (
     <div className="w-full">
@@ -86,6 +103,30 @@ export default function AdminDashboardClient({ stats, users, links, customDomain
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Growth Chart Section */}
+          <div className="mt-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+              <h2 className="text-lg font-medium text-slate-900">Pertumbuhan & Aktivitas</h2>
+              <div className="flex bg-slate-100 p-1 rounded-lg mt-2 sm:mt-0 overflow-x-auto max-w-full">
+                {RANGES.map(range => (
+                  <button
+                    key={range.value}
+                    onClick={() => handleRangeChange(range.value)}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap transition-colors ${
+                      currentRange === range.value 
+                        ? 'bg-white text-slate-900 shadow-sm' 
+                        : 'text-slate-500 hover:text-slate-700'
+                    }`}
+                  >
+                    {range.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <DashboardGrowthChart data={chartData || []} />
           </div>
         </div>
       )}
@@ -160,7 +201,7 @@ export default function AdminDashboardClient({ stats, users, links, customDomain
       )}
 
       {activeTab === 'links' && (
-        <div className="-mt-8">
+        <div className="mt-6">
           <LinkTableClient initialLinks={links} customDomains={customDomains} basePath="/hq-panel-7x9q-secret" />
         </div>
       )}

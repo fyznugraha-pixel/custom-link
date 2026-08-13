@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import { Analytics } from '@vercel/analytics/react';
 import AuthProvider from '@/components/AuthProvider';
 import Footer from '@/components/Footer';
+import AnalyticsTracker from '@/components/AnalyticsTracker';
 import { Toaster } from 'react-hot-toast';
 import NextTopLoader from 'nextjs-toploader';
 import "./globals.css";
@@ -158,6 +159,7 @@ export default function RootLayout({
         </AuthProvider>
         <Footer />
         <Analytics />
+        <AnalyticsTracker />
       </body>
     </html>
   );

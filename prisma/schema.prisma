@@ -128,3 +128,16 @@ model Report {
   status    String   @default("pending") // pending, resolved, dismissed
   createdAt DateTime @default(now())
 }
+
+model PageView {
+  id        String   @id @default(cuid())
+  path      String
+  country   String?
+  createdAt DateTime @default(now())
+}
+
+model QrEvent {
+  id        String   @id @default(cuid())
+  shortUrl  String?
+  createdAt DateTime @default(now())
+}

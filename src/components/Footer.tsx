@@ -37,7 +37,7 @@ export default function Footer() {
   }, []);
 
   // Hide footer on admin pages
-  if (pathname.startsWith('/admin') || pathname.startsWith('/admin-secret')) {
+  if (pathname.startsWith('/admin') || pathname.startsWith('/admin-secret') || pathname.startsWith('/hq-panel-7x9q-secret')) {
     return null;
   }
 
@@ -76,7 +76,10 @@ export default function Footer() {
               <span className="text-sm font-semibold">Instagram</span>
             </a>
             
-            <Link href="/report" className="flex items-center gap-1.5 text-primary-200 hover:text-white transition-colors text-sm font-medium">
+            <Link 
+              href="/report" 
+              className="flex items-center gap-2 p-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-full transition-all hover:scale-105 shadow-lg shadow-red-500/30 font-semibold text-sm border border-red-400"
+            >
               <ShieldAlert className="w-4 h-4" />
               {t.reportAbuse}
             </Link>
