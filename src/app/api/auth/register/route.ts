@@ -44,7 +44,15 @@ export async function POST(req: Request) {
     });
 
     // Send email
-    await sendOtpEmail(email, code);
+    const emailResult = await sendOtpEmail(email, code);
+
+    if (emailResult && !emailResult.success) {
+      return NextResponse.json({ 
+        success: false, 
+        message: 'OTP saved in DB but email failed to send',
+        emailError: emailResult.error 
+      }, { status: 500 });
+    }
 
     return NextResponse.json({ success: true, message: 'OTP sent to email' });
   } catch (error: any) {

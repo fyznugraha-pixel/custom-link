@@ -140,12 +140,14 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          suppressHydrationWarning
         />
         <meta name="google-adsense-account" content="ca-pub-3303348584536351" />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3303348584536351"
           crossOrigin="anonymous"
+          suppressHydrationWarning
         ></script>
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">

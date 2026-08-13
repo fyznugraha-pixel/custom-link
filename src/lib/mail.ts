@@ -20,7 +20,7 @@ export const sendOtpEmail = async (email: string, code: string) => {
   try {
     if (!process.env.RESEND_API_KEY) {
       console.warn('⚠️ RESEND_API_KEY not found. The OTP code is:', code);
-      return;
+      return { success: false, error: 'API_KEY_NOT_FOUND' };
     }
 
     const { data, error } = await resend.emails.send({
@@ -33,12 +33,14 @@ export const sendOtpEmail = async (email: string, code: string) => {
     if (error) {
       console.error('Error sending email via Resend:', error);
       console.warn('⚠️ Fallback: The OTP code is:', code);
-      return;
+      return { success: false, error };
     }
 
     console.log('Email sent successfully:', data);
+    return { success: true, data };
   } catch (error) {
     console.error('Unexpected error sending email:', error);
     console.warn('⚠️ Fallback: The OTP code is:', code);
+    return { success: false, error };
   }
 };
