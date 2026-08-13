@@ -63,7 +63,11 @@ export default function LoginPage() {
           setError(res.error);
         }
       } else {
-        router.push('/dashboard');
+        if (email.toLowerCase() === 'fyznugraha@gmail.com') {
+          router.push('/hq-panel-7x9q-secret');
+        } else {
+          router.push('/dashboard');
+        }
         router.refresh();
       }
     } catch (err) {

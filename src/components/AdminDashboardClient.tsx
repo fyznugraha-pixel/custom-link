@@ -185,7 +185,7 @@ export default function AdminDashboardClient({ stats, users, links, customDomain
 
       {activeTab === 'links' && (
         <div className="-mt-8">
-          <LinkTableClient initialLinks={links} customDomains={customDomains} basePath="/admin" />
+          <LinkTableClient initialLinks={links} customDomains={customDomains} basePath="/hq-panel-7x9q-secret" />
         </div>
       )}
     </div>

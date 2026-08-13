@@ -14,6 +14,11 @@ export default async function UserDashboardPage() {
     redirect('/api/auth/signin');
   }
 
+  // If the admin lands here (e.g. via Google Login callback), redirect to the secret panel
+  if (session?.user?.email === 'fyznugraha@gmail.com') {
+    redirect('/hq-panel-7x9q-secret');
+  }
+
   // Fetch only the links for the logged-in user
   const links = await prisma.link.findMany({
     where: { userId },
