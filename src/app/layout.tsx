@@ -29,7 +29,17 @@ export const metadata: Metadata = {
     "do tiny urls expire", "emoji urls", "url slug", "how does url shortening work", "managing links",
     "create vanity url", "bitly alternatives", "vanity url meaning", "do bitly qr codes expire", "shorten a hyperlink",
     "tinyurl qr code generator", "best qr", "url slug examples", "shorten a url", "short link url",
-    "what is a share code", "what-are-url-shorteners", "shortened url", "url redirect service", "how does url shortener work"
+    "what is a share code", "what-are-url-shorteners", "shortened url", "url redirect service", "how does url shortener work",
+    "alternatif bit.ly", "buat url pendek", "pembuat slug", "alternatif qr code", "alat manajemen link",
+    "qr code yang bisa dilacak", "url personalisasi", "cara membuat vanity url", "pemendek link terbaik", "qr code terbaik",
+    "apa itu domain pendek bermerek", "praktik terbaik vanity url", "apa itu url personalisasi", "apa itu vanity link", "apa itu vanity url",
+    "pembuat qr code terbaik", "pembuat link sementara", "ekstensi pemendek url chrome", "qr code grup whatsapp", "tingkat konversi influencer",
+    "buat qr code untuk google maps", "atribusi lintas saluran", "pengukuran influencer", "membagikan pesan teks",
+    "berapa lama link bitly bertahan", "pengalihan url", "pembuat qr code dengan pelacak", "cara memendekkan link", "arti vanity link",
+    "apakah tiny url kedaluwarsa", "url emoji", "slug url", "bagaimana cara kerja pemendekan url", "mengelola link",
+    "buat vanity url", "alternatif bitly", "arti vanity url", "apakah qr code bitly bisa kedaluwarsa", "memendekkan hyperlink",
+    "pembuat qr code tinyurl", "qr terbaik", "contoh slug url", "memendekkan url", "url link pendek",
+    "apa itu kode berbagi", "apa itu pemendek url", "url yang dipendekkan", "layanan pengalihan url", "bagaimana cara kerja pemendek url"
   ],
   authors: [{ name: "Fayiz Apriwansyah Nugraha", url: "https://byfayiz.web.id/portofolio" }],
   creator: "Fayiz Apriwansyah Nugraha",
