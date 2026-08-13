@@ -27,6 +27,7 @@ export async function middleware(request: NextRequest) {
     url.pathname.startsWith('/admin-secret') ||
     url.pathname.startsWith('/dashboard') ||
     url.pathname.startsWith('/logo') ||
+    url.pathname.startsWith('/QRIS') ||
     url.pathname.startsWith('/report') ||
     url.pathname.startsWith('/unlock') ||
     url.pathname.startsWith('/login') ||
@@ -238,6 +239,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|icon.png|logo|sw.js).*)',
+    '/((?!_next/static|_next/image|favicon.ico|icon.png|logo|QRIS|sw.js).*)',
   ],
 };
