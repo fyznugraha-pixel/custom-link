@@ -99,14 +99,18 @@ export default function Home() {
   const [domainId, setDomainId] = useState('');
 
   useEffect(() => {
-    setDefaultDomain(window.location.host.replace(/^www\./, ''));
+    const currentHost = window.location.host.replace(/^www\./, '');
+    setDefaultDomain(currentHost);
     
     // Fetch custom domains (public system domains + user's own domains if logged in)
     fetch('/api/domains')
       .then(res => res.json())
       .then(data => {
         if (data.data) {
-           const verifiedDomains = data.data.filter((d: any) => d.status === 'verified' || d.status === 'active' || d.status === 'Active');
+           const verifiedDomains = data.data.filter((d: any) => 
+             (d.status === 'verified' || d.status === 'active' || d.status === 'Active') && 
+             d.domain !== currentHost
+           );
            setCustomDomains(verifiedDomains);
            const primary = verifiedDomains.find((d: any) => d.isPrimary);
            if (primary) {
