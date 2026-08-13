@@ -33,7 +33,7 @@ export default function DonationModal({ isOpen, onClose, lang }: DonationModalPr
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md sm:max-w-lg md:max-w-xl z-[101] p-4 sm:p-0"
           >
-            <div className="bg-white rounded-3xl shadow-2xl flex flex-col relative border border-slate-100 max-h-[90vh] sm:max-h-[95vh] overflow-y-auto">
+            <div className="bg-white rounded-3xl shadow-2xl flex flex-col relative border border-slate-100 max-h-[90vh] sm:max-h-[95vh] overflow-y-auto custom-scrollbar">
               
               <button 
                 onClick={onClose}
