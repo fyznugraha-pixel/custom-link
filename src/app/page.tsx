@@ -295,7 +295,7 @@ export default function Home() {
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ y: 40, opacity: 0, scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block md:whitespace-nowrap drop-shadow-sm text-center text-[0.85em]"
+                  className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block whitespace-nowrap drop-shadow-sm text-center text-[0.85em]"
                 >
                   {t.taglines[wordIndex]}
                 </motion.span>
