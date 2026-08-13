@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { CreateLinkUseCase } from "@/use-cases/create-link.use-case";
 import { LinkRepository } from "@/repositories/link.repository";
 
@@ -48,10 +50,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "This URL has been flagged as unsafe (Phishing/Malware) by Google Safe Browsing." }, { status: 400 });
     }
 
+    // 4. Authenticate User (Optional)
+    const session = await getServerSession(authOptions);
+    const userId = session?.user ? (session.user as any).id : undefined;
+
     const link = await createLinkUseCase.execute({
       longUrl,
       title,
       customAlias,
+      userId,
       domainId,
       expiresIn,
       password,

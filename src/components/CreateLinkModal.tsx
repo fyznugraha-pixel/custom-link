@@ -11,9 +11,11 @@ interface CreateLinkModalProps {
 }
 
 export default function CreateLinkModal({ isOpen, onClose, onSuccess, customDomains = [] }: CreateLinkModalProps) {
+  const primaryDomain = customDomains.find(d => d.isPrimary);
+  
   const [longUrl, setLongUrl] = useState('');
   const [customAlias, setCustomAlias] = useState('');
-  const [domainId, setDomainId] = useState('');
+  const [domainId, setDomainId] = useState(primaryDomain ? primaryDomain.id : '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 

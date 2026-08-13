@@ -1,15 +1,54 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar, HandCoins, LogIn, X } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
+import UserNavbar from '@/components/UserNavbar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { dictionaries, Language } from '@/lib/i18n';
+import { useSession, signIn } from 'next-auth/react';
+import toast from 'react-hot-toast';
 
 export default function Home() {
+  const { data: session } = useSession();
   const [lang, setLang] = useState<Language>('en');
   const t = dictionaries[lang];
+
+  useEffect(() => {
+    const savedLang = localStorage.getItem('fyurl_lang');
+    if (savedLang === 'id' || savedLang === 'en') {
+      setLang(savedLang);
+    } else {
+      fetch('https://ipapi.co/json/')
+        .then(res => res.json())
+        .then(data => {
+          if (data.country_code === 'ID') {
+            setLang('id');
+            localStorage.setItem('fyurl_lang', 'id');
+          } else {
+            setLang('en');
+            localStorage.setItem('fyurl_lang', 'en');
+          }
+        })
+        .catch(() => {
+          if (navigator.language.toLowerCase().includes('id')) {
+            setLang('id');
+            localStorage.setItem('fyurl_lang', 'id');
+          }
+        });
+    }
+  }, []);
+
+  const [showFeatureModal, setShowFeatureModal] = useState(false);
+  useEffect(() => {
+    if (!session) {
+      const timer = setTimeout(() => {
+        setShowFeatureModal(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [session]);
 
   const EXPIRATION_OPTIONS = [
     { value: '1d', label: t.exp1d },
@@ -27,6 +66,7 @@ export default function Home() {
   const [expiresIn, setExpiresIn] = useState('3d');
   const [customDays, setCustomDays] = useState('60');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDomainDropdownOpen, setIsDomainDropdownOpen] = useState(false);
   const [qrFgColor, setQrFgColor] = useState('#000000');
   const [qrBgColor, setQrBgColor] = useState('#ffffff');
   const [transparentBg, setTransparentBg] = useState(false);
@@ -53,9 +93,27 @@ export default function Home() {
   const [wordIndex, setWordIndex] = useState(0);
 
   const [defaultDomain, setDefaultDomain] = useState('link.byfayiz.web.id');
+  const [customDomains, setCustomDomains] = useState<any[]>([]);
+  const [domainId, setDomainId] = useState('');
 
   useEffect(() => {
     setDefaultDomain(window.location.host.replace(/^www\./, ''));
+    
+    // Fetch custom domains (public system domains + user's own domains if logged in)
+    fetch('/api/domains')
+      .then(res => res.json())
+      .then(data => {
+        if (data.data) {
+           const verifiedDomains = data.data.filter((d: any) => d.status === 'verified' || d.status === 'active' || d.status === 'Active');
+           setCustomDomains(verifiedDomains);
+           const primary = verifiedDomains.find((d: any) => d.isPrimary);
+           if (primary) {
+             setDomainId(primary.id);
+           }
+        }
+      })
+      .catch(console.error);
+
     const interval = setInterval(() => {
       setWordIndex((prev) => (prev + 1) % t.taglines.length);
     }, 2500);
@@ -122,6 +180,7 @@ export default function Home() {
           ogTitle: requireOg && ogTitle ? ogTitle : undefined,
           ogDescription: requireOg && ogDescription ? ogDescription : undefined,
           ogImage: requireOg && ogImage ? ogImage : undefined,
+          domainId: domainId || undefined,
         }),
       });
       
@@ -133,7 +192,7 @@ export default function Home() {
       
       setResult({
         shortCode: data.data.shortCode,
-        domain: defaultDomain
+        domain: domainId ? customDomains.find(d => d.id === domainId)?.domain || defaultDomain : defaultDomain
       });
       
       // Clear form except for result
@@ -176,6 +235,9 @@ export default function Home() {
         <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[50%] rounded-full bg-indigo-400/10 blur-[150px]" />
       </div>
       {/* Navigation */}
+      {session ? (
+        <UserNavbar user={session.user} />
+      ) : (
       <nav className="border-b border-border bg-white fixed top-0 w-full z-50 transition-all">
         <div className="w-full px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
@@ -184,19 +246,30 @@ export default function Home() {
           
           <div className="flex items-center gap-4 sm:gap-6">
             <button
-              onClick={() => setLang(lang === 'en' ? 'id' : 'en')}
+              onClick={() => {
+                const newLang = lang === 'en' ? 'id' : 'en';
+                setLang(newLang);
+                localStorage.setItem('fyurl_lang', newLang);
+              }}
               className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               <Globe className="w-4 h-4" />
               <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN / ID' : 'ID / EN'}</span>
               <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
             </button>
-            <a href="https://saweria.co/payes" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5">
-              {t.donation}
-            </a>
+            <div className="flex items-center gap-2">
+              <a href="https://saweria.co/payes" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center p-2 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5" title={t.donation}>
+                <HandCoins className="w-5 h-5 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline-block">{t.donation}</span>
+              </a>
+              <button onClick={() => signIn()} className="inline-flex items-center justify-center px-4 py-2 border border-slate-200 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-200 hover:shadow-md hover:-translate-y-0.5">
+                Login
+              </button>
+            </div>
           </div>
         </div>
       </nav>
+      )}
 
       {/* Hero Section */}
       <main className="pt-36 pb-20 px-6 sm:px-10 lg:px-16 w-full flex-1 flex flex-col justify-center relative z-10">
@@ -205,9 +278,9 @@ export default function Home() {
             <span className="flex h-2 w-2 rounded-full bg-primary-600 animate-pulse"></span>
             {t.freeToUse}
           </div>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-[1.1]">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible leading-[1.1]">
             <span>{t.makeEveryLink}</span>
-            <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative">
+            <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative w-full md:w-auto px-4 md:px-0">
               <AnimatePresence mode="popLayout">
                 <motion.span
                   key={wordIndex}
@@ -215,7 +288,7 @@ export default function Home() {
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   exit={{ y: 40, opacity: 0, scale: 0.8 }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block whitespace-nowrap drop-shadow-sm"
+                  className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block md:whitespace-nowrap drop-shadow-sm text-center"
                 >
                   {t.taglines[wordIndex]}
                 </motion.span>
@@ -277,7 +350,7 @@ export default function Home() {
                         placeholder="https://your-very-long-url.com/some/path"
                         value={longUrl}
                         onChange={(e) => setLongUrl(e.target.value)}
-                        className="block w-full pl-12 pr-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
+                        className="block w-full pl-12 pr-4 py-4 text-base font-medium text-black border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white placeholder-slate-400"
                       />
                     </div>
                   </div>
@@ -286,10 +359,75 @@ export default function Home() {
                     <label htmlFor="customAlias" className="block text-sm font-semibold text-foreground mb-2">
                       {t.customAlias} <span className="text-muted-foreground font-normal">{t.optional}</span>
                     </label>
-                    <div className="flex shadow-sm rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
-                      <span className="inline-flex items-center px-4 border border-r-0 border-border bg-muted/50 text-muted-foreground text-sm sm:text-base whitespace-nowrap">
-                        {defaultDomain}/
-                      </span>
+                    <div className="flex shadow-sm rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
+                      {customDomains.length > 0 ? (
+                          <div 
+                            className="relative flex items-stretch border-r-0 border-slate-300"
+                            tabIndex={0}
+                            onBlur={(e) => {
+                              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                                setIsDomainDropdownOpen(false);
+                              }
+                            }}
+                          >
+                            <button
+                              type="button"
+                              onClick={() => setIsDomainDropdownOpen(!isDomainDropdownOpen)}
+                              className="inline-flex items-center justify-between pl-4 pr-3 py-4 border border-r-0 border-slate-300 rounded-l-xl bg-slate-50 text-black font-medium text-sm sm:text-base focus:outline-none min-w-[150px] sm:min-w-[180px] max-w-[180px] sm:max-w-[240px] hover:bg-slate-100 transition-colors"
+                            >
+                              <span className="truncate mr-2">
+                                {domainId ? customDomains.find(d => d.id === domainId)?.domain : defaultDomain}
+                              </span>
+                              <ChevronDown className={`w-4 h-4 text-slate-500 shrink-0 transition-transform duration-200 ${isDomainDropdownOpen ? 'rotate-180' : ''}`} />
+                            </button>
+
+                            <AnimatePresence>
+                              {isDomainDropdownOpen && (
+                                <motion.div
+                                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                  transition={{ duration: 0.15, ease: "easeOut" }}
+                                  className="absolute z-30 left-0 top-full mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl overflow-y-auto max-h-60"
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setDomainId("");
+                                      setIsDomainDropdownOpen(false);
+                                    }}
+                                    className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between ${
+                                      domainId === "" ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-700 hover:bg-slate-50 font-medium'
+                                    }`}
+                                  >
+                                    <span className="truncate">{defaultDomain}</span>
+                                    {domainId === "" && <CheckCircle2 className="w-4 h-4 text-primary-600 shrink-0 ml-2" />}
+                                  </button>
+                                  {customDomains.map(d => (
+                                    <button
+                                      key={d.id}
+                                      type="button"
+                                      onClick={() => {
+                                        setDomainId(d.id);
+                                        setIsDomainDropdownOpen(false);
+                                      }}
+                                      className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between border-t border-slate-100 ${
+                                        domainId === d.id ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-700 hover:bg-slate-50 font-medium'
+                                      }`}
+                                    >
+                                      <span className="truncate">{d.domain}</span>
+                                      {domainId === d.id && <CheckCircle2 className="w-4 h-4 text-primary-600 shrink-0 ml-2" />}
+                                    </button>
+                                  ))}
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </div>
+                      ) : (
+                        <span className="inline-flex items-center px-4 py-4 border border-r-0 border-slate-300 rounded-l-xl bg-slate-50 text-black font-medium text-sm sm:text-base whitespace-nowrap">
+                          {defaultDomain}
+                        </span>
+                      )}
                       <input
                         id="customAlias"
                         type="text"
@@ -298,7 +436,7 @@ export default function Home() {
                         onChange={(e) => setCustomAlias(e.target.value)}
                         pattern="[a-zA-Z0-9-_]+"
                         title="Only letters, numbers, dashes, and underscores are allowed"
-                        className="flex-1 block w-full px-4 py-4 text-base border border-border rounded-none rounded-r-xl focus:outline-none bg-muted/30 focus:bg-white"
+                        className="flex-1 block w-full px-4 py-4 text-base font-medium text-black border border-slate-300 rounded-none rounded-r-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white placeholder-slate-400"
                       />
                     </div>
                     <p className="mt-2 text-xs text-muted-foreground">
@@ -316,7 +454,7 @@ export default function Home() {
                       placeholder={t.titlePlaceholder}
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      className="block w-full px-4 py-4 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white"
+                      className="block w-full px-4 py-4 text-base font-medium text-black border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white placeholder-slate-400"
                     />
                     <p className="mt-2 text-xs text-muted-foreground">
                       {t.titleDesc}
@@ -609,7 +747,7 @@ export default function Home() {
                                       const file = e.target.files?.[0];
                                       if (file) {
                                         if (file.size > 2 * 1024 * 1024) {
-                                          alert("File is too large. Max size is 2MB.");
+                                          toast.error("File is too large. Max size is 2MB.");
                                           return;
                                         }
                                         const reader = new FileReader();
@@ -650,7 +788,7 @@ export default function Home() {
                           const file = e.target.files?.[0];
                           if (file) {
                             if (file.size > 2 * 1024 * 1024) {
-                              alert("File is too large. Please upload an image smaller than 2MB.");
+                              toast.error("File is too large. Please upload an image smaller than 2MB.");
                               return;
                             }
                             const reader = new FileReader();
@@ -808,7 +946,7 @@ export default function Home() {
                           const file = e.target.files?.[0];
                           if (file) {
                             if (file.size > 2 * 1024 * 1024) {
-                              alert("File is too large. Please upload an image smaller than 2MB.");
+                              toast.error("File is too large. Please upload an image smaller than 2MB.");
                               return;
                             }
                             const reader = new FileReader();
@@ -923,7 +1061,7 @@ export default function Home() {
       </main>
 
       {/* Premium Blue Footer */}
-      <footer className="mt-20 bg-[#1978e5] text-white pt-12 pb-6 px-6 sm:px-10 lg:px-16 shadow-2xl relative overflow-hidden">
+      <footer className="mt-20 bg-[#1978e5] text-white pt-12 pb-24 sm:pb-6 px-6 sm:px-10 lg:px-16 shadow-2xl relative overflow-hidden">
         {/* Abstract Background Shapes */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
           <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[150%] bg-white/5 blur-3xl rounded-full transform rotate-12"></div>
@@ -971,6 +1109,99 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* Login Features Modal */}
+      <AnimatePresence>
+        {showFeatureModal && !session && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            >
+              <div className="p-5 sm:p-8 relative">
+              <button 
+                onClick={() => {
+                  setShowFeatureModal(false);
+                }}
+                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="flex justify-center mb-4 sm:mb-6">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 bg-primary-100 text-primary-600 rounded-2xl rotate-3 flex items-center justify-center shadow-inner">
+                  <Zap className="w-7 h-7 sm:w-8 sm:h-8 -rotate-3" />
+                </div>
+              </div>
+              
+              <h3 className="text-xl sm:text-2xl font-bold text-slate-900 text-center mb-2 sm:mb-3">
+                {lang === 'id' ? 'Cobain Fitur Premium Gratis!' : 'Upgrade Your Experience!'}
+              </h3>
+              <p className="text-sm sm:text-base text-slate-500 text-center mb-5 sm:mb-8 font-medium">
+                {lang === 'id' ? 'Yuk login sekarang buat nikmatin semua fitur keren Fyurl, 100% gratis!' : 'Login now to unlock all exclusive Fyurl features for free.'}
+              </p>
+              
+              <div className="space-y-4 sm:space-y-5 mb-6 sm:mb-10 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-100">
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="bg-white p-1.5 sm:p-2 rounded-full shadow-sm border border-slate-100 shrink-0">
+                    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-800 text-sm sm:text-base">{lang === 'id' ? 'Manajemen Link & QR Code' : 'Link & QR Code Management'}</h4>
+                    <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{lang === 'id' ? 'Gampang banget buat ngedit, hapus, atau mantau semua link & QR code bikinanmu.' : 'Edit, delete, and monitor all links and QR codes you have created.'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="bg-white p-1.5 sm:p-2 rounded-full shadow-sm border border-slate-100 shrink-0">
+                    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-800 text-sm sm:text-base">{lang === 'id' ? 'Statistik Pengunjung Detail' : 'Detailed Visitor Statistics'}</h4>
+                    <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{lang === 'id' ? 'Bisa kepoin jumlah klik, asal negara, sampai perangkat yang dipakai pengunjungmu.' : 'Know how many clicks, devices & countries your visitors come from.'}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="bg-white p-1.5 sm:p-2 rounded-full shadow-sm border border-slate-100 shrink-0">
+                    <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-slate-800 text-sm sm:text-base">{lang === 'id' ? 'Pakai Domain Sendiri' : 'Your Own Custom Domain'}</h4>
+                    <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{lang === 'id' ? 'Bikin link makin kece dan tepercaya pakai domain kamu sendiri (misal: link.namakamu.com).' : 'Use your own domain (e.g. link.yourname.com) for branding.'}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button 
+                  onClick={() => {
+                    setShowFeatureModal(false);
+                  }}
+                  className="flex-1 py-3 sm:py-3.5 px-4 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors order-2 sm:order-1"
+                >
+                  {lang === 'id' ? 'Nanti Aja' : 'Try Later'}
+                </button>
+                <button 
+                  onClick={() => signIn()}
+                  className="flex-1 py-3 sm:py-3.5 px-4 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 transition-all shadow-lg shadow-primary-600/30 hover:shadow-primary-600/50 hover:-translate-y-0.5 order-1 sm:order-2 flex items-center justify-center gap-2"
+                >
+                  <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
+                  {lang === 'id' ? 'Login Sekarang' : 'Login Now'}
+                </button>
+              </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

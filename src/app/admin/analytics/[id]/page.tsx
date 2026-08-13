@@ -2,26 +2,16 @@ import prisma from '@/lib/prisma';
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Globe, Smartphone, MousePointer2, Calendar } from 'lucide-react';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
 
 export default async function AnalyticsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id: linkId } = await params;
-  const session = await getServerSession(authOptions);
-  const userId = (session?.user as any)?.id;
-  
-  if (!userId) {
-    redirect('/api/auth/signin');
-  }
   
   const link = await prisma.link.findUnique({
     where: { id: linkId },
     include: { domain: true },
   });
 
-  if (!link || link.userId !== userId) {
-    notFound();
-  }
+  if (!link) notFound();
 
   // Aggregate clicks
   const clicks = await prisma.clickEvent.findMany({
@@ -57,7 +47,7 @@ export default async function AnalyticsPage({ params }: { params: Promise<{ id: 
     <div className="w-full px-6 sm:px-10 lg:px-16 py-8 animate-in fade-in duration-300">
       {/* Header */}
       <div className="mb-8">
-        <Link href="/dashboard" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-4 transition-colors">
+        <Link href="/admin" className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground mb-4 transition-colors">
           <ArrowLeft className="w-4 h-4 mr-1" /> Back to Links
         </Link>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

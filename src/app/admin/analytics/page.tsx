@@ -1,31 +1,19 @@
 import prisma from '@/lib/prisma';
 import Link from 'next/link';
-import { BarChart3, Link as LinkIcon, ExternalLink, MousePointer2, ArrowLeft } from 'lucide-react';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
-import { redirect } from 'next/navigation';
+import { BarChart3, Link as LinkIcon, ExternalLink, MousePointer2 } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 export default async function GlobalAnalyticsPage() {
-  const session = await getServerSession(authOptions);
-  const userId = (session?.user as any)?.id;
-
-  if (!userId) {
-    redirect('/api/auth/signin');
-  }
-
   // Aggregate data
   const [totalLinks, links, clicksData] = await Promise.all([
-    prisma.link.count({ where: { userId } }),
+    prisma.link.count(),
     prisma.link.findMany({
-      where: { userId },
       orderBy: { clicks: 'desc' },
       take: 10,
       include: { domain: true }
     }),
     prisma.clickEvent.findMany({
-      where: { link: { userId } },
       orderBy: { createdAt: 'desc' },
       take: 50,
       include: { link: { include: { domain: true } } }
@@ -36,11 +24,9 @@ export default async function GlobalAnalyticsPage() {
 
   return (
     <div className="w-full px-6 sm:px-10 lg:px-16 py-10">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Analytics</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Overview of your shortened links and traffic.</p>
-        </div>
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Global Analytics</h1>
+        <p className="mt-2 text-sm text-muted-foreground">Overview of all shortened links and traffic across the platform.</p>
       </div>
 
       {/* Summary Cards */}
@@ -84,7 +70,7 @@ export default async function GlobalAnalyticsPage() {
                   <li key={link.id} className="p-4 hover:bg-muted/30 transition-colors">
                     <div className="flex justify-between items-start gap-3 sm:gap-4">
                       <div className="overflow-hidden flex-1 min-w-0">
-                        <Link href={`/dashboard/analytics/${link.id}`} className="font-semibold text-primary-600 hover:underline block truncate text-sm mb-1">
+                        <Link href={`/admin/analytics/${link.id}`} className="font-semibold text-primary-600 hover:underline block truncate text-sm mb-1">
                           {link.domain?.domain || 'fyurl.fun'}/{link.shortCode}
                         </Link>
                         <p className="text-xs text-muted-foreground truncate">{link.longUrl}</p>

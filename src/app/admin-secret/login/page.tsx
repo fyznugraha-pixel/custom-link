@@ -31,7 +31,7 @@ export default function AdminLogin() {
 
       if (res.ok && data.success) {
         // Refresh the router to pass through middleware and redirect to dashboard
-        window.location.href = '/dashboard';
+        window.location.href = '/admin-secret';
       } else {
         setError(data.error || 'Invalid password');
       }
@@ -43,7 +43,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-muted/30 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-muted/30 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <Link href="/" className="flex items-center gap-2">
@@ -61,8 +61,8 @@ export default function AdminLogin() {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl shadow-primary-900/5 sm:rounded-2xl sm:px-10 border border-border">
+      <div className="mt-8 sm:mx-auto w-full max-w-md mx-auto">
+        <div className="bg-white py-8 px-6 shadow-xl shadow-primary-900/5 rounded-2xl sm:px-10 border border-border">
           <form className="space-y-6" onSubmit={handleLogin}>
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm text-center font-medium">

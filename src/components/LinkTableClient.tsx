@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Search, Plus, MoreHorizontal, ExternalLink, Copy, BarChart3, ChevronRight, X, QrCode, Download } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
+import toast from 'react-hot-toast';
 import CreateLinkModal from './CreateLinkModal';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -10,9 +11,10 @@ import { useRouter } from 'next/navigation';
 interface LinkTableClientProps {
   initialLinks: any[];
   customDomains?: any[];
+  basePath?: string;
 }
 
-export default function LinkTableClient({ initialLinks, customDomains = [] }: LinkTableClientProps) {
+export default function LinkTableClient({ initialLinks, customDomains = [], basePath = '/admin-secret' }: LinkTableClientProps) {
   const [links, setLinks] = useState(initialLinks);
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,7 +34,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
   const handleCopy = (link: any) => {
     const domainToUse = link.domain?.domain || defaultDomain;
     navigator.clipboard.writeText(`http://${domainToUse}/${link.shortCode}`);
-    alert('Copied to clipboard!');
+    toast.success('Copied to clipboard!');
   };
 
   const handleDownloadQR = () => {
@@ -63,12 +65,13 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
         setLinks(links.filter((l) => l.id !== id));
         setSelectedLink(null);
         router.refresh();
+        toast.success('Link deleted successfully');
       } else {
-        alert('Failed to delete link.');
+        toast.error('Failed to delete link.');
       }
     } catch (error) {
       console.error(error);
-      alert('An error occurred while deleting the link.');
+      toast.error('An error occurred while deleting the link.');
     } finally {
       setIsDeleting(false);
     }
@@ -296,7 +299,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [] }: Li
 
               <div className="flex flex-col gap-3">
                 <Link 
-                  href={`/dashboard/analytics/${selectedLink.id}`}
+                  href={`${basePath}/analytics/${selectedLink.id}`}
                   className="w-full inline-flex items-center justify-center px-4 py-2 border border-primary-200 rounded-lg text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 focus:outline-none transition-colors"
                 >
                   View Full Analytics

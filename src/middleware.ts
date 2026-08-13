@@ -6,14 +6,14 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   
   // 1. Admin Protection Logic
-  const isAdminPath = url.pathname.startsWith('/dashboard') && url.pathname !== '/dashboard/login';
+  const isAdminPath = url.pathname.startsWith('/admin-secret') && url.pathname !== '/admin-secret/login';
   const isProtectedApi = url.pathname.startsWith('/api/domains') || url.pathname.match(/^\/api\/links\/[^\/]+$/);
 
   if (isAdminPath || isProtectedApi) {
     const adminToken = request.cookies.get('admin_token');
     if (!adminToken || adminToken.value !== 'true') {
       if (isAdminPath) {
-        return NextResponse.redirect(new URL('/dashboard/login', request.url));
+        return NextResponse.redirect(new URL('/admin-secret/login', request.url));
       } else {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
@@ -24,10 +24,14 @@ export async function middleware(request: NextRequest) {
   if (
     url.pathname.startsWith('/_next') ||
     url.pathname.startsWith('/api') ||
+    url.pathname.startsWith('/admin-secret') ||
     url.pathname.startsWith('/dashboard') ||
     url.pathname.startsWith('/logo') ||
     url.pathname.startsWith('/report') ||
     url.pathname.startsWith('/unlock') ||
+    url.pathname.startsWith('/login') ||
+    url.pathname.startsWith('/register') ||
+    url.pathname.startsWith('/verify-email') ||
     url.pathname === '/' ||
     url.pathname === '/favicon.ico' ||
     url.pathname === '/icon.png' ||

@@ -1,21 +1,10 @@
 import prisma from '@/lib/prisma';
 import DomainTableClient from '@/components/DomainTableClient';
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
-import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DomainsPage() {
-  const session = await getServerSession(authOptions);
-  const userId = (session?.user as any)?.id;
-
-  if (!userId) {
-    redirect('/api/auth/signin');
-  }
-
   const domains = await prisma.customDomain.findMany({
-    where: { userId },
     orderBy: { createdAt: 'desc' }
   });
 

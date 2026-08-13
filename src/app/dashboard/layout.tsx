@@ -1,14 +1,23 @@
-import Navbar from '@/components/Navbar';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import UserNavbar from "@/components/UserNavbar";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/api/auth/signin");
+  }
+
   return (
-    <div className="min-h-full flex flex-col bg-background">
-      <Navbar />
-      <main className="flex-1 w-full flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col">
+      <UserNavbar user={session.user} />
+      <main className="flex-1 w-full pt-16 pb-16 sm:pb-0">
         {children}
       </main>
     </div>

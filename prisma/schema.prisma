@@ -10,6 +10,7 @@ model User {
   id            String    @id @default(cuid())
   name          String?
   email         String?   @unique
+  password      String?
   emailVerified DateTime?
   image         String?
   accounts      Account[]
@@ -78,6 +79,16 @@ model Link {
   @@unique([domainId, shortCode])
 }
 
+model OtpCode {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
 model ClickEvent {
   id        String   @id @default(cuid())
   linkId    String
@@ -94,6 +105,7 @@ model CustomDomain {
   domain    String   @unique
   userId    String
   status    String   @default("pending") // pending, verified, failed
+  isPrimary Boolean  @default(false)
   createdAt DateTime @default(now())
   
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

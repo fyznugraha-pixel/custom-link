@@ -19,14 +19,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     let isVerified = false;
 
     try {
-      // Resolve TXT records for the domain
-      const txtRecords = await dns.resolveTxt(customDomain.domain);
+      // Use Google DNS over HTTPS to bypass local OS DNS caching issues
+      const res = await fetch(`https://dns.google/resolve?name=${customDomain.domain}&type=TXT`, { cache: 'no-store' });
+      const data = await res.json();
       
-      for (const recordArray of txtRecords) {
-        const recordStr = recordArray.join('');
-        if (recordStr === expectedTxt) {
-          isVerified = true;
-          break;
+      if (data.Answer) {
+        for (const record of data.Answer) {
+          // Google DNS returns TXT records as strings with extra quotes, e.g., "\"link-verification=...\""
+          const recordData = record.data.replace(/(^"|"$)/g, '');
+          if (recordData === expectedTxt) {
+            isVerified = true;
+            break;
+          }
         }
       }
     } catch (dnsError) {

@@ -1,5 +1,6 @@
 import { ILinkRepository } from "@/repositories/link.repository";
 import bcrypt from "bcryptjs";
+import prisma from "@/lib/prisma";
 
 function generateShortCode(length = 7): string {
   const chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -34,6 +35,19 @@ export class CreateLinkUseCase {
       parsedUrl = new URL(data.longUrl);
     } catch (e) {
       throw new Error("Invalid URL provided");
+    }
+
+    // 1.5. Validate Domain Ownership
+    if (data.domainId) {
+      const domain = await prisma.customDomain.findUnique({
+        where: { id: data.domainId }
+      });
+      if (!domain) {
+        throw new Error("Custom domain not found");
+      }
+      if (domain.userId !== 'admin-system' && domain.userId !== data.userId) {
+        throw new Error("You do not have permission to use this custom domain");
+      }
     }
 
     // 2. Determine short code
