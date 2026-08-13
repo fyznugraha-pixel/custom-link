@@ -24,7 +24,7 @@ export const sendOtpEmail = async (email: string, code: string) => {
     }
 
     const { data, error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
+      from: 'Fyurl <noreply@fyurl.fun>',
       to: [email],
       subject: 'Your Verification Code',
       html: htmlContent,
