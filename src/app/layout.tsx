@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Analytics } from '@vercel/analytics/react';
 import AuthProvider from '@/components/AuthProvider';
+import Footer from '@/components/Footer';
 import { Toaster } from 'react-hot-toast';
 import "./globals.css";
 
@@ -151,6 +152,7 @@ export default function RootLayout({
         <AuthProvider>
           {children}
         </AuthProvider>
+        <Footer />
         <Analytics />
       </body>
     </html>
