@@ -110,7 +110,7 @@ const jsonLd = {
       "url": "https://byfayiz.web.id/portofolio",
       "jobTitle": "Web Developer",
       "sameAs": [
-        "https://instagram.com/faizngraha"
+        "https://instagram.com/fyurl.id"
       ]
     },
     {

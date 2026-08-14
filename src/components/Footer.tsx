@@ -66,7 +66,7 @@ export default function Footer() {
         <div className="w-full flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             <a 
-              href="https://instagram.com/faizngraha" 
+              href="https://instagram.com/fyurl.id" 
               target="_blank" 
               rel="noopener noreferrer" 
               className="flex items-center gap-2 p-2 px-4 bg-primary-500/30 hover:bg-white hover:text-primary-600 rounded-full transition-all hover:scale-105 border border-primary-400/30" 
