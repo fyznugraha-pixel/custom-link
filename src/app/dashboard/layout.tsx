@@ -14,6 +14,10 @@ export default async function DashboardLayout({
     redirect("/api/auth/signin");
   }
 
+  if (session?.user?.email === 'fyznugraha@gmail.com') {
+    redirect('/hq-panel-7x9q-secret');
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <UserNavbar user={session.user} />

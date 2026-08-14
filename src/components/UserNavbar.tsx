@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, UserCircle, Link as LinkIcon, BarChart3, Globe, Home, HandCoins, Languages } from 'lucide-react';
+import { LogOut, UserCircle, Link as LinkIcon, BarChart3, Globe, Home, HandCoins, Languages, Shield } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { dictionaries, Language } from '@/lib/i18n';
@@ -64,24 +64,36 @@ export default function UserNavbar({ user }: { user: any }) {
                 >
                   <Home className="w-4 h-4 mr-2" /> {t.navHome}
                 </Link>
-                <Link 
-                  href="/dashboard" 
-                  className={`${pathname === '/dashboard' ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
-                >
-                  <LinkIcon className="w-4 h-4 mr-2" /> {t.navLinks}
-                </Link>
-                <Link 
-                  href="/dashboard/analytics" 
-                  className={`${pathname?.startsWith('/dashboard/analytics') ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
-                >
-                  <BarChart3 className="w-4 h-4 mr-2" /> {t.navAnalytics}
-                </Link>
-                <Link 
-                  href="/dashboard/domains" 
-                  className={`${pathname?.startsWith('/dashboard/domains') ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
-                >
-                  <Globe className="w-4 h-4 mr-2" /> {t.navDomains}
-                </Link>
+                
+                {user?.email === 'fyznugraha@gmail.com' ? (
+                  <Link 
+                    href="/hq-panel-7x9q-secret" 
+                    className="border-transparent text-red-600 hover:border-red-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-bold transition-colors"
+                  >
+                    <Shield className="w-4 h-4 mr-2" /> Admin Panel
+                  </Link>
+                ) : (
+                  <>
+                    <Link 
+                      href="/dashboard" 
+                      className={`${pathname === '/dashboard' ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
+                    >
+                      <LinkIcon className="w-4 h-4 mr-2" /> {t.navLinks}
+                    </Link>
+                    <Link 
+                      href="/dashboard/analytics" 
+                      className={`${pathname?.startsWith('/dashboard/analytics') ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
+                    >
+                      <BarChart3 className="w-4 h-4 mr-2" /> {t.navAnalytics}
+                    </Link>
+                    <Link 
+                      href="/dashboard/domains" 
+                      className={`${pathname?.startsWith('/dashboard/domains') ? 'border-primary-600 text-foreground' : 'border-transparent text-muted-foreground hover:border-border hover:text-foreground'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}
+                    >
+                      <Globe className="w-4 h-4 mr-2" /> {t.navDomains}
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
             
@@ -140,27 +152,40 @@ export default function UserNavbar({ user }: { user: any }) {
             <Home className="w-6 h-6 mb-1" />
             <span className="text-[10px] font-medium">{t.navHome}</span>
           </Link>
-          <Link 
-            href="/dashboard" 
-            className={`flex flex-col items-center justify-center w-full h-full ${pathname === '/dashboard' ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
-          >
-            <LinkIcon className="w-6 h-6 mb-1" />
-            <span className="text-[10px] font-medium">{t.navLinks}</span>
-          </Link>
-          <Link 
-            href="/dashboard/analytics" 
-            className={`flex flex-col items-center justify-center w-full h-full ${pathname?.startsWith('/dashboard/analytics') ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
-          >
-            <BarChart3 className="w-6 h-6 mb-1" />
-            <span className="text-[10px] font-medium">{t.navAnalytics}</span>
-          </Link>
-          <Link 
-            href="/dashboard/domains" 
-            className={`flex flex-col items-center justify-center w-full h-full ${pathname?.startsWith('/dashboard/domains') ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
-          >
-            <Globe className="w-6 h-6 mb-1" />
-            <span className="text-[10px] font-medium">{t.navDomains}</span>
-          </Link>
+          
+          {user?.email === 'fyznugraha@gmail.com' ? (
+            <Link 
+              href="/hq-panel-7x9q-secret" 
+              className="flex flex-col items-center justify-center w-full h-full text-red-500 hover:text-red-700 transition-colors"
+            >
+              <Shield className="w-6 h-6 mb-1" />
+              <span className="text-[10px] font-bold">Admin Panel</span>
+            </Link>
+          ) : (
+            <>
+              <Link 
+                href="/dashboard" 
+                className={`flex flex-col items-center justify-center w-full h-full ${pathname === '/dashboard' ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
+              >
+                <LinkIcon className="w-6 h-6 mb-1" />
+                <span className="text-[10px] font-medium">{t.navLinks}</span>
+              </Link>
+              <Link 
+                href="/dashboard/analytics" 
+                className={`flex flex-col items-center justify-center w-full h-full ${pathname?.startsWith('/dashboard/analytics') ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
+              >
+                <BarChart3 className="w-6 h-6 mb-1" />
+                <span className="text-[10px] font-medium">{t.navAnalytics}</span>
+              </Link>
+              <Link 
+                href="/dashboard/domains" 
+                className={`flex flex-col items-center justify-center w-full h-full ${pathname?.startsWith('/dashboard/domains') ? 'text-primary-600' : 'text-slate-500 hover:text-slate-900'} transition-colors`}
+              >
+                <Globe className="w-6 h-6 mb-1" />
+                <span className="text-[10px] font-medium">{t.navDomains}</span>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
