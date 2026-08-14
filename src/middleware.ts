@@ -5,20 +5,7 @@ import { redis } from '@/lib/redis';
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
   
-  // 1. Admin Protection Logic
-  const isAdminPath = url.pathname.startsWith('/hq-panel-7x9q-secret') && url.pathname !== '/hq-panel-7x9q-secret/login';
-  const isProtectedApi = url.pathname.startsWith('/api/domains') || url.pathname.match(/^\/api\/links\/[^\/]+$/);
-
-  if (isAdminPath || isProtectedApi) {
-    const adminToken = request.cookies.get('admin_token');
-    if (!adminToken || adminToken.value !== 'true') {
-      if (isAdminPath) {
-        return NextResponse.redirect(new URL('/hq-panel-7x9q-secret/login', request.url));
-      } else {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
-    }
-  }
+  // 1. Removed Admin Protection Logic (now handled by NextAuth in layout/routes)
 
   // 2. Skip standard Next.js paths and API routes for short code logic
   if (
@@ -33,6 +20,8 @@ export async function middleware(request: NextRequest) {
     url.pathname.startsWith('/login') ||
     url.pathname.startsWith('/register') ||
     url.pathname.startsWith('/verify-email') ||
+    url.pathname.startsWith('/forgot-password') ||
+    url.pathname.startsWith('/verify-reset') ||
     url.pathname.startsWith('/maintenance') ||
     url.pathname === '/' ||
     url.pathname === '/favicon.ico' ||

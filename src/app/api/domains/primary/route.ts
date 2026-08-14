@@ -2,19 +2,14 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { cookies } from 'next/headers';
 
 export async function POST(req: Request) {
   try {
-    const cookieStore = await cookies();
-    const adminToken = cookieStore.get('admin_token');
-    const isAdmin = adminToken?.value === 'true';
-
     const session = await getServerSession(authOptions);
 
     let userId = null;
 
-    if (isAdmin) {
+    if (session?.user?.email === 'fyznugraha@gmail.com') {
       userId = 'admin-system';
     } else if (session?.user?.email) {
       const user = await prisma.user.findUnique({
@@ -70,9 +65,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, data: updatedDomain });
   } catch (error: any) {
     console.error('Set primary domain error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }

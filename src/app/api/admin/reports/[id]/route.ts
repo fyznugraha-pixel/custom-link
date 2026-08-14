@@ -7,16 +7,7 @@ import bcrypt from 'bcryptjs';
 // Helper to check admin
 async function isAdmin() {
   const session = await getServerSession(authOptions);
-  
-  // Note: we can either rely on session admin flag if it exists, or just check the admin password logic used elsewhere
-  // We'll import cookies and check the 'admin_token'
-  const { cookies } = await import('next/headers');
-  const cookieStore = await cookies();
-  const adminCookie = cookieStore.get('admin_token');
-  
-  if (!adminCookie || adminCookie.value !== 'true') return false;
-  
-  return true;
+  return session?.user?.email === 'fyznugraha@gmail.com';
 }
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {

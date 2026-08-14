@@ -159,6 +159,13 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+              <div className="flex items-center justify-end mt-2">
+                <div className="text-sm">
+                  <Link href="/forgot-password" className="font-medium text-primary-600 hover:text-primary-500 transition-colors">
+                    Lupa password?
+                  </Link>
+                </div>
+              </div>
             </div>
 
             <button

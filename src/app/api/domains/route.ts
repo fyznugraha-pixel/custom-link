@@ -2,14 +2,11 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import prisma from '@/lib/prisma';
-import { cookies } from 'next/headers';
 
 export async function GET(request: Request) {
   try {
     const session = await getServerSession(authOptions);
-    const cookieStore = await cookies();
-    const adminToken = cookieStore.get('admin_token');
-    const isAdmin = adminToken?.value === 'true';
+    const isAdmin = session?.user?.email === 'fyznugraha@gmail.com';
 
     let userIds = ['admin-system']; // Always include system domains for public use
 
@@ -45,13 +42,15 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const adminToken = cookieStore.get('admin_token');
-    const isAdmin = adminToken?.value === 'true';
-
     const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     let userId = null;
     let userName = null;
+    const isAdmin = session.user?.email === 'fyznugraha@gmail.com';
 
     if (isAdmin) {
       userId = 'admin-system';
