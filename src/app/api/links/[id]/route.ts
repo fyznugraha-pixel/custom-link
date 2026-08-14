@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { cookies } from 'next/headers';
+import { redis } from '@/lib/redis';
 
 export async function DELETE(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -15,15 +16,27 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     
     // Check if link exists
     const link = await prisma.link.findUnique({
-      where: { id }
+      where: { id },
+      include: { domain: true }
     });
 
     if (!link) {
       return NextResponse.json({ error: 'Link not found' }, { status: 404 });
     }
 
-    // Delete the link (this will also delete associated click events due to cascade if configured, 
-    // or we can just delete the link)
+    // Invalidate Cache
+    // Attempt to invalidate on primary domain and the specific custom domain
+    const domainsToClear = ['fyurl.fun', 'fylink.id'];
+    if (link.domain?.domain) {
+      domainsToClear.push(link.domain.domain);
+    }
+
+    for (const d of domainsToClear) {
+      const cacheKey = `domain:${d}:code:${link.shortCode}`;
+      await redis.del(cacheKey);
+    }
+
+    // Delete the link
     await prisma.link.delete({
       where: { id }
     });

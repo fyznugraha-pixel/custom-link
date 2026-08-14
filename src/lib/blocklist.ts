@@ -7,6 +7,7 @@ const blocklistedDomains = [
   "serveo.net",
   // disposable/free domains often abused
   ".tk", ".ml", ".ga", ".cf", ".gq",
+  ".xyz", ".top", ".pw", ".cn", ".icu", ".sbs", ".site", ".online", ".rest", ".shop",
   // prevent double shortening
   "bit.ly", 
   "tinyurl.com",
@@ -25,7 +26,18 @@ const blocklistedKeywords = [
   "password",
   "auth",
   "update-account",
-  "verification"
+  "verification",
+  "dana-kaget",
+  "bca-promo",
+  "hadiah",
+  "spin",
+  "undian",
+  "pulsa-gratis",
+  "free-fire",
+  "pubg-mobile",
+  "diamond",
+  "chip",
+  "slot"
 ];
 
 export function isUrlBlocklisted(url: string): boolean {

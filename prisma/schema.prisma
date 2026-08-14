@@ -82,6 +82,7 @@ model Link {
   clickEvents  ClickEvent[]
 
   @@unique([domainId, shortCode])
+  @@index([userId])
 }
 
 model OtpCode {
@@ -107,6 +108,8 @@ model ClickEvent {
   createdAt DateTime @default(now())
   
   link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+
+  @@index([linkId])
 }
 
 model CustomDomain {
