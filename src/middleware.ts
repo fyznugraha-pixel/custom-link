@@ -33,6 +33,7 @@ export async function middleware(request: NextRequest) {
     url.pathname.startsWith('/login') ||
     url.pathname.startsWith('/register') ||
     url.pathname.startsWith('/verify-email') ||
+    url.pathname.startsWith('/maintenance') ||
     url.pathname === '/' ||
     url.pathname === '/favicon.ico' ||
     url.pathname === '/icon.png' ||

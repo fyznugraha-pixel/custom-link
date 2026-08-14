@@ -186,7 +186,10 @@ export default function LoginPage() {
 
             <div className="mt-6">
               <button
-                onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
+                onClick={(e) => {
+                  e.preventDefault();
+                  router.push('/maintenance');
+                }}
                 className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-slate-300 rounded-lg shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
               >
                 <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
