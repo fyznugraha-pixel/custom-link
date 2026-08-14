@@ -42,7 +42,8 @@ export const sendOtpEmail = async (email: string, code: string, type: 'register'
       return { success: false, error };
     }
 
-    console.log('Email sent successfully:', data);
+    console.log('Email sent successfully via Resend:', data);
+    console.log(`🔑 OTP CODE FOR ${email}: ${code}`);
     return { success: true, data };
   } catch (error) {
     console.error('Unexpected error sending email:', error);
