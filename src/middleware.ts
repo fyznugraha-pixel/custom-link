@@ -141,7 +141,11 @@ export async function middleware(request: NextRequest) {
           }),
         }).catch(console.error);
 
-        return NextResponse.redirect(new URL(longUrl), { status: 301 });
+        const destination = new URL(longUrl);
+        if (!destination.searchParams.has('utm_source')) {
+          destination.searchParams.set('utm_source', 'fyurl.fun');
+        }
+        return NextResponse.redirect(destination, { status: 301 });
       }
     }
 
@@ -214,7 +218,11 @@ export async function middleware(request: NextRequest) {
             })
           }).catch(console.error);
 
-          return NextResponse.redirect(new URL(data.longUrl), { status: 301 });
+          const destination = new URL(data.longUrl);
+          if (!destination.searchParams.has('utm_source')) {
+            destination.searchParams.set('utm_source', 'fyurl.fun');
+          }
+          return NextResponse.redirect(destination, { status: 301 });
         }
       } else if (res.status === 410) {
         // HTTP 410 Gone -> Expired link
