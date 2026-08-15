@@ -41,6 +41,26 @@ export default function Home() {
     }
   }, []);
 
+  // Handle URL errors (e.g. from middleware redirect on 404)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const error = urlParams.get('error');
+      const status = urlParams.get('status');
+
+      if (error === 'lookup_failed') {
+        if (status === '404') {
+          toast.error(lang === 'id' ? 'Tautan tidak ditemukan.' : 'Link not found.', { duration: 4000 });
+        } else {
+          toast.error(lang === 'id' ? 'Gagal memuat tautan.' : 'Failed to load link.', { duration: 4000 });
+        }
+        
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
+    }
+  }, [lang]);
+
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [showDonationModal, setShowDonationModal] = useState(false);
   useEffect(() => {
