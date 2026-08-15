@@ -32,7 +32,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     }
 
     for (const d of domainsToClear) {
-      const cacheKey = `domain:${d}:code:${link.shortCode}`;
+      const cacheKey = `domain:${d}:code:${link.shortCode.toLowerCase()}`;
       await redis.del(cacheKey);
     }
 

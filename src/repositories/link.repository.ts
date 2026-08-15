@@ -16,12 +16,13 @@ export class LinkRepository implements ILinkRepository {
 
   async findByShortCode(shortCode: string, domainId?: string): Promise<Link | null> {
     if (domainId) {
-      return prisma.link.findUnique({
+      return prisma.link.findFirst({
         where: {
-          domainId_shortCode: {
-            domainId,
-            shortCode,
-          },
+          domainId,
+          shortCode: {
+            equals: shortCode,
+            mode: 'insensitive'
+          }
         },
       });
     }
@@ -29,8 +30,11 @@ export class LinkRepository implements ILinkRepository {
     // For default domain (no custom domain attached)
     return prisma.link.findFirst({
       where: {
-        shortCode,
         domainId: null,
+        shortCode: {
+          equals: shortCode,
+          mode: 'insensitive'
+        }
       },
     });
   }

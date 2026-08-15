@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
   try {
     // 1. Redis Lookup Cache
     // Cache key format: domain:{domain}:code:{shortCode}
-    const cacheKey = `domain:${cleanHostname}:code:${shortCode}`;
+    const cacheKey = `domain:${cleanHostname}:code:${shortCode.toLowerCase()}`;
     const cacheData = await redis.get<any>(cacheKey);
 
     if (cacheData) {

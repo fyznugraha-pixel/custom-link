@@ -56,7 +56,7 @@ export async function GET(request: Request) {
         }
       }
 
-      const cacheKey = `domain:${domain}:code:${code}`;
+      const cacheKey = `domain:${domain}:code:${code.toLowerCase()}`;
       
       const isTimeLocked = link.unlockAt ? link.unlockAt > new Date() : false;
       const isLocked = !!link.password || isTimeLocked;
