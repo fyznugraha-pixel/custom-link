@@ -19,7 +19,8 @@ export default function AdminSidebar() {
       await signOut({ callbackUrl: '/login' });
     } catch (error) {
       console.error('Logout error:', error);
-
+    }
+  };
 
   const menuItems = [
     { label: 'Overview', icon: BarChart3, href: '/hq-panel-7x9q-secret', active: pathname === '/hq-panel-7x9q-secret' && !currentTab },
