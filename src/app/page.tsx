@@ -144,7 +144,7 @@ export default function Home() {
       });
       const data = await res.json();
       if (res.ok) {
-        setQrShortLink(`http://${defaultDomain}/${data.data.shortCode}`);
+        setQrShortLink(`https://${defaultDomain}/${data.data.shortCode}`);
       } else {
         setQrShortLink(finalUrl);
       }
@@ -211,7 +211,7 @@ export default function Home() {
 
   const handleCopy = () => {
     if (!result) return;
-    navigator.clipboard.writeText(`http://${result.domain}/${result.shortCode}`);
+    navigator.clipboard.writeText(`${result.domain}/${result.shortCode}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -889,7 +889,7 @@ export default function Home() {
                     <div className="mb-6 bg-muted/10 rounded-xl p-2 w-full flex justify-center aspect-square">
                       <QRCodeCanvas 
                         id="qr-canvas"
-                        value={`http://${result.domain}/${result.shortCode}`} 
+                        value={`https://${result.domain}/${result.shortCode}`} 
                         size={1024}
                         style={{ width: '100%', height: '100%', maxWidth: '220px', maxHeight: '220px' }}
                         level="H"

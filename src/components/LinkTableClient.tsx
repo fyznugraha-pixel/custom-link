@@ -33,7 +33,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [], base
 
   const handleCopy = (link: any) => {
     const domainToUse = link.domain?.domain || defaultDomain;
-    navigator.clipboard.writeText(`http://${domainToUse}/${link.shortCode}`);
+    navigator.clipboard.writeText(`${domainToUse}/${link.shortCode}`);
     toast.success('Copied to clipboard!');
   };
 
@@ -281,7 +281,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [], base
                 <div className="space-y-4">
                   <div>
                     <span className="text-xs text-muted-foreground block mb-1">Short Link</span>
-                    <a href={`http://${selectedLink.domain?.domain || defaultDomain}/${selectedLink.shortCode}`} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary-600 hover:underline bg-primary-50 px-2 py-1 rounded inline-block truncate max-w-full">
+                    <a href={`https://${selectedLink.domain?.domain || defaultDomain}/${selectedLink.shortCode}`} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-primary-600 hover:underline bg-primary-50 px-2 py-1 rounded inline-block truncate max-w-full">
                       {selectedLink.domain?.domain || defaultDomain}/{selectedLink.shortCode}
                     </a>
                   </div>
@@ -354,7 +354,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [], base
               <div className="bg-white p-4 rounded-xl shadow-sm border border-border">
                 <QRCodeCanvas 
                   id="qr-canvas"
-                  value={`http://${qrModalLink.domain?.domain || defaultDomain}/${qrModalLink.shortCode}`} 
+                  value={`https://${qrModalLink.domain?.domain || defaultDomain}/${qrModalLink.shortCode}`} 
                   size={1024}
                   style={{ width: '200px', height: '200px' }}
                   level="H"
