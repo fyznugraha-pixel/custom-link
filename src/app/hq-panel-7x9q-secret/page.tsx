@@ -25,39 +25,43 @@ export default async function AdminPage(props: PageProps) {
     redirect('/'); // Kick unauthorized users out
   }
 
-  // 1. Fetch Links & Clicks
-  const links = await prisma.link.findMany({
-    orderBy: { createdAt: 'desc' },
-    include: {
-      domain: true,
-    }
-  });
+  // 1. Fetch data in parallel
+  const startDate = getStartDate(range);
+  const fifteenMinsAgo = new Date(Date.now() - 15 * 60 * 1000);
+
+  const [links, users, customDomains, clickEvents, pageViews, qrEvents] = await Promise.all([
+    prisma.link.findMany({
+      orderBy: { createdAt: 'desc' },
+      include: { domain: true }
+    }),
+    prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true, name: true, email: true, emailVerified: true,
+        createdAt: true, lastActiveAt: true, country: true,
+      }
+    }),
+    prisma.customDomain.findMany({
+      where: { status: 'verified' },
+      orderBy: { domain: 'asc' }
+    }),
+    prisma.clickEvent.findMany({
+      where: { createdAt: { gte: startDate } },
+      select: { createdAt: true }
+    }),
+    prisma.pageView.findMany({
+      where: { createdAt: { gte: startDate } },
+      select: { createdAt: true }
+    }),
+    prisma.qrEvent.findMany({
+      where: { createdAt: { gte: startDate } },
+      select: { createdAt: true }
+    })
+  ]);
 
   const totalLinks = links.length;
   const totalClicks = links.reduce((sum, link) => sum + link.clicks, 0);
-
-  // 2. Fetch Users Data
-  const users = await prisma.user.findMany({
-    orderBy: { createdAt: 'desc' },
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      emailVerified: true,
-      createdAt: true,
-      lastActiveAt: true,
-      country: true,
-    }
-  });
-
-  // Calculate online users (active in the last 15 minutes)
-  const fifteenMinsAgo = new Date(Date.now() - 15 * 60 * 1000);
   const onlineUsers = users.filter(user => user.lastActiveAt && user.lastActiveAt > fifteenMinsAgo).length;
-
-  const customDomains = await prisma.customDomain.findMany({
-    where: { status: 'verified' },
-    orderBy: { domain: 'asc' }
-  });
 
   // Serialize dates
   const serializedLinks = links.map((link: { createdAt: Date; expiresAt: Date | null; [key: string]: any }) => ({
@@ -81,19 +85,7 @@ export default async function AdminPage(props: PageProps) {
   };
 
   // 3. Analytics Growth Data
-  const startDate = getStartDate(range);
-  const clickEvents = await prisma.clickEvent.findMany({
-    where: { createdAt: { gte: startDate } },
-    select: { createdAt: true }
-  });
-  const pageViews = await prisma.pageView.findMany({
-    where: { createdAt: { gte: startDate } },
-    select: { createdAt: true }
-  });
-  const qrEvents = await prisma.qrEvent.findMany({
-    where: { createdAt: { gte: startDate } },
-    select: { createdAt: true }
-  });
+  // Data is already fetched in parallel above
 
   const activeUsersData = users.filter(u => u.lastActiveAt).map(u => ({ lastActiveAt: u.lastActiveAt }));
   
