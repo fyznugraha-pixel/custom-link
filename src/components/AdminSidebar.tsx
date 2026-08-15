@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { LogOut, Link as LinkIcon, BarChart3, Globe, Flag, Menu, X, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import { signOut } from 'next-auth/react';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -15,15 +16,10 @@ export default function AdminSidebar() {
 
   const handleLogout = async () => {
     try {
-      await fetch('/api/admin/logout', { method: 'POST' });
-      router.push('/hq-panel-7x9q-secret/login');
-      router.refresh();
+      await signOut({ callbackUrl: '/login' });
     } catch (error) {
       console.error('Logout error:', error);
-    }
-  };
 
-  if (pathname === '/hq-panel-7x9q-secret/login') return null;
 
   const menuItems = [
     { label: 'Overview', icon: BarChart3, href: '/hq-panel-7x9q-secret', active: pathname === '/hq-panel-7x9q-secret' && !currentTab },
