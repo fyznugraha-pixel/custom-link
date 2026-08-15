@@ -195,7 +195,7 @@ export default function LoginPage() {
               <button
                 onClick={(e) => {
                   e.preventDefault();
-                  router.push('/maintenance');
+                  signIn('google', { callbackUrl: '/dashboard' });
                 }}
                 className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-slate-300 rounded-lg shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
               >
