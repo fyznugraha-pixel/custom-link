@@ -23,6 +23,7 @@ export async function middleware(request: NextRequest) {
     url.pathname.startsWith('/forgot-password') ||
     url.pathname.startsWith('/verify-reset') ||
     url.pathname.startsWith('/maintenance') ||
+    url.pathname.startsWith('/expired') ||
     url.pathname === '/' ||
     url.pathname === '/favicon.ico' ||
     url.pathname === '/icon.png' ||
@@ -211,6 +212,9 @@ export async function middleware(request: NextRequest) {
 
           return NextResponse.redirect(new URL(data.longUrl), { status: 301 });
         }
+      } else if (res.status === 410) {
+        // HTTP 410 Gone -> Expired link
+        return NextResponse.rewrite(new URL('/expired', request.url));
       } else {
         const text = await res.text();
         return NextResponse.redirect(new URL(`/?error=lookup_failed&status=${res.status}&msg=${encodeURIComponent(text.substring(0,50))}`, request.url));

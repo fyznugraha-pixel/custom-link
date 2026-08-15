@@ -32,7 +32,7 @@ export async function GET(request: Request) {
 
     if (link) {
       if (link.expiresAt && link.expiresAt < new Date()) {
-        return NextResponse.json({ error: 'Link not found or expired' }, { status: 404 });
+        return NextResponse.json({ error: 'Link expired' }, { status: 410 });
       }
 
       // 2. Set to Redis Cache for future hits (ttl: 1 hour max, or until expiry)
