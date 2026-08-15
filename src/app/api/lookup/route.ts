@@ -39,8 +39,16 @@ export async function GET(request: Request) {
       }
     }
 
+    // Check if the requested domain is the default app domain
+    const isDefaultDomain = !domain || domain.replace(/^www\./, '') === (process.env.NEXT_PUBLIC_APP_URL || 'fyurl.fun').replace(/^https?:\/\//, '').replace(/^www\./, '');
+
     // 1. Fetch from DB using the resolved domainId
-    const link = await linkRepository.findByShortCode(code, domainId);
+    let link = await linkRepository.findByShortCode(code, domainId);
+    
+    // Fallback: If not found, and this is the default domain, it might be stored as domainId: null
+    if (!link && domainId && isDefaultDomain) {
+      link = await linkRepository.findByShortCode(code, undefined);
+    }
 
     if (link) {
       if (link.expiresAt && link.expiresAt < new Date()) {
