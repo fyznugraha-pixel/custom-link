@@ -65,7 +65,11 @@ export default function Home() {
   const [showDonationModal, setShowDonationModal] = useState(false);
   useEffect(() => {
     if (!session) {
-      setShowFeatureModal(true);
+      const hasSeenModal = localStorage.getItem('fyurl_modal_seen');
+      if (!hasSeenModal) {
+        setShowFeatureModal(true);
+        localStorage.setItem('fyurl_modal_seen', 'true');
+      }
     }
   }, [session]);
 
