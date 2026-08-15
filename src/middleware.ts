@@ -4,8 +4,16 @@ import { redis } from '@/lib/redis';
 
 export async function middleware(request: NextRequest) {
   const url = request.nextUrl;
-  
-  // 1. Removed Admin Protection Logic (now handled by NextAuth in layout/routes)
+  const hostname = request.headers.get('host') || '';
+  const cleanHostname = hostname.split(':')[0];
+
+  // 1. Redirect deprecated fylink.fun domain to fyurl.fun
+  if (cleanHostname === 'fylink.fun' || cleanHostname === 'www.fylink.fun') {
+    const targetUrl = new URL(request.nextUrl.pathname + request.nextUrl.search, 'https://fyurl.fun');
+    return NextResponse.redirect(targetUrl, 301);
+  }
+
+  // 2. Removed Admin Protection Logic (now handled by NextAuth in layout/routes)
 
   // 2. Skip standard Next.js paths and API routes for short code logic
   if (
@@ -34,10 +42,6 @@ export async function middleware(request: NextRequest) {
 
   // The short code is the pathname without the leading slash
   const shortCode = url.pathname.slice(1);
-  const hostname = request.headers.get('host') || '';
-  
-  // Clean hostname (remove port if local)
-  const cleanHostname = hostname.split(':')[0];
 
   try {
     // 1. Redis Lookup Cache
