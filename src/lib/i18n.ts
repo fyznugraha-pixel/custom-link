@@ -102,9 +102,17 @@ export const dictionaries = {
     // Donation Modal
     donationTitle: "Thank You For Your Support!",
     donationDesc: "Your donation means the world to us and helps keep our servers running and this platform free for everyone.",
-    scanQrisText: "Scan the QRIS code above using your favorite e-wallet or m-banking app.",
-    outsideIndo: "Are you outside Indonesia?",
-    donateSaweria: "Donate via Saweria"
+    scanQrisText: "Simply scan the QRIS above using your preferred e-wallet or mobile banking app.",
+    outsideIndo: "Or are you outside Indonesia?",
+    donateSaweria: "Donate via Saweria",
+
+    // Error Pages
+    expiredTitle: "Link Expired",
+    expiredDesc: "The link you are trying to access has passed its expiration date and is no longer available.",
+    notFoundTitle: "Page Not Found",
+    notFoundDesc: "The link you are looking for may be mistyped, deleted, or never existed.",
+    createYourOwn: "Create Your Own Short Link",
+    goToDashboard: "Go to Dashboard"
   },
   id: {
     donation: "Donasi",
@@ -209,6 +217,14 @@ export const dictionaries = {
     donationDesc: "Donasi kamu ngebantu banget buat bayar server supaya Fyurl bisa terus gratis dipake siapa aja.",
     scanQrisText: "Tinggal scan aja QRIS di atas pakai e-wallet atau m-banking andalan kamu.",
     outsideIndo: "Atau kamu lagi di luar Indonesia?",
-    donateSaweria: "Donasi via Saweria"
+    donateSaweria: "Donasi via Saweria",
+
+    // Error Pages
+    expiredTitle: "Link Kedaluwarsa",
+    expiredDesc: "Tautan yang Anda tuju sudah melewati batas waktu dan tidak dapat diakses lagi.",
+    notFoundTitle: "Halaman Tidak Ditemukan",
+    notFoundDesc: "Tautan yang Anda tuju mungkin salah ketik, sudah dihapus, atau tidak pernah ada.",
+    createYourOwn: "Buat Short Link Anda Sendiri",
+    goToDashboard: "Masuk ke Dashboard"
   }
 };
