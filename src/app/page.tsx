@@ -49,11 +49,7 @@ export default function Home() {
       const status = urlParams.get('status');
 
       if (error === 'lookup_failed') {
-        if (status === '404') {
-          toast.error(lang === 'id' ? 'Tautan tidak ditemukan.' : 'Link not found.', { duration: 4000 });
-        } else {
-          toast.error(lang === 'id' ? 'Gagal memuat tautan.' : 'Failed to load link.', { duration: 4000 });
-        }
+        setShowNotFoundModal(true);
         
         // Clean URL
         window.history.replaceState({}, document.title, window.location.pathname);
@@ -61,6 +57,7 @@ export default function Home() {
     }
   }, [lang]);
 
+  const [showNotFoundModal, setShowNotFoundModal] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [showDonationModal, setShowDonationModal] = useState(false);
   useEffect(() => {
@@ -1187,6 +1184,67 @@ export default function Home() {
                   {lang === 'id' ? 'Login Sekarang' : 'Login Now'}
                 </button>
               </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Not Found Modal */}
+      <AnimatePresence>
+        {showNotFoundModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative"
+            >
+              <button 
+                onClick={() => setShowNotFoundModal(false)}
+                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="p-8 text-center">
+                <div className="flex justify-center mb-6">
+                  <div className="w-20 h-20 bg-red-100 text-red-500 rounded-full flex items-center justify-center shadow-inner">
+                    <ShieldAlert className="w-10 h-10" />
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                  {lang === 'id' ? 'Tautan Tidak Ditemukan' : 'Link Not Found'}
+                </h3>
+                
+                <p className="text-slate-500 mb-8 font-medium">
+                  {lang === 'id' 
+                    ? 'Waduh! Tautan yang Anda cari mungkin sudah dihapus, kedaluwarsa, atau memang tidak pernah ada. Tapi jangan khawatir!' 
+                    : 'Oops! The link you are looking for might have been deleted, expired, or never existed. But don\'t worry!'}
+                </p>
+                
+                <button 
+                  onClick={() => {
+                    setShowNotFoundModal(false);
+                    const input = document.querySelector('input[type="url"]') as HTMLInputElement;
+                    if (input) {
+                      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      setTimeout(() => input.focus(), 500);
+                    }
+                  }}
+                  className="w-full py-4 px-4 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 transition-all shadow-lg shadow-primary-600/30 hover:shadow-primary-600/50 hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                >
+                  <LinkIcon className="w-5 h-5" />
+                  {lang === 'id' ? 'Buat Tautan Anda Sendiri' : 'Create Your Own Link'}
+                </button>
               </div>
             </motion.div>
           </motion.div>
