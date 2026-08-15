@@ -19,9 +19,21 @@ export async function GET(request: Request) {
     let domainId: string | undefined = undefined;
     
     if (domain) {
-      const customDomain = await prisma.customDomain.findUnique({
+      let customDomain = await prisma.customDomain.findUnique({
         where: { domain }
       });
+      
+      // Fallback for www vs non-www
+      if (!customDomain && domain.startsWith('www.')) {
+        customDomain = await prisma.customDomain.findUnique({
+          where: { domain: domain.replace(/^www\./, '') }
+        });
+      } else if (!customDomain && !domain.startsWith('www.')) {
+        customDomain = await prisma.customDomain.findUnique({
+          where: { domain: `www.${domain}` }
+        });
+      }
+
       if (customDomain) {
         domainId = customDomain.id;
       }
