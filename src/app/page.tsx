@@ -402,9 +402,7 @@ export default function Home() {
             </button>
           </div>
 
-          <div className="bg-white/80 backdrop-blur-xl rounded-2xl rounded-tl-none shadow-2xl shadow-slate-200/50 border border-slate-200/60 relative overflow-hidden">
-            {/* Soft inner glow */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
+          <div className="bg-white rounded-2xl rounded-tl-none shadow-2xl shadow-slate-200/50 border border-slate-200/60 relative overflow-hidden">
             
             {activeTab === 'shortener' && (
               !result ? (
@@ -1022,7 +1020,7 @@ export default function Home() {
                     <button
                       onClick={handleGenerateTrackableQr}
                       disabled={isGeneratingQr || !qrText.trim()}
-                      className="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all focus:outline-none"
                     >
                       {isGeneratingQr ? (
                         <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> {lang === 'id' ? 'Memproses...' : 'Processing...'}</>
