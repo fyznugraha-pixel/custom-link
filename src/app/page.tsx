@@ -1073,7 +1073,9 @@ export default function Home() {
                           const downloadLink = document.createElement('a');
                           downloadLink.href = pngUrl;
                           downloadLink.download = `qr-code.png`;
+                          document.body.appendChild(downloadLink);
                           downloadLink.click();
+                          document.body.removeChild(downloadLink);
                         }}
                         className="inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none"
                       >
