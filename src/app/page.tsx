@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar, HandCoins, LogIn, X } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar, HandCoins, LogIn, X, Upload, ExternalLink, RefreshCw, Palette } from 'lucide-react';
+import jsQR from "jsqr";
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
 import UserNavbar from '@/components/UserNavbar';
@@ -93,6 +94,11 @@ export default function Home() {
   const [qrLogo, setQrLogo] = useState<string>('/logo/fyurl-logo-tp.png');
   const [qrShortLink, setQrShortLink] = useState<string | null>(null);
   const [isGeneratingQr, setIsGeneratingQr] = useState(false);
+  const [qrMode, setQrMode] = useState<'generate' | 'scan'>('generate');
+  const [scannedQrResult, setScannedQrResult] = useState<string | null>(null);
+  const [isScanningQr, setIsScanningQr] = useState(false);
+  const scanFileInputRef = useRef<HTMLInputElement>(null);
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
@@ -174,6 +180,47 @@ export default function Home() {
     } finally {
       setIsGeneratingQr(false);
     }
+  };
+
+  const handleScanQr = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setIsScanningQr(true);
+    setScannedQrResult(null);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d", { willReadFrequently: true });
+        if (!context) {
+          setIsScanningQr(false);
+          return;
+        }
+        canvas.width = img.width;
+        canvas.height = img.height;
+        context.drawImage(img, 0, 0, img.width, img.height);
+        
+        const imageData = context.getImageData(0, 0, img.width, img.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        
+        if (code) {
+          setScannedQrResult(code.data);
+          toast.success(lang === 'id' ? "QR Code berhasil diterjemahkan!" : "QR Code decoded successfully!");
+        } else {
+          toast.error(lang === 'id' ? "QR Code tidak terdeteksi pada gambar." : "No QR Code detected in image.");
+        }
+        setIsScanningQr(false);
+      };
+      img.onerror = () => {
+        setIsScanningQr(false);
+        toast.error("Gagal memuat gambar.");
+      };
+      img.src = event.target?.result as string;
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -940,8 +987,25 @@ export default function Home() {
             
             {activeTab === 'qr' && (
               <div className="p-6 sm:p-10 animate-in fade-in duration-300">
-                <div className="mb-8">
-                  <label htmlFor="qrText" className="block text-sm font-semibold text-foreground mb-2">
+                <div className="flex bg-slate-100 p-1 rounded-xl w-fit mx-auto sm:mx-0 mb-8 border border-slate-200 shadow-inner">
+                  <button
+                    onClick={() => setQrMode('generate')}
+                    className={`px-6 py-2 text-sm font-semibold rounded-lg transition-all ${qrMode === 'generate' ? 'bg-white text-primary-700 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                  >
+                    {lang === 'id' ? 'Buat QR' : 'Generate QR'}
+                  </button>
+                  <button
+                    onClick={() => setQrMode('scan')}
+                    className={`px-6 py-2 text-sm font-semibold rounded-lg transition-all ${qrMode === 'scan' ? 'bg-white text-primary-700 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                  >
+                    {lang === 'id' ? 'Pindai QR' : 'Scan QR'}
+                  </button>
+                </div>
+
+                {qrMode === 'generate' ? (
+                  <>
+                    <div className="mb-8">
+                      <label htmlFor="qrText" className="block text-sm font-semibold text-foreground mb-2">
                     {t.textOrUrl} <span className="text-red-500">*</span>
                   </label>
                   <textarea
@@ -1090,6 +1154,63 @@ export default function Home() {
                     </div>
                   )}
                 </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed min-h-[480px]">
+                    <div className="mb-6 bg-white p-6 rounded-full shadow-sm border border-slate-100 text-primary-600">
+                      <QrCode className="w-12 h-12" />
+                    </div>
+                    <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">
+                      {lang === 'id' ? 'Terjemahkan QR Code' : 'Decode QR Code'}
+                    </h3>
+                    <p className="text-slate-500 text-center max-w-md mb-8">
+                      {lang === 'id' ? 'Unggah gambar QR Code (JPG, PNG) untuk membaca isi tautan/teks di dalamnya.' : 'Upload a QR code image (JPG, PNG) to decode the link/text inside it.'}
+                    </p>
+
+                    <input 
+                      ref={scanFileInputRef}
+                      type="file"
+                      accept="image/png, image/jpeg, image/webp"
+                      onChange={handleScanQr}
+                      className="hidden"
+                    />
+
+                    <button
+                      onClick={() => scanFileInputRef.current?.click()}
+                      disabled={isScanningQr}
+                      className="inline-flex items-center justify-center px-8 py-4 border border-transparent rounded-xl shadow-sm text-base font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed mb-8"
+                    >
+                      {isScanningQr ? (
+                        <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> {lang === 'id' ? 'Memproses...' : 'Processing...'}</>
+                      ) : (
+                        <><Upload className="w-5 h-5 mr-2" /> {lang === 'id' ? 'Pilih Gambar QR' : 'Select QR Image'}</>
+                      )}
+                    </button>
+
+                    {scannedQrResult && (
+                      <div className="w-full max-w-lg bg-white rounded-xl border border-primary-200 shadow-sm p-4 animate-in fade-in slide-in-from-bottom-4">
+                        <label className="block text-xs font-bold text-primary-600 uppercase tracking-wider mb-2">
+                          {lang === 'id' ? 'Hasil Terjemahan:' : 'Decoded Result:'}
+                        </label>
+                        <div className="flex items-start gap-3">
+                          <div className="flex-1 bg-slate-50 p-3 rounded-lg border border-slate-200 text-slate-800 text-sm break-all font-mono whitespace-pre-wrap">
+                            {scannedQrResult}
+                          </div>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(scannedQrResult);
+                              toast.success(lang === 'id' ? 'Berhasil disalin!' : 'Copied to clipboard!');
+                            }}
+                            className="p-3 bg-primary-50 text-primary-600 hover:bg-primary-100 rounded-lg transition-colors border border-primary-100 shrink-0"
+                            title="Copy result"
+                          >
+                            <Copy className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
             
