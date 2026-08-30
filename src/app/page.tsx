@@ -990,13 +990,13 @@ export default function Home() {
                 <div className="flex bg-slate-100 p-1 rounded-xl w-fit mx-auto sm:mx-0 mb-8 border border-slate-200 shadow-inner">
                   <button
                     onClick={() => setQrMode('generate')}
-                    className={`px-6 py-2 text-sm font-semibold rounded-lg transition-all ${qrMode === 'generate' ? 'bg-white text-primary-700 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-6 py-2 text-sm font-semibold rounded-lg transition-all ${qrMode === 'generate' ? 'bg-white text-primary-700 shadow-sm border border-primary-200' : 'text-slate-700 hover:text-primary-600 hover:bg-white/60 border border-transparent'}`}
                   >
                     {lang === 'id' ? 'Buat QR' : 'Generate QR'}
                   </button>
                   <button
                     onClick={() => setQrMode('scan')}
-                    className={`px-6 py-2 text-sm font-semibold rounded-lg transition-all ${qrMode === 'scan' ? 'bg-white text-primary-700 shadow-sm border border-slate-200' : 'text-slate-500 hover:text-slate-700'}`}
+                    className={`px-6 py-2 text-sm font-semibold rounded-lg transition-all ${qrMode === 'scan' ? 'bg-white text-primary-700 shadow-sm border border-primary-200' : 'text-slate-700 hover:text-primary-600 hover:bg-white/60 border border-transparent'}`}
                   >
                     {lang === 'id' ? 'Pindai QR' : 'Scan QR'}
                   </button>
