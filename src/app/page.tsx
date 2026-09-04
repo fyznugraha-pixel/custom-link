@@ -1331,6 +1331,64 @@ export default function Home() {
               </div>
             </div>
           )}
+
+          {/* Features & Security Info */}
+          <div className="mt-12 sm:mt-16 pt-8 border-t border-slate-200/60 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-slate-800 mb-3">
+                {lang === 'id' ? 'Kenapa Memilih Fyurl?' : 'Why Choose Fyurl?'}
+              </h2>
+              <p className="text-slate-500 max-w-2xl mx-auto">
+                {lang === 'id' 
+                  ? 'Lebih dari sekadar pemendek tautan biasa. Dilengkapi fitur keamanan tingkat lanjut untuk melindungi data Anda.' 
+                  : 'More than just a URL shortener. Equipped with advanced security features to protect your data.'}
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-4">
+                  <Shield className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">
+                  {lang === 'id' ? 'Keamanan AES-256' : 'AES-256 Security'}
+                </h3>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  {lang === 'id' 
+                    ? 'Tautan ber-password diamankan dengan enkripsi standar industri. Privasi pengunjung dan tujuan tautan terjamin.' 
+                    : 'Password-protected links use industry-standard encryption. Visitor privacy and destinations are secure.'}
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-4">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">
+                  {lang === 'id' ? 'Kendali Waktu Penuh' : 'Full Time Control'}
+                </h3>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  {lang === 'id' 
+                    ? 'Atur kapan tautan aktif dan kedaluwarsa. Gunakan fitur hitung mundur untuk kampanye dan peluncuran eksklusif.' 
+                    : 'Set when links activate and expire. Use countdown timers for exclusive campaigns and launches.'}
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-12 h-12 bg-purple-50 text-purple-600 rounded-xl flex items-center justify-center mb-4">
+                  <Globe className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 mb-2">
+                  {lang === 'id' ? 'Domain & Branding' : 'Domain & Branding'}
+                </h3>
+                <p className="text-sm text-slate-500 leading-relaxed">
+                  {lang === 'id' 
+                    ? 'Gunakan domain Anda sendiri dan sesuaikan pratinjau sosial media (OpenGraph) agar lebih profesional.' 
+                    : 'Use your own custom domains and customize social media previews (OpenGraph) for a professional look.'}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 
