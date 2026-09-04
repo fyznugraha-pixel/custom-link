@@ -7,9 +7,9 @@ export async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const cleanHostname = hostname.split(':')[0];
 
-  // 1. Redirect deprecated fylink.fun domain to fyurl.fun
-  if (cleanHostname === 'fylink.fun' || cleanHostname === 'www.fylink.fun') {
-    const targetUrl = new URL(request.nextUrl.pathname + request.nextUrl.search, 'https://fyurl.fun');
+  // 1. Redirect deprecated fyurl.id domain to fyurl.id
+  if (cleanHostname === 'fyurl.id' || cleanHostname === 'www.fyurl.id') {
+    const targetUrl = new URL(request.nextUrl.pathname + request.nextUrl.search, 'https://fyurl.id');
     return NextResponse.redirect(targetUrl, 301);
   }
 
@@ -143,7 +143,7 @@ export async function middleware(request: NextRequest) {
 
         const destination = new URL(longUrl);
         if (!destination.searchParams.has('utm_source')) {
-          destination.searchParams.set('utm_source', 'fyurl.fun');
+          destination.searchParams.set('utm_source', 'fyurl.id');
         }
         return NextResponse.redirect(destination, { status: 301 });
       }
@@ -220,7 +220,7 @@ export async function middleware(request: NextRequest) {
 
           const destination = new URL(data.longUrl);
           if (!destination.searchParams.has('utm_source')) {
-            destination.searchParams.set('utm_source', 'fyurl.fun');
+            destination.searchParams.set('utm_source', 'fyurl.id');
           }
           return NextResponse.redirect(destination, { status: 301 });
         }

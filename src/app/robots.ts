@@ -10,6 +10,6 @@ export default function robots(): MetadataRoute.Robots {
         '/api/admin/',
       ],
     },
-    sitemap: 'https://fyurl.fun/sitemap.xml',
+    sitemap: 'https://fyurl.id/sitemap.xml',
   };
 }

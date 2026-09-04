@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar, HandCoins, LogIn, X, Upload, ExternalLink, RefreshCw, Palette } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar, HandCoins, LogIn, X, Upload, ExternalLink, RefreshCw, Palette, Clipboard, Check, Share2, GripHorizontal, Scan } from 'lucide-react';
 import jsQR from "jsqr";
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
@@ -11,6 +11,68 @@ import { dictionaries, Language } from '@/lib/i18n';
 import { useSession, signIn } from 'next-auth/react';
 import toast from 'react-hot-toast';
 import DonationModal from '@/components/DonationModal';
+
+const TaglineRotator = ({ taglines }: { taglines: string[] }) => {
+  const [wordIndex, setWordIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setWordIndex((prev) => (prev + 1) % taglines.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [taglines.length]);
+
+  return (
+    <AnimatePresence mode="popLayout">
+      <motion.span
+        key={wordIndex}
+        initial={{ y: -40, opacity: 0, scale: 0.8 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: 40, opacity: 0, scale: 0.8 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block whitespace-nowrap drop-shadow-sm text-center text-[0.9em] sm:text-[0.95em] md:text-[0.85em]"
+      >
+        {taglines[wordIndex]}
+      </motion.span>
+    </AnimatePresence>
+  );
+};
+
+const timezonesList = [
+  { value: "-12:00", label: "(GMT-12:00) International Date Line West" },
+  { value: "-11:00", label: "(GMT-11:00) Midway Island, Samoa" },
+  { value: "-10:00", label: "(GMT-10:00) Hawaii" },
+  { value: "-09:00", label: "(GMT-09:00) Alaska" },
+  { value: "-08:00", label: "(GMT-08:00) Pacific Time" },
+  { value: "-07:00", label: "(GMT-07:00) Mountain Time" },
+  { value: "-06:00", label: "(GMT-06:00) Central Time" },
+  { value: "-05:00", label: "(GMT-05:00) Eastern Time" },
+  { value: "-04:00", label: "(GMT-04:00) Atlantic Time" },
+  { value: "-03:30", label: "(GMT-03:30) Newfoundland" },
+  { value: "-03:00", label: "(GMT-03:00) Greenland, Brasilia" },
+  { value: "-02:00", label: "(GMT-02:00) Mid-Atlantic" },
+  { value: "-01:00", label: "(GMT-01:00) Azores, Cape Verde Is." },
+  { value: "+00:00", label: "(GMT+00:00) London, Lisbon, Casablanca" },
+  { value: "+01:00", label: "(GMT+01:00) Paris, Berlin, Rome" },
+  { value: "+02:00", label: "(GMT+02:00) Cairo, Athens, Istanbul" },
+  { value: "+03:00", label: "(GMT+03:00) Moscow, Riyadh, Baghdad" },
+  { value: "+03:30", label: "(GMT+03:30) Tehran" },
+  { value: "+04:00", label: "(GMT+04:00) Abu Dhabi, Muscat" },
+  { value: "+04:30", label: "(GMT+04:30) Kabul" },
+  { value: "+05:00", label: "(GMT+05:00) Islamabad, Karachi" },
+  { value: "+05:30", label: "(GMT+05:30) New Delhi, Mumbai" },
+  { value: "+05:45", label: "(GMT+05:45) Kathmandu" },
+  { value: "+06:00", label: "(GMT+06:00) Almaty, Dhaka" },
+  { value: "+06:30", label: "(GMT+06:30) Yangon" },
+  { value: "+07:00", label: "(GMT+07:00) Jakarta (WIB), Bangkok, Hanoi" },
+  { value: "+08:00", label: "(GMT+08:00) Bali (WITA), Singapore, Beijing" },
+  { value: "+09:00", label: "(GMT+09:00) Papua (WIT), Tokyo, Seoul" },
+  { value: "+09:30", label: "(GMT+09:30) Adelaide, Darwin" },
+  { value: "+10:00", label: "(GMT+10:00) Sydney, Melbourne, Brisbane" },
+  { value: "+11:00", label: "(GMT+11:00) Magadan, Solomon Is." },
+  { value: "+12:00", label: "(GMT+12:00) Auckland, Wellington, Fiji" },
+  { value: "+13:00", label: "(GMT+13:00) Nuku'alofa" }
+];
 
 export default function Home() {
   const { data: session } = useSession();
@@ -85,7 +147,7 @@ export default function Home() {
     { value: 'custom', label: t.expCustom },
   ];
 
-  const [activeTab, setActiveTab] = useState<'shortener' | 'qr'>('shortener');
+  const [activeTab, setActiveTab] = useState<'shortener' | 'qr' | 'scan'>('shortener');
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
@@ -122,6 +184,8 @@ export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const [requireSchedule, setRequireSchedule] = useState(false);
   const [unlockAt, setUnlockAt] = useState('');
+  const [timezone, setTimezone] = useState('+07:00');
+  const [isTimezoneDropdownOpen, setIsTimezoneDropdownOpen] = useState(false);
   
   // Custom OG state
   const [requireOg, setRequireOg] = useState(false);
@@ -130,7 +194,6 @@ export default function Home() {
   const [ogImage, setOgImage] = useState<string | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [wordIndex, setWordIndex] = useState(0);
 
   const [defaultDomain, setDefaultDomain] = useState('link.byfayiz.web.id');
   const [customDomains, setCustomDomains] = useState<any[]>([]);
@@ -164,12 +227,7 @@ export default function Home() {
         setRecentLinks(JSON.parse(savedLinks));
       } catch (e) {}
     }
-
-    const interval = setInterval(() => {
-      setWordIndex((prev) => (prev + 1) % t.taglines.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, [t.taglines.length]);
+  }, []);
 
   const handleGenerateTrackableQr = async () => {
     let finalUrl = qrText.trim();
@@ -268,7 +326,7 @@ export default function Home() {
           customAlias: customAlias || undefined, 
           expiresIn: finalExpiresIn || undefined,
           password: requirePassword && password ? password : undefined,
-          unlockAt: requireSchedule && unlockAt ? new Date(unlockAt).toISOString() : undefined,
+          unlockAt: requireSchedule && unlockAt ? new Date(`${unlockAt}:00${timezone}`).toISOString() : undefined,
           ogTitle: requireOg && ogTitle ? ogTitle : undefined,
           ogDescription: requireOg && ogDescription ? ogDescription : undefined,
           ogImage: requireOg && ogImage ? ogImage : undefined,
@@ -388,30 +446,15 @@ export default function Home() {
       )}
 
       {/* Hero Section */}
-      <main className="pt-36 pb-20 px-6 sm:px-10 lg:px-16 w-full flex-1 flex flex-col justify-center relative z-10">
+      <main className="pt-32 md:pt-40 pb-20 px-6 sm:px-10 lg:px-16 w-full flex-1 flex flex-col justify-center relative z-10">
         <div className="text-center max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-sm shadow-sm border border-slate-200/60 text-primary-700 text-sm font-semibold mb-8 hover:scale-105 transition-transform cursor-default">
-            <span className="flex h-2 w-2 rounded-full bg-primary-600 animate-pulse"></span>
-            {t.freeToUse}
-          </div>
-          <h1 className="w-full text-[2.75rem] leading-[1.1] sm:text-6xl md:text-7xl lg:text-[6.5rem] font-extrabold text-slate-900 tracking-tight mb-6 flex flex-col md:flex-row items-center justify-center gap-y-1 md:gap-x-4 md:whitespace-nowrap overflow-visible max-w-full">
+          <h1 className="w-full text-[2.25rem] leading-tight sm:text-5xl md:text-7xl lg:text-[6.5rem] font-extrabold text-slate-900 tracking-tight mb-4 sm:mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible max-w-full">
             <span>{t.makeEveryLink}</span>
             <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative w-full md:w-auto px-4 md:px-0">
-              <AnimatePresence mode="popLayout">
-                <motion.span
-                  key={wordIndex}
-                  initial={{ y: -40, opacity: 0, scale: 0.8 }}
-                  animate={{ y: 0, opacity: 1, scale: 1 }}
-                  exit={{ y: 40, opacity: 0, scale: 0.8 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                  className="text-transparent bg-clip-text bg-gradient-to-br from-primary-600 via-blue-600 to-indigo-600 p-2 -m-2 inline-block whitespace-nowrap drop-shadow-sm text-center text-[0.9em] sm:text-[0.95em] md:text-[0.85em]"
-                >
-                  {t.taglines[wordIndex]}
-                </motion.span>
-              </AnimatePresence>
+              <TaglineRotator taglines={t.taglines} />
             </div>
           </h1>
-          <p className="text-lg sm:text-xl text-slate-600 mb-14 leading-relaxed max-w-2xl mx-auto font-medium">
+          <p className="text-lg sm:text-xl text-slate-600 mb-24 leading-relaxed max-w-2xl mx-auto font-medium">
             {t.heroDesc}
           </p>
         </div>
@@ -420,23 +463,30 @@ export default function Home() {
         <div className="w-full max-w-[1400px] mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
           
           {/* Tabs */}
-          <div className="flex bg-white/70 backdrop-blur-lg p-1.5 rounded-t-2xl border border-slate-200/60 border-b-0 w-fit mx-auto sm:mx-0 shadow-[0_-8px_30px_rgb(0,0,0,0.04)]">
+          <div className="flex overflow-x-auto hide-scrollbar max-w-[90vw] sm:max-w-full bg-white/80 backdrop-blur-xl p-1.5 sm:p-2 rounded-full border border-slate-200/60 w-fit mx-auto shadow-sm mb-8 sm:mb-10 snap-x snap-mandatory">
             <button
               onClick={() => setActiveTab('shortener')}
-              className={`px-7 py-3 text-sm font-bold rounded-xl transition-all duration-300 border whitespace-nowrap ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-sm border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
+              className={`px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-bold rounded-full transition-all duration-300 border whitespace-nowrap snap-center shrink-0 ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
             >
-              {t.shortenLink}
+              Custom Link
             </button>
             <button
               onClick={() => setActiveTab('qr')}
-              className={`px-7 py-3 text-sm font-bold rounded-xl transition-all duration-300 flex items-center justify-center border whitespace-nowrap ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-sm border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
+              className={`px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-bold rounded-full transition-all duration-300 flex items-center justify-center border whitespace-nowrap snap-center shrink-0 ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
             >
-              <QrCode className="w-4 h-4 mr-2" />
+              <QrCode className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-2.5" />
               {t.qrGenerator}
+            </button>
+            <button
+              onClick={() => setActiveTab('scan')}
+              className={`px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-bold rounded-full transition-all duration-300 flex items-center justify-center border whitespace-nowrap snap-center shrink-0 ${activeTab === 'scan' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
+            >
+              <Scan className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-2.5" />
+              {lang === 'id' ? 'Cek Isi QR' : 'Decode QR'}
             </button>
           </div>
 
-          <div className="bg-white rounded-2xl rounded-tl-none shadow-2xl shadow-slate-200/50 border border-slate-200/60 relative overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-2xl shadow-slate-200/50 border border-slate-200/60 relative overflow-hidden">
             
             {activeTab === 'shortener' && (
               !result ? (
@@ -450,225 +500,204 @@ export default function Home() {
                 
                 <div className="space-y-6">
                   <div>
-                    <label htmlFor="longUrl" className="block text-sm font-semibold text-foreground mb-2">
-                      {t.destinationUrl} <span className="text-red-500">*</span>
-                    </label>
-                    <div className="relative">
+                    <div className="flex justify-between items-center mb-2">
+                      <label htmlFor="longUrl" className="block text-sm font-bold text-slate-800">
+                        {lang === 'id' ? 'URL Tujuan' : 'Destination URL'} <span className="text-red-500">*</span>
+                      </label>
+                      <span className="text-xs font-mono text-slate-500 hidden sm:inline-block">{lang === 'id' ? 'Protokol HTTPS divalidasi otomatis' : 'HTTPS protocol automatically validated'}</span>
+                    </div>
+                    <div className="relative flex items-center">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Globe className="h-5 w-5 text-muted-foreground" />
+                        <Globe className="h-5 w-5 text-slate-500" />
                       </div>
                       <input
                         id="longUrl"
                         type="text"
+                        inputMode="url"
                         required
-                        placeholder="https://your-very-long-url.com/some/path"
+                        placeholder="https://www.instagram.com/fyurl.id"
                         value={longUrl}
                         onChange={(e) => setLongUrl(e.target.value)}
-                        className="block w-full pl-12 pr-4 py-4 text-base font-medium text-black border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white placeholder-slate-400"
+                        className={`block w-full pl-12 pr-28 py-4 text-sm font-medium text-slate-800 border border-slate-200/60 rounded-xl focus:ring-2 focus:ring-primary-500 transition-all bg-slate-50/80 placeholder-slate-400 ${!longUrl ? 'opacity-70 focus:opacity-100' : 'opacity-100'}`}
                       />
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const text = await navigator.clipboard.readText();
+                            setLongUrl(text);
+                          } catch (err) {}
+                        }}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-blue-200/50"
+                      >
+                        <Clipboard className="w-3.5 h-3.5" />
+                        Paste <span className="text-[10px] bg-blue-100 px-1 rounded ml-0.5 font-mono">⌘V</span>
+                      </button>
                     </div>
                   </div>
                   
-                  <div>
-                    <label htmlFor="customAlias" className="block text-sm font-semibold text-foreground mb-2">
-                      {t.customAlias} <span className="text-muted-foreground font-normal">{t.optional}</span>
-                    </label>
-                    <div className="flex shadow-sm rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
-                      {customDomains.length > 0 ? (
-                          <div 
-                            className="relative flex items-stretch border-r-0 border-slate-300"
-                            tabIndex={0}
-                            onBlur={(e) => {
-                              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                                setIsDomainDropdownOpen(false);
-                              }
-                            }}
-                          >
-                            <button
-                              type="button"
-                              onClick={() => setIsDomainDropdownOpen(!isDomainDropdownOpen)}
-                              className="inline-flex items-center justify-between pl-4 pr-3 py-4 border border-r-0 border-slate-300 rounded-l-xl bg-slate-50 text-black font-medium text-sm sm:text-base focus:outline-none w-auto max-w-[240px] hover:bg-slate-100 transition-colors"
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <label htmlFor="customAlias" className="block text-sm font-bold text-slate-800">
+                          {t.customAlias} <span className="text-slate-400 font-normal">{t.optional}</span>
+                        </label>
+                        {customAlias && <span className="text-xs font-medium text-blue-600 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>{lang === 'id' ? 'Tersedia' : 'Available'} ✓</span>}
+                      </div>
+                      <div className="flex shadow-sm rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
+                        {customDomains.length > 0 ? (
+                            <div 
+                              className="relative flex items-stretch border-r-0 border-slate-200/60"
+                              tabIndex={0}
+                              onBlur={(e) => {
+                                if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                                  setIsDomainDropdownOpen(false);
+                                }
+                              }}
                             >
-                              <span className="truncate mr-2">
-                                {domainId ? customDomains.find(d => d.id === domainId)?.domain : defaultDomain}
-                              </span>
-                              <ChevronDown className={`w-4 h-4 text-slate-500 shrink-0 transition-transform duration-200 ${isDomainDropdownOpen ? 'rotate-180' : ''}`} />
-                            </button>
-
-                            <AnimatePresence>
-                              {isDomainDropdownOpen && (
-                                <motion.div
-                                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                  transition={{ duration: 0.15, ease: "easeOut" }}
-                                  className="absolute z-30 left-0 top-full mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl overflow-y-auto max-h-60"
-                                >
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      setDomainId("");
-                                      setIsDomainDropdownOpen(false);
-                                    }}
-                                    className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between ${
-                                      domainId === "" ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-700 hover:bg-slate-50 font-medium'
-                                    }`}
+                              <button
+                                type="button"
+                                onClick={() => setIsDomainDropdownOpen(!isDomainDropdownOpen)}
+                                className="inline-flex items-center justify-between pl-3 sm:pl-4 pr-2 sm:pr-3 py-3.5 sm:py-4 border border-r-0 border-slate-200/60 rounded-l-xl bg-slate-100 text-slate-800 font-bold text-xs sm:text-base focus:outline-none w-auto max-w-[120px] sm:max-w-[240px] hover:bg-slate-200 transition-colors shrink-0"
+                              >
+                                <span className="truncate mr-1.5 sm:mr-2">
+                                  {domainId ? customDomains.find(d => d.id === domainId)?.domain : defaultDomain}
+                                </span>
+                                <ChevronDown className={`w-3 h-3 sm:w-4 sm:h-4 text-slate-500 shrink-0 transition-transform duration-200 ${isDomainDropdownOpen ? 'rotate-180' : ''}`} />
+                              </button>
+  
+                              <AnimatePresence>
+                                {isDomainDropdownOpen && (
+                                  <motion.div
+                                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                    transition={{ duration: 0.15, ease: "easeOut" }}
+                                    className="absolute z-30 left-0 top-full mt-2 w-64 bg-white border border-slate-200 rounded-xl shadow-xl overflow-y-auto max-h-60"
                                   >
-                                    <span className="truncate">{defaultDomain}</span>
-                                    {domainId === "" && <CheckCircle2 className="w-4 h-4 text-primary-600 shrink-0 ml-2" />}
-                                  </button>
-                                  {customDomains.map(d => (
                                     <button
-                                      key={d.id}
                                       type="button"
                                       onClick={() => {
-                                        setDomainId(d.id);
+                                        setDomainId("");
                                         setIsDomainDropdownOpen(false);
                                       }}
-                                      className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between border-t border-slate-100 ${
-                                        domainId === d.id ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-700 hover:bg-slate-50 font-medium'
+                                      className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between ${
+                                        domainId === "" ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-700 hover:bg-slate-50 font-medium'
                                       }`}
                                     >
-                                      <span className="truncate">{d.domain}</span>
-                                      {domainId === d.id && <CheckCircle2 className="w-4 h-4 text-primary-600 shrink-0 ml-2" />}
+                                      <span className="truncate">{defaultDomain}</span>
+                                      {domainId === "" && <CheckCircle2 className="w-4 h-4 text-primary-600 shrink-0 ml-2" />}
                                     </button>
-                                  ))}
-                                </motion.div>
-                              )}
-                            </AnimatePresence>
-                          </div>
-                      ) : (
-                        <span className="inline-flex items-center px-4 py-4 border border-r-0 border-slate-300 rounded-l-xl bg-slate-50 text-black font-medium text-sm sm:text-base whitespace-nowrap">
-                          {defaultDomain}
-                        </span>
-                      )}
-                      <input
-                        id="customAlias"
-                        type="text"
-                        placeholder="my-custom-name"
-                        value={customAlias}
-                        onChange={(e) => setCustomAlias(e.target.value)}
-                        pattern="[a-zA-Z0-9-_]+"
-                        title="Only letters, numbers, dashes, and underscores are allowed"
-                        className="flex-1 block w-full px-4 py-4 text-base font-medium text-black border border-slate-300 rounded-none rounded-r-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white placeholder-slate-400"
-                      />
-                    </div>
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {t.leaveBlankAuto}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label htmlFor="title" className="block text-sm font-semibold text-foreground mb-2">
-                      {t.linkTitle} <span className="text-muted-foreground font-normal">{t.optional}</span>
-                    </label>
-                    <input
-                      id="title"
-                      type="text"
-                      placeholder={t.titlePlaceholder}
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      className="block w-full px-4 py-4 text-base font-medium text-black border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white placeholder-slate-400"
-                    />
-                    <p className="mt-2 text-xs text-muted-foreground">
-                      {t.titleDesc}
-                    </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-foreground mb-2">
-                      {t.linkExpiration} <span className="text-red-500">*</span>
-                    </label>
-                    <div 
-                      className="relative" 
-                      tabIndex={0} 
-                      onBlur={(e) => {
-                        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                          setIsDropdownOpen(false);
-                        }
-                      }}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                        className={`flex items-center justify-between w-full px-4 py-4 text-base text-left border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all ${isDropdownOpen ? 'border-primary-500 bg-white ring-2 ring-primary-500 ring-opacity-20' : 'border-border bg-muted/30 hover:bg-white'}`}
-                      >
-                        <span className="text-foreground font-medium">
-                          {EXPIRATION_OPTIONS.find(opt => opt.value === expiresIn)?.label || t.exp7d}
-                        </span>
-                        <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                      </button>
-
-                      <AnimatePresence>
-                        {isDropdownOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                            transition={{ duration: 0.15, ease: "easeOut" }}
-                            className="absolute z-20 w-full mt-2 py-1 bg-white border border-border rounded-xl shadow-2xl overflow-y-auto max-h-60"
-                          >
-                            {EXPIRATION_OPTIONS.map((option) => (
-                              <button
-                                key={option.value}
-                                type="button"
-                                onClick={() => {
-                                  setExpiresIn(option.value);
-                                  setIsDropdownOpen(false);
-                                }}
-                                className={`w-full text-left px-4 py-3 text-base hover:bg-primary-50 transition-colors flex items-center justify-between ${
-                                  expiresIn === option.value ? 'bg-primary-50 text-primary-700 font-medium' : 'text-foreground'
-                                }`}
-                              >
-                                {option.label}
-                                {expiresIn === option.value && <CheckCircle2 className="w-4 h-4 text-primary-600" />}
-                              </button>
-                            ))}
-                          </motion.div>
+                                    {customDomains.map(d => (
+                                      <button
+                                        key={d.id}
+                                        type="button"
+                                        onClick={() => {
+                                          setDomainId(d.id);
+                                          setIsDomainDropdownOpen(false);
+                                        }}
+                                        className={`w-full text-left px-4 py-3 text-sm transition-colors flex items-center justify-between border-t border-slate-100 ${
+                                          domainId === d.id ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-700 hover:bg-slate-50 font-medium'
+                                        }`}
+                                      >
+                                        <span className="truncate">{d.domain}</span>
+                                        {domainId === d.id && <CheckCircle2 className="w-4 h-4 text-primary-600 shrink-0 ml-2" />}
+                                      </button>
+                                    ))}
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                        ) : (
+                          <span className="inline-flex items-center px-4 py-4 border border-r-0 border-slate-200/60 rounded-l-xl bg-slate-100 text-slate-800 font-bold text-xs sm:text-base whitespace-nowrap max-w-[100px] truncate">
+                            {defaultDomain}
+                          </span>
                         )}
-                      </AnimatePresence>
+                        <input
+                          id="customAlias"
+                          type="text"
+                          placeholder={lang === 'id' ? 'bebas-pilih' : 'your-brand'}
+                          value={customAlias}
+                          onChange={(e) => setCustomAlias(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                          className="flex-1 block w-full px-3 sm:px-4 py-3.5 sm:py-4 text-sm sm:text-base font-semibold text-slate-800 border border-slate-200/60 border-l-0 rounded-none rounded-r-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-white placeholder-slate-400"
+                        />
+                      </div>
+                      <p className="mt-2 text-xs text-slate-500 leading-relaxed max-w-xs">
+                        {lang === 'id' ? 'Biarin kosong aja kalau mau dibikinin kode otomatis.' : 'Leave blank for an auto-generated random code.'}
+                      </p>
                     </div>
-
-                    <AnimatePresence>
-                      {expiresIn === 'custom' && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                          style={{ willChange: "height, opacity" }}
+  
+                    <div>
+                      <label htmlFor="title" className="block text-sm font-bold text-slate-800 mb-2">
+                        {t.linkTitle} <span className="text-slate-400 font-normal">{t.optional}</span>
+                      </label>
+                      <input
+                        id="title"
+                        type="text"
+                        placeholder={lang === 'id' ? 'Follow Kami' : 'Follow Us'}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="block w-full px-4 py-4 text-sm font-medium text-slate-800 border border-slate-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-slate-50/80 placeholder-slate-400"
+                      />
+                      <p className="mt-2 text-xs text-slate-500 leading-relaxed max-w-xs">
+                        {lang === 'id' ? 'Bakal muncul pas loading redirect atau pas ngisi password.' : 'Appears on the redirect page or password protection.'}
+                      </p>
+                    </div>
+                  </div>
+  
+                  <div>
+                    <label className="block text-sm font-bold text-slate-800 mb-3">
+                      {lang === 'id' ? 'Kedaluwarsa Link' : 'Link Expiration'} <span className="text-red-500">*</span>
+                    </label>
+                    <div className="flex flex-wrap sm:flex-nowrap gap-2">
+                      {[
+                        { v: '1d', l: lang === 'id' ? '24 Jam' : '24 Hours' },
+                        { v: '3d', l: lang === 'id' ? '3 Hari (Bawaan)' : '3 Days (Default)' },
+                        { v: '7d', l: lang === 'id' ? '7 Hari' : '7 Days' },
+                        { v: '30d', l: lang === 'id' ? '30 Hari' : '30 Days' },
+                        { v: 'never', l: lang === 'id' ? 'Selamanya ∞' : 'Forever ∞' }
+                      ].map(opt => (
+                        <button
+                          key={opt.v}
+                          type="button"
+                          onClick={() => setExpiresIn(opt.v)}
+                          className={`flex-1 py-3 px-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex flex-col items-center justify-center gap-1 border ${
+                            expiresIn === opt.v 
+                              ? 'bg-[#0047cc] text-white border-[#0047cc] shadow-md' 
+                              : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
+                          }`}
                         >
-                          <div className="pt-3 flex items-center gap-3">
-                            <input
-                              type="number"
-                              min="1"
-                              max="3650"
-                              value={customDays}
-                              onChange={(e) => setCustomDays(e.target.value)}
-                              className="block w-24 px-4 py-3 text-base border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-muted/30 focus:bg-white text-center font-medium shadow-inner shadow-primary-900/5"
-                            />
-                            <span className="text-muted-foreground font-medium text-sm">{t.days}</span>
+                          <div className="flex items-center gap-1.5">
+                            {expiresIn === opt.v && <Check className="w-3.5 h-3.5 shrink-0" />}
+                            <span className="text-center">{opt.l.split(' (')[0]}</span>
                           </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                          {opt.l.includes('(') && (
+                            <span className={`text-[10px] ${expiresIn === opt.v ? 'text-blue-200' : 'text-slate-400'}`}>
+                              ({opt.l.split(' (')[1]}
+                            </span>
+                          )}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Password Protection */}
-                  <div className="pt-4 mt-2 border-t border-border">
-                    <div className="flex items-center justify-between mb-2 cursor-pointer" onClick={() => setRequirePassword(!requirePassword)}>
-                      <div className="flex items-center gap-2">
-                        <Lock className={`w-4 h-4 ${requirePassword ? 'text-primary-600' : 'text-muted-foreground'}`} />
-                        <span className={`font-semibold transition-colors ${requirePassword ? 'text-primary-700' : 'text-foreground'}`}>
-                          {t.setPassword}
-                        </span>
+                  <div className="bg-slate-50/50 rounded-2xl border border-slate-200/60 overflow-hidden">
+                    <div className="p-4 sm:p-5 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequirePassword(!requirePassword)}>
+                      <div className="flex items-start gap-4">
+                        <div className="bg-blue-100/50 p-2.5 rounded-xl border border-blue-200/50 shrink-0 mt-0.5 sm:mt-0">
+                          <Lock className="h-5 w-5 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-[15px] text-slate-800">{lang === 'id' ? 'Atur Kata Sandi' : 'Set Password'}</h3>
+                          <p className="text-xs text-slate-500 mt-0.5">{lang === 'id' ? 'Cuma pengunjung yang tau password yang bisa ngebuka link ini.' : 'Only visitors with the password can access the destination.'}</p>
+                        </div>
                       </div>
                       <button
                         type="button"
                         role="switch"
                         aria-checked={requirePassword}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${requirePassword ? 'bg-primary-600' : 'bg-slate-200'}`}
+                        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none ${requirePassword ? 'bg-[#0047cc]' : 'bg-slate-200'}`}
                       >
                         <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${requirePassword ? 'translate-x-6' : 'translate-x-1'}`} />
                       </button>
@@ -681,52 +710,56 @@ export default function Home() {
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                          style={{ willChange: "height, opacity" }}
+                          className="overflow-hidden border-t border-slate-200/60"
                         >
-                          <div className="pt-3 relative">
-                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none pt-3">
-                              <Lock className="h-4 w-4 text-muted-foreground" />
+                          <div className="p-4 sm:p-5 bg-white">
+                            <div className="relative">
+                              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                <Lock className="h-4 w-4 text-slate-400" />
+                              </div>
+                              <input
+                                type={showPassword ? "text" : "password"}
+                                required={requirePassword}
+                                placeholder="SecurePass@2025!"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="block w-full pl-11 pr-12 py-3.5 text-sm font-medium border border-slate-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-slate-50/80 placeholder-slate-400"
+                              />
+                              <button
+                                type="button"
+                                onClick={(e) => { e.stopPropagation(); setShowPassword(!showPassword); }}
+                                className="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                              >
+                                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                              </button>
                             </div>
-                            <input
-                              type={showPassword ? "text" : "password"}
-                              required={requirePassword}
-                              placeholder={t.passwordPlaceholder}
-                              value={password}
-                              onChange={(e) => setPassword(e.target.value)}
-                              className="block w-full pl-11 pr-12 py-3 text-sm border border-border rounded-xl focus:outline-none focus:border-primary-500 transition-all bg-muted/30 focus:bg-white"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => setShowPassword(!showPassword)}
-                              className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground hover:text-foreground transition-colors pt-3"
-                            >
-                              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            </button>
+                            <p className="text-[11px] text-blue-600 font-medium mt-3 flex items-start gap-1.5 font-mono">
+                              <Shield className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                              {lang === 'id' ? 'Pengunjung bakal ngeliat halaman login aman (AES 256-bit) sebelum diarahkan.' : 'Visitors will see a 256-bit AES secure authentication dialog before redirect.'}
+                            </p>
                           </div>
-                          <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
-                            <ShieldAlert className="w-3 h-3 mt-0.5 shrink-0" />
-                            {t.passwordDesc}
-                          </p>
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
 
                   {/* Time-Lock / Scheduled Access */}
-                  <div className="pt-4 mt-2 border-t border-border">
-                    <div className="flex items-center justify-between mb-2 cursor-pointer" onClick={() => setRequireSchedule(!requireSchedule)}>
-                      <div className="flex items-center gap-2">
-                        <Clock className={`w-4 h-4 ${requireSchedule ? 'text-primary-600' : 'text-muted-foreground'}`} />
-                        <span className={`font-semibold transition-colors ${requireSchedule ? 'text-primary-700' : 'text-foreground'}`}>
-                          {t.setSchedule}
-                        </span>
+                  <div className={`bg-slate-50/50 rounded-2xl border border-slate-200/60 ${isTimezoneDropdownOpen ? 'relative z-20' : 'overflow-hidden'}`}>
+                    <div className="p-4 sm:p-5 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequireSchedule(!requireSchedule)}>
+                      <div className="flex items-start gap-4">
+                        <div className="bg-indigo-100/50 p-2.5 rounded-xl border border-indigo-200/50 shrink-0 mt-0.5 sm:mt-0">
+                          <Clock className="h-5 w-5 text-indigo-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-[15px] text-slate-800">{lang === 'id' ? 'Atur Jadwal (Kunci Waktu)' : 'Schedule (Time Lock)'}</h3>
+                          <p className="text-xs text-slate-500 mt-0.5">{lang === 'id' ? 'Kunci Link hingga batas waktu rilis yang ditentukan tercapai.' : 'Lock link until a specific release time is reached.'}</p>
+                        </div>
                       </div>
                       <button
                         type="button"
                         role="switch"
                         aria-checked={requireSchedule}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${requireSchedule ? 'bg-primary-600' : 'bg-slate-200'}`}
+                        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none ${requireSchedule ? 'bg-[#0047cc]' : 'bg-slate-200'}`}
                       >
                         <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${requireSchedule ? 'translate-x-6' : 'translate-x-1'}`} />
                       </button>
@@ -739,26 +772,75 @@ export default function Home() {
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                          style={{ willChange: "height, opacity" }}
+                          className={`border-t border-slate-200/60 ${isTimezoneDropdownOpen ? '' : 'overflow-hidden'}`}
                         >
-                          <div className="pt-3">
-                            <div className="relative border border-border rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all bg-muted/30 focus-within:bg-white">
-                              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <div className="p-4 sm:p-5 bg-white">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              <div className="relative border border-slate-200/60 rounded-xl focus-within:ring-2 focus-within:ring-primary-500 transition-all bg-slate-50/80 focus-within:bg-white overflow-hidden">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                  <Calendar className="h-4.5 w-4.5 text-blue-500" />
+                                </div>
+                                <input
+                                  type="datetime-local"
+                                  required={requireSchedule}
+                                  value={unlockAt}
+                                  onChange={(e) => setUnlockAt(e.target.value)}
+                                  min={new Date().toISOString().slice(0, 16)}
+                                  className="block w-full pl-11 pr-4 py-3.5 text-sm font-medium text-slate-800 bg-transparent border-0 focus:ring-0 outline-none min-h-[50px] cursor-pointer font-mono"
+                                  style={{ colorScheme: 'light' }}
+                                />
                               </div>
-                            <input
-                              type="datetime-local"
-                              required={requireSchedule}
-                              value={unlockAt}
-                              onChange={(e) => setUnlockAt(e.target.value)}
-                              min={new Date().toISOString().slice(0, 16)}
-                              className="block w-full pl-10 pr-4 py-3 text-[15px] sm:text-base text-slate-900 bg-transparent border-0 focus:outline-none focus:ring-0 outline-none appearance-none min-h-[50px]"
-                              style={{ colorScheme: 'light' }}
-                            />
+                              <div 
+                                className="flex items-center gap-2 px-3 py-2 border border-slate-200/60 rounded-xl bg-slate-50/50 focus-within:ring-2 focus-within:ring-primary-500 transition-all focus-within:bg-white relative cursor-pointer"
+                                tabIndex={0}
+                                onBlur={(e) => {
+                                  if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                                    setIsTimezoneDropdownOpen(false);
+                                  }
+                                }}
+                                onClick={() => setIsTimezoneDropdownOpen(!isTimezoneDropdownOpen)}
+                              >
+                                <Globe className="w-4.5 h-4.5 text-slate-400 shrink-0 absolute left-3 pointer-events-none" />
+                                
+                                <div className="w-full pl-7 pr-8 py-1.5 bg-transparent border-0 text-xs font-semibold text-slate-700 outline-none truncate">
+                                  {timezonesList.find(t => t.value === timezone)?.label || '(GMT+07:00) Jakarta (WIB)'}
+                                </div>
+                                
+                                <ChevronDown className={`w-4 h-4 text-slate-400 shrink-0 absolute right-3 transition-transform duration-200 ${isTimezoneDropdownOpen ? 'rotate-180' : ''}`} />
+                                
+                                <AnimatePresence>
+                                  {isTimezoneDropdownOpen && (
+                                    <motion.div
+                                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                      transition={{ duration: 0.15, ease: "easeOut" }}
+                                      className="absolute z-50 left-0 right-0 top-full mt-2 bg-white border border-slate-200 rounded-xl shadow-xl overflow-y-auto max-h-60 min-w-[280px]"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
+                                      {timezonesList.map(tz => (
+                                        <button
+                                          key={tz.value}
+                                          type="button"
+                                          onClick={() => {
+                                            setTimezone(tz.value);
+                                            setIsTimezoneDropdownOpen(false);
+                                          }}
+                                          className={`w-full text-left px-4 py-2.5 text-xs transition-colors flex items-center justify-between border-b border-slate-50 last:border-0 ${
+                                            timezone === tz.value ? 'bg-primary-50 text-primary-700 font-bold' : 'text-slate-700 hover:bg-slate-50 font-medium'
+                                          }`}
+                                        >
+                                          <span className="truncate">{tz.label}</span>
+                                          {timezone === tz.value && <CheckCircle2 className="w-4 h-4 text-primary-600 shrink-0 ml-2" />}
+                                        </button>
+                                      ))}
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
                             </div>
-                            <p className="mt-2 text-xs text-muted-foreground">
-                              {t.scheduleDesc}
+                            <p className="text-[11px] text-slate-600 mt-4 leading-relaxed">
+                              {lang === 'id' ? 'Link bakal nampilin hitungan mundur seru dan otomatis ngebuka sendiri pas waktunya tiba.' : 'The link will display an interactive countdown and open automatically at the scheduled time.'}
                             </p>
                           </div>
                         </motion.div>
@@ -767,32 +849,24 @@ export default function Home() {
                   </div>
 
                   {/* Custom Link Preview (OG) Toggle */}
-                  <div className="bg-muted/10 p-4 rounded-xl border border-border/50">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-primary-500/10 p-2.5 rounded-lg border border-primary-500/20">
-                          <Globe className="h-5 w-5 text-primary-500" />
+                  <div className="bg-slate-50/50 rounded-2xl border border-slate-200/60 overflow-hidden">
+                    <div className="p-4 sm:p-5 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequireOg(!requireOg)}>
+                      <div className="flex items-start gap-4">
+                        <div className="bg-sky-100/50 p-2.5 rounded-xl border border-sky-200/50 shrink-0 mt-0.5 sm:mt-0">
+                          <Share2 className="h-5 w-5 text-sky-600" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-[15px]">Custom Link Preview (SEO)</h3>
-                          <p className="text-xs text-muted-foreground mt-0.5">Customize title, description, and image for social media</p>
+                          <h3 className="font-bold text-[15px] text-slate-800">{lang === 'id' ? 'Custom Link Preview (SEO & OpenGraph)' : 'Custom Link Preview (SEO)'}</h3>
+                          <p className="text-xs text-slate-500 mt-0.5">{lang === 'id' ? 'Sesuaikan judul, ringkasan, dan kartu banner saat Link dibagikan.' : 'Customize title, description, and image for social media.'}</p>
                         </div>
                       </div>
                       <button
                         type="button"
                         role="switch"
                         aria-checked={requireOg}
-                        onClick={() => setRequireOg(!requireOg)}
-                        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
-                          requireOg ? 'bg-primary-500' : 'bg-slate-200'
-                        }`}
+                        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none ${requireOg ? 'bg-[#0047cc]' : 'bg-slate-200'}`}
                       >
-                        <span
-                          aria-hidden="true"
-                          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                            requireOg ? 'translate-x-5' : 'translate-x-0'
-                          }`}
-                        />
+                        <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform shadow-sm ${requireOg ? 'translate-x-6' : 'translate-x-1'}`} />
                       </button>
                     </div>
                     
@@ -803,86 +877,116 @@ export default function Home() {
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.2 }}
-                          className="overflow-hidden"
-                          style={{ willChange: "height, opacity" }}
+                          className="overflow-hidden border-t border-slate-200/60"
                         >
-                          <div className="pt-4 space-y-4">
-                            <div>
-                              <label className="block text-xs font-medium text-slate-700 mb-1">
-                                Preview Title
-                              </label>
-                              <input
-                                type="text"
-                                value={ogTitle}
-                                onChange={(e) => setOgTitle(e.target.value)}
-                                placeholder="E.g. Download My New App!"
-                                className="block w-full px-4 py-2 text-sm text-slate-900 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium text-slate-700 mb-1">
-                                Preview Description
-                              </label>
-                              <textarea
-                                value={ogDescription}
-                                onChange={(e) => setOgDescription(e.target.value)}
-                                placeholder="E.g. Check out the latest features in our new app release..."
-                                rows={2}
-                                className="block w-full px-4 py-2 text-sm text-slate-900 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all resize-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="block text-xs font-medium text-slate-700 mb-1">
-                                Preview Image (Max 2MB)
-                              </label>
-                              <div className="mt-1 flex items-center justify-center w-full">
-                                <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors relative overflow-hidden">
-                                  {ogImage ? (
-                                    <div className="absolute inset-0 w-full h-full">
-                                      <img src={ogImage} alt="Preview" className="w-full h-full object-cover" />
-                                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                                        <span className="text-white text-xs font-medium bg-black/50 px-2 py-1 rounded">Click to change</span>
+                          <div className="p-4 sm:p-5 bg-white grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                              <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                                  Preview Title
+                                </label>
+                                <input
+                                  type="text"
+                                  value={ogTitle}
+                                  onChange={(e) => setOgTitle(e.target.value)}
+                                  placeholder="Indonesia Digital Summit 2025 • Konferensi Teknologi"
+                                  className="block w-full px-4 py-2.5 text-sm font-medium text-slate-800 bg-slate-50 border border-slate-200/60 rounded-xl focus:ring-2 focus:ring-primary-500 focus:bg-white outline-none transition-all placeholder-slate-400"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                                  Preview Description
+                                </label>
+                                <textarea
+                                  value={ogDescription}
+                                  onChange={(e) => setOgDescription(e.target.value)}
+                                  placeholder={lang === 'id' ? "Temukan peta jalan inovasi AI, keamanan siber, dan ekonomi digital terkini bersama 50+ pembicara..." : "Discover the AI innovation roadmap, cybersecurity, and digital economy with 50+ speakers..."}
+                                  rows={3}
+                                  className="block w-full px-4 py-2.5 text-sm font-medium text-slate-800 bg-slate-50 border border-slate-200/60 rounded-xl focus:ring-2 focus:ring-primary-500 focus:bg-white outline-none transition-all resize-none placeholder-slate-400"
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                                  Preview Image (Max 2MB)
+                                </label>
+                                <div className="mt-1 flex items-center justify-center w-full">
+                                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300/80 rounded-xl cursor-pointer bg-slate-50/50 hover:bg-slate-100/80 transition-colors relative overflow-hidden group">
+                                    {ogImage ? (
+                                      <div className="absolute inset-0 w-full h-full">
+                                        <img src={ogImage} alt="Preview" className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                          <span className="text-white text-xs font-bold bg-slate-900/60 px-3 py-1.5 rounded-lg shadow-sm">Ubah Gambar</span>
+                                        </div>
                                       </div>
-                                    </div>
+                                    ) : (
+                                      <div className="flex flex-col items-center justify-center p-4 text-center">
+                                        <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-2">
+                                          <Upload className="w-5 h-5" />
+                                        </div>
+                                        <p className="mb-1 text-xs text-slate-700 font-bold">{lang === 'id' ? 'Klik buat upload banner atau seret gambar ke sini' : 'Click to upload banner or drag image here'}</p>
+                                        <p className="text-[10px] text-slate-500 font-mono">Mendukung format PNG, JPG, WebP rasio 1.91:1 (1200 × 630px)</p>
+                                      </div>
+                                    )}
+                                    <input 
+                                      type="file" 
+                                      className="hidden" 
+                                      accept="image/png, image/jpeg, image/webp"
+                                      onChange={(e) => {
+                                        const file = e.target.files?.[0];
+                                        if (file) {
+                                          if (file.size > 2 * 1024 * 1024) {
+                                            toast.error("File is too large. Max size is 2MB.");
+                                            return;
+                                          }
+                                          const reader = new FileReader();
+                                          reader.onload = (event) => {
+                                            setOgImage(event.target?.result as string);
+                                          };
+                                          reader.readAsDataURL(file);
+                                        }
+                                      }}
+                                    />
+                                  </label>
+                                </div>
+                                {ogImage && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setOgImage(null)}
+                                    className="mt-2 text-xs font-bold text-red-500 hover:text-red-600 flex items-center justify-end w-full"
+                                  >
+                                    Hapus Gambar
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                            
+                            {/* Live Social Media Card Mockup */}
+                            <div className="hidden lg:flex flex-col h-full">
+                              <label className="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider text-right">
+                                LIVE SOCIAL MEDIA CARD MOCKUP
+                              </label>
+                              <div className="flex-1 bg-slate-50 rounded-xl border border-slate-200 overflow-hidden flex flex-col pointer-events-none">
+                                <div className="aspect-[1.91/1] w-full bg-slate-200 relative">
+                                  {ogImage ? (
+                                    <img src={ogImage} alt="Mockup" className="w-full h-full object-cover" />
                                   ) : (
-                                    <div className="flex flex-col items-center justify-center pt-4 pb-4">
-                                      <svg className="w-6 h-6 mb-2 text-slate-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                      </svg>
-                                      <p className="mb-1 text-xs text-slate-500"><span className="font-semibold">Click to upload</span> or drag and drop</p>
-                                      <p className="text-[10px] text-slate-500">PNG or JPG (MAX. 2MB)</p>
+                                    <div className="absolute inset-0 flex items-center justify-center text-slate-400">
+                                      <Globe className="w-12 h-12 opacity-20" />
                                     </div>
                                   )}
-                                  <input 
-                                    type="file" 
-                                    className="hidden" 
-                                    accept="image/png, image/jpeg"
-                                    onChange={(e) => {
-                                      const file = e.target.files?.[0];
-                                      if (file) {
-                                        if (file.size > 2 * 1024 * 1024) {
-                                          toast.error("File is too large. Max size is 2MB.");
-                                          return;
-                                        }
-                                        const reader = new FileReader();
-                                        reader.onload = (event) => {
-                                          setOgImage(event.target?.result as string);
-                                        };
-                                        reader.readAsDataURL(file);
-                                      }
-                                    }}
-                                  />
-                                </label>
+                                  <div className="absolute bottom-2 left-2 bg-slate-900/70 backdrop-blur-sm px-2 py-1 rounded text-[10px] text-white font-bold tracking-wide">
+                                    {defaultDomain}
+                                  </div>
+                                </div>
+                                <div className="p-4 flex-1 flex flex-col bg-slate-100/50">
+                                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide mb-1 truncate">{domainId ? customDomains.find(d => d.id === domainId)?.domain : defaultDomain}</span>
+                                  <h4 className="font-bold text-slate-900 text-sm leading-tight mb-1 line-clamp-1">{ogTitle || (lang === 'id' ? 'Pratinjau Judul Link' : 'Link Title Preview')}</h4>
+                                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{ogDescription || (lang === 'id' ? 'Ini deskripsi yang bakal muncul pas link kamu disebar di sosmed...' : 'This is a preview of the description that will appear when your link is shared on social media...')}</p>
+                                </div>
                               </div>
-                              {ogImage && (
-                                <button
-                                  type="button"
-                                  onClick={() => setOgImage(null)}
-                                  className="mt-2 text-xs text-red-500 hover:text-red-600 flex items-center justify-end w-full"
-                                >
-                                  Remove Image
-                                </button>
-                              )}
+                              <p className="text-center text-[10px] text-slate-400 mt-2 font-mono">
+                                {lang === 'id' ? 'Pratinjau otomatis di WhatsApp, Telegram, X, dan iMessage.' : 'Automatic preview on WhatsApp, Telegram, X, and iMessage.'}
+                              </p>
                             </div>
                           </div>
                         </motion.div>
@@ -890,64 +994,100 @@ export default function Home() {
                     </AnimatePresence>
                   </div>
 
-                  {/* QR Code Logo */}
-                  <div className="pt-4 mt-2 border-t border-border">
-                    <label className="block text-sm font-semibold text-foreground mb-2">{t.qrCodeLogo} <span className="text-muted-foreground font-normal">{t.optional}</span></label>
-                    <div className="flex items-center gap-2">
-                      <input 
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/png, image/jpeg, image/webp"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            if (file.size > 2 * 1024 * 1024) {
-                              toast.error("File is too large. Please upload an image smaller than 2MB.");
-                              return;
-                            }
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                              setQrLogo(event.target?.result as string);
-                            };
-                            reader.readAsDataURL(file);
-                          }
-                        }}
-                        className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 border border-border rounded-xl p-1 bg-white cursor-pointer"
-                      />
-                      {qrLogo !== '/logo/fyurl-logo-tp.png' && (
-                        <button
-                          type="button"
-                          onClick={() => {
+                  {/* Custom QR Logo */}
+                  <div className="bg-slate-50/50 rounded-2xl border border-slate-200/60 overflow-hidden transition-all">
+                    <div className="p-4 sm:p-5 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => {
+                        if (qrLogo === '/logo/fyurl-logo-tp.png') {
+                            if (fileInputRef.current) fileInputRef.current.click();
+                        } else {
                             setQrLogo('/logo/fyurl-logo-tp.png');
                             if (fileInputRef.current) fileInputRef.current.value = '';
-                          }}
-                          className="p-3 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl border border-red-200 transition-colors shrink-0"
-                          title="Remove custom logo"
-                        >
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      )}
+                        }
+                    }}>
+                      <div className="flex items-start gap-4">
+                        <div className="bg-indigo-100/50 p-2.5 rounded-xl border border-indigo-200/50 shrink-0 mt-0.5 sm:mt-0">
+                          <QrCode className="h-5 w-5 text-indigo-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-[15px] text-slate-800">{lang === 'id' ? 'Logo Kode QR Kustom' : 'Custom QR Code Logo'} <span className="text-slate-400 font-normal">{t.optional}</span></h3>
+                          <p className="text-xs text-slate-500 mt-0.5">{lang === 'id' ? 'Taruh logo brand kamu atau watermark persis di tengah-tengah QR code.' : 'Embed your brand avatar or watermark in the center of the QR barcode.'}</p>
+                        </div>
+                      </div>
+                      <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-md shrink-0">{lang === 'id' ? 'Tersedia' : 'Available'}</span>
+                    </div>
+
+                    <div className="px-4 pb-4 sm:px-5 sm:pb-5">
+                      <div className="bg-white border border-slate-200/60 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 border border-blue-100">
+                          {qrLogo ? (
+                              <img src={qrLogo} alt="Logo" className="w-8 h-8 object-contain" />
+                          ) : (
+                              <div className="w-5 h-5 bg-blue-500 rounded-sm"></div> /* Placeholder icon for file */
+                          )}
+                        </div>
+                        <div className="flex-1 text-center sm:text-left">
+                          <h4 className="font-bold text-sm text-slate-800 mb-0.5">{lang === 'id' ? 'Pilih file logo (mendingan pakai PNG transparan)' : 'Select logo file (Transparent PNG recommended)'}</h4>
+                          <p className="text-xs text-slate-500 font-mono">{lang === 'id' ? 'Maksimal 1MB • Rasio 1:1 persegi' : 'Max 1MB • 1:1 Square Ratio'}</p>
+                        </div>
+                        <div className="flex items-center gap-3 w-full sm:w-auto">
+                          <input 
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/png, image/jpeg, image/webp"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                if (file.size > 1 * 1024 * 1024) {
+                                  toast.error("File is too large. Max size is 1MB.");
+                                  return;
+                                }
+                                const reader = new FileReader();
+                                reader.onload = (event) => {
+                                  setQrLogo(event.target?.result as string);
+                                };
+                                reader.readAsDataURL(file);
+                              }
+                            }}
+                            className="hidden"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="flex-1 sm:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-lg transition-colors border border-slate-200/60"
+                          >
+                            Pilih Berkas
+                          </button>
+                          {qrLogo !== '/logo/fyurl-logo-tp.png' && (
+                              <span className="text-xs font-mono text-slate-500 truncate max-w-[100px]" title="logo">logo_custom</span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
                 
-                <button
-                  type="submit"
-                  disabled={loading || !longUrl}
-                  className="mt-8 w-full inline-flex items-center justify-center px-8 py-4 text-base font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl transition-all focus:outline-none focus:ring-4 focus:ring-primary-200 disabled:opacity-70 disabled:cursor-not-allowed group shadow-md"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                      {t.shortening}
-                    </>
-                  ) : (
-                    <>
-                      {t.shortenUrl}
-                      <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </button>
+                <div className="mt-8 text-center">
+                  <button
+                    type="submit"
+                    disabled={loading || !longUrl}
+                    className="w-full sm:w-auto inline-flex items-center justify-center px-12 py-4 text-base font-bold text-white bg-[#0047cc] hover:bg-blue-700 rounded-xl transition-all focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-70 disabled:cursor-not-allowed group shadow-lg shadow-blue-500/30"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                        {t.shortening}
+                      </>
+                    ) : (
+                      <>
+                        {lang === 'id' ? 'Perpendek URL & Buat Link' : 'Shorten URL & Create Link'}
+                        <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      </>
+                    )}
+                  </button>
+                  <p className="mt-4 text-[11px] font-mono text-slate-500">
+                    {lang === 'id' ? 'Tekan' : 'Press'} <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-700">Enter ↵</span> • {lang === 'id' ? 'Udah siap banget buat disebar ke mana-mana' : 'Ready to share directly to your communication channels'}
+                  </p>
+                </div>
               </form>
             ) : (
               <div className="p-6 sm:p-10 animate-in fade-in slide-in-from-bottom-4 duration-500 text-center">
@@ -989,7 +1129,7 @@ export default function Home() {
                         className="text-amber-700 hover:text-amber-800 font-medium flex items-center transition-colors group w-fit bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg border border-amber-200"
                       >
                         <HandCoins className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform text-amber-500" />
-                        {lang === 'id' ? 'Dukung via Donasi' : 'Support via Donation'}
+                        {lang === 'id' ? 'Traktir Kopi (Donasi)' : 'Support via Donation'}
                       </button>
                     </div>
                   </div>
@@ -1028,23 +1168,6 @@ export default function Home() {
             
             {activeTab === 'qr' && (
               <div className="p-6 sm:p-10 animate-in fade-in duration-300">
-                <div className="flex bg-slate-200/80 p-1 rounded-xl w-fit mx-auto sm:mx-0 mb-8 border border-slate-300">
-                  <button
-                    onClick={() => setQrMode('generate')}
-                    className={`px-6 py-2.5 text-sm font-bold rounded-lg transition-all ${qrMode === 'generate' ? 'bg-white text-primary-700 shadow-md border border-primary-200' : 'bg-transparent text-slate-900 hover:bg-white/50'}`}
-                  >
-                    {lang === 'id' ? 'Buat QR' : 'Generate QR'}
-                  </button>
-                  <button
-                    onClick={() => setQrMode('scan')}
-                    className={`px-6 py-2.5 text-sm font-bold rounded-lg transition-all ${qrMode === 'scan' ? 'bg-white text-primary-700 shadow-md border border-primary-200' : 'bg-transparent text-slate-900 hover:bg-white/50'}`}
-                  >
-                    {lang === 'id' ? 'Pindai QR' : 'Scan QR'}
-                  </button>
-                </div>
-
-                {qrMode === 'generate' ? (
-                  <>
                     <div className="mb-8">
                       <label htmlFor="qrText" className="block text-sm font-semibold text-foreground mb-2">
                     {t.textOrUrl} <span className="text-red-500">*</span>
@@ -1191,13 +1314,16 @@ export default function Home() {
                   ) : (
                     <div className="flex flex-col items-center justify-center text-muted-foreground opacity-60">
                       <QrCode className="w-16 h-16 mb-4 stroke-1" />
-                      <p className="font-medium text-center">{lang === 'id' ? 'Klik tombol Generate untuk membuat QR Code.' : 'Click Generate to create a QR Code.'}</p>
+                      <p className="font-medium text-center">{lang === 'id' ? 'Klik Bikin QR buat mulai.' : 'Click Generate to create a QR Code.'}</p>
                     </div>
                   )}
                 </div>
-                  </>
-                ) : (
-                  <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed min-h-[480px]">
+              </div>
+            )}
+            
+            {activeTab === 'scan' && (
+              <div className="p-6 sm:p-10 animate-in fade-in duration-300">
+                <div className="flex flex-col items-center justify-center p-8 bg-muted/20 rounded-2xl border border-border border-dashed min-h-[480px]">
                     <div className="mb-6 bg-white p-6 rounded-full shadow-sm border border-slate-100 text-primary-600">
                       <QrCode className="w-12 h-12" />
                     </div>
@@ -1205,7 +1331,7 @@ export default function Home() {
                       {lang === 'id' ? 'Terjemahkan QR Code' : 'Decode QR Code'}
                     </h3>
                     <p className="text-slate-500 text-center max-w-md mb-8">
-                      {lang === 'id' ? 'Unggah gambar QR Code (JPG, PNG) untuk membaca isi tautan/teks di dalamnya.' : 'Upload a QR code image (JPG, PNG) to decode the link/text inside it.'}
+                      {lang === 'id' ? 'Unggah gambar QR Code (JPG, PNG) untuk membaca isi Link/teks di dalamnya.' : 'Upload a QR code image (JPG, PNG) to decode the link/text inside it.'}
                     </p>
 
                     <input 
@@ -1251,7 +1377,6 @@ export default function Home() {
                       </div>
                     )}
                   </div>
-                )}
               </div>
             )}
             
@@ -1261,7 +1386,7 @@ export default function Home() {
             <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <div className="flex items-center justify-between mb-4 px-2">
                 <h3 className="text-lg font-bold text-slate-800">
-                  {lang === 'id' ? 'Tautan Terakhir' : 'Recent Links'}
+                  {lang === 'id' ? 'Link Terakhir' : 'Recent Links'}
                 </h3>
                 <button 
                   onClick={() => {
@@ -1279,11 +1404,20 @@ export default function Home() {
                   <div key={link.shortCode} className="bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-center shadow-sm hover:shadow-md transition-shadow group">
                     <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 shrink-0 relative overflow-hidden group-hover:border-primary-100 transition-colors">
                       <QRCodeCanvas 
+                        id={`qr-history-${link.shortCode}`}
                         value={`https://${link.domain}/${link.shortCode}`} 
                         size={64}
                         level="H"
                         includeMargin={false}
                         className="rounded"
+                        imageSettings={{
+                          src: '/logo/fyurl-logo-tp.png',
+                          x: undefined,
+                          y: undefined,
+                          height: 16,
+                          width: 16,
+                          excavate: true,
+                        }}
                       />
                     </div>
                     
@@ -1318,9 +1452,9 @@ export default function Home() {
                       <button
                         onClick={() => {
                           const canvas = document.createElement('canvas');
-                          // Simple download without logo for recent history to keep it lightweight
+                          // Download QR code image from the canvas
                           const downloadLink = document.createElement('a');
-                          const qrCanvas = document.querySelector(`canvas[value="https://${link.domain}/${link.shortCode}"]`) as HTMLCanvasElement;
+                          const qrCanvas = document.getElementById(`qr-history-${link.shortCode}`) as HTMLCanvasElement;
                           if (qrCanvas) {
                             downloadLink.href = qrCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
                             downloadLink.download = `qr-${link.shortCode}.png`;
@@ -1349,7 +1483,7 @@ export default function Home() {
               </h2>
               <p className="text-slate-500 max-w-2xl mx-auto">
                 {lang === 'id' 
-                  ? 'Lebih dari sekadar pemendek tautan biasa. Dilengkapi fitur keamanan tingkat lanjut untuk melindungi data Anda.' 
+                  ? 'Bukan sekadar pemendek link biasa. Ada perlindungan berlapis buat ngamanin data kamu.' 
                   : 'More than just a URL shortener. Equipped with advanced security features to protect your data.'}
               </p>
             </div>
@@ -1364,7 +1498,7 @@ export default function Home() {
                 </h3>
                 <p className="text-sm text-slate-500 leading-relaxed">
                   {lang === 'id' 
-                    ? 'Tautan ber-password diamankan dengan enkripsi standar industri. Privasi pengunjung dan tujuan tautan terjamin.' 
+                    ? 'Link diproteksi password pakai standar enkripsi tinggi. Aman banget buat jaga privasi.' 
                     : 'Password-protected links use industry-standard encryption. Visitor privacy and destinations are secure.'}
                 </p>
               </div>
@@ -1378,7 +1512,7 @@ export default function Home() {
                 </h3>
                 <p className="text-sm text-slate-500 leading-relaxed">
                   {lang === 'id' 
-                    ? 'Atur kapan tautan aktif dan kedaluwarsa. Gunakan fitur hitung mundur untuk kampanye dan peluncuran eksklusif.' 
+                    ? 'Atur sendiri kapan link mulai aktif atau mati. Cocok banget buat rilis karya, event, atau promo eksklusif.' 
                     : 'Set when links activate and expire. Use countdown timers for exclusive campaigns and launches.'}
                 </p>
               </div>
@@ -1392,7 +1526,7 @@ export default function Home() {
                 </h3>
                 <p className="text-sm text-slate-500 leading-relaxed">
                   {lang === 'id' 
-                    ? 'Gunakan domain Anda sendiri dan sesuaikan pratinjau sosial media (OpenGraph) agar lebih profesional.' 
+                    ? 'Gampang banget buat pakai domain sendiri dan atur pratinjau sosmed (OpenGraph) biar kelihatan lebih pro.' 
                     : 'Use your own custom domains and customize social media previews (OpenGraph) for a professional look.'}
                 </p>
               </div>
@@ -1528,12 +1662,12 @@ export default function Home() {
                 </div>
                 
                 <h3 className="text-2xl font-bold text-slate-900 mb-3">
-                  {lang === 'id' ? 'Tautan Tidak Ditemukan' : 'Link Not Found'}
+                  {lang === 'id' ? 'Link Tidak Ditemukan' : 'Link Not Found'}
                 </h3>
                 
                 <p className="text-slate-500 mb-8 font-medium">
                   {lang === 'id' 
-                    ? 'Waduh! Tautan yang Anda cari mungkin sudah dihapus, kedaluwarsa, atau memang tidak pernah ada. Tapi jangan khawatir!' 
+                    ? 'Waduh! Link yang dicari mungkin udah dihapus, mati, atau emang nggak pernah ada. Selow, jangan panik!' 
                     : 'Oops! The link you are looking for might have been deleted, expired, or never existed. But don\'t worry!'}
                 </p>
                 
@@ -1549,7 +1683,7 @@ export default function Home() {
                   className="w-full py-4 px-4 rounded-xl font-bold text-white bg-primary-600 hover:bg-primary-700 transition-all shadow-lg shadow-primary-600/30 hover:shadow-primary-600/50 hover:-translate-y-0.5 flex items-center justify-center gap-2"
                 >
                   <LinkIcon className="w-5 h-5" />
-                  {lang === 'id' ? 'Buat Tautan Anda Sendiri' : 'Create Your Own Link'}
+                  {lang === 'id' ? 'Buat Link Anda Sendiri' : 'Create Your Own Link'}
                 </button>
               </div>
             </motion.div>
@@ -1593,7 +1727,7 @@ export default function Home() {
                 
                 <p className="text-slate-500 mb-8 font-medium">
                   {lang === 'id' 
-                    ? 'Tautan yang Anda tuju sudah melewati batas waktu dan tidak dapat diakses lagi.' 
+                    ? 'Yaaah, link-nya udah kelewat batas waktu dan udah nggak bisa diakses lagi deh.' 
                     : 'The link you are trying to reach has expired and is no longer accessible.'}
                 </p>
                 

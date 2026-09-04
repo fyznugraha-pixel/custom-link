@@ -144,3 +144,11 @@ model QrEvent {
   shortUrl  String?
   createdAt DateTime @default(now())
 }
+
+model Suggestion {
+  id        String   @id @default(cuid())
+  content   String   @db.Text
+  email     String?
+  status    String   @default("pending") // pending, reviewed
+  createdAt DateTime @default(now())
+}

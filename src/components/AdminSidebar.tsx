@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { LogOut, Link as LinkIcon, BarChart3, Globe, Flag, Menu, X, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LogOut, Link as LinkIcon, BarChart3, Globe, Flag, Menu, X, Users, ChevronLeft, ChevronRight, Lightbulb } from 'lucide-react';
 import { useState } from 'react';
 import { signOut } from 'next-auth/react';
 
@@ -29,6 +29,7 @@ export default function AdminSidebar() {
     { label: 'Global Analytics', icon: BarChart3, href: '/hq-panel-7x9q-secret/analytics', active: pathname?.startsWith('/hq-panel-7x9q-secret/analytics') },
     { label: 'Custom Domains', icon: Globe, href: '/hq-panel-7x9q-secret/domains', active: pathname?.startsWith('/hq-panel-7x9q-secret/domains') },
     { label: 'Reports', icon: Flag, href: '/hq-panel-7x9q-secret/reports', active: pathname?.startsWith('/hq-panel-7x9q-secret/reports') },
+    { label: 'Suggestions', icon: Lightbulb, href: '/hq-panel-7x9q-secret/suggestions', active: pathname?.startsWith('/hq-panel-7x9q-secret/suggestions') },
   ];
 
   return (

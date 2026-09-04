@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     }
 
     // Check if the requested domain is the default app domain
-    const isDefaultDomain = !domain || domain.replace(/^www\./, '') === (process.env.NEXT_PUBLIC_APP_URL || 'fyurl.fun').replace(/^https?:\/\//, '').replace(/^www\./, '');
+    const isDefaultDomain = !domain || domain.replace(/^www\./, '') === (process.env.NEXT_PUBLIC_APP_URL || 'fyurl.id').replace(/^https?:\/\//, '').replace(/^www\./, '');
 
     // 1. Fetch from DB using the resolved domainId
     let link = await linkRepository.findByShortCode(code, domainId);

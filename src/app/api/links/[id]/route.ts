@@ -26,7 +26,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 
     // Invalidate Cache
     // Attempt to invalidate on primary domain and the specific custom domain
-    const domainsToClear = ['fyurl.fun', 'fylink.id'];
+    const domainsToClear = ['fyurl.id', 'fylink.id'];
     if (link.domain?.domain) {
       domainsToClear.push(link.domain.domain);
     }

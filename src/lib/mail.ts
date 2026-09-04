@@ -30,7 +30,7 @@ export const sendOtpEmail = async (email: string, code: string, type: 'register'
     }
 
     const { data, error } = await resend.emails.send({
-      from: 'Fyurl <noreply@fyurl.fun>',
+      from: 'Fyurl <noreply@fyurl.id>',
       to: [email],
       subject: subject,
       html: htmlContent,

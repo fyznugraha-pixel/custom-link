@@ -29,7 +29,7 @@ export default function LinkTableClient({ initialLinks, customDomains = [], base
       link.longUrl.toLowerCase().includes(search.toLowerCase())
   );
 
-  const defaultDomain = typeof window !== 'undefined' ? window.location.host : 'fyurl.fun';
+  const defaultDomain = typeof window !== 'undefined' ? window.location.host : 'fyurl.id';
 
   const handleCopy = (link: any) => {
     const domainToUse = link.domain?.domain || defaultDomain;
