@@ -976,13 +976,22 @@ export default function Home() {
                       </button>
                     </div>
                     
-                    <button
-                      onClick={() => setResult(null)}
-                      className="text-primary-600 hover:text-primary-700 font-medium flex items-center transition-colors group w-fit"
-                    >
-                      <ArrowRight className="w-4 h-4 mr-2 rotate-180 group-hover:-translate-x-1 transition-transform" />
-                      {t.createAnother}
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-6 mt-2">
+                      <button
+                        onClick={() => setResult(null)}
+                        className="text-primary-600 hover:text-primary-700 font-medium flex items-center transition-colors group w-fit bg-primary-50 px-4 py-2 rounded-lg border border-primary-100"
+                      >
+                        <ArrowRight className="w-4 h-4 mr-2 rotate-180 group-hover:-translate-x-1 transition-transform" />
+                        {t.createAnother}
+                      </button>
+                      <button
+                        onClick={() => setShowDonationModal(true)}
+                        className="text-amber-700 hover:text-amber-800 font-medium flex items-center transition-colors group w-fit bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg border border-amber-200"
+                      >
+                        <HandCoins className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform text-amber-500" />
+                        {lang === 'id' ? 'Dukung via Donasi' : 'Support via Donation'}
+                      </button>
+                    </div>
                   </div>
                   
                   <div className="flex flex-col items-center justify-center bg-white p-6 rounded-2xl shadow-sm border border-border shrink-0 md:w-[280px] w-full max-w-[280px]">
