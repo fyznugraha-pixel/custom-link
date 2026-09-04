@@ -108,6 +108,14 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [result, setResult] = useState<{ shortCode: string; domain: string } | null>(null);
+  
+  interface RecentLink {
+    shortCode: string;
+    domain: string;
+    longUrl: string;
+    createdAt: number;
+  }
+  const [recentLinks, setRecentLinks] = useState<RecentLink[]>([]);
   const [copied, setCopied] = useState(false);
   const [requirePassword, setRequirePassword] = useState(false);
   const [password, setPassword] = useState('');
@@ -149,6 +157,13 @@ export default function Home() {
         }
       })
       .catch(console.error);
+
+    const savedLinks = localStorage.getItem('fyurl_recent_links');
+    if (savedLinks) {
+      try {
+        setRecentLinks(JSON.parse(savedLinks));
+      } catch (e) {}
+    }
 
     const interval = setInterval(() => {
       setWordIndex((prev) => (prev + 1) % t.taglines.length);
@@ -267,9 +282,22 @@ export default function Home() {
         throw new Error(data.error || 'Failed to create short link');
       }
       
+      const newDomain = domainId ? customDomains.find(d => d.id === domainId)?.domain || defaultDomain : defaultDomain;
       setResult({
         shortCode: data.data.shortCode,
-        domain: domainId ? customDomains.find(d => d.id === domainId)?.domain || defaultDomain : defaultDomain
+        domain: newDomain
+      });
+      
+      const newRecentLink: RecentLink = {
+        shortCode: data.data.shortCode,
+        domain: newDomain,
+        longUrl: finalUrl,
+        createdAt: Date.now()
+      };
+      setRecentLinks(prev => {
+        const updated = [newRecentLink, ...prev.filter(l => l.shortCode !== newRecentLink.shortCode)].slice(0, 3);
+        localStorage.setItem('fyurl_recent_links', JSON.stringify(updated));
+        return updated;
       });
       
       // Clear form except for result
@@ -1219,6 +1247,90 @@ export default function Home() {
             )}
             
           </div>
+
+          {recentLinks.length > 0 && (
+            <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex items-center justify-between mb-4 px-2">
+                <h3 className="text-lg font-bold text-slate-800">
+                  {lang === 'id' ? 'Tautan Terakhir' : 'Recent Links'}
+                </h3>
+                <button 
+                  onClick={() => {
+                    setRecentLinks([]);
+                    localStorage.removeItem('fyurl_recent_links');
+                  }}
+                  className="text-sm text-slate-500 hover:text-red-500 font-medium transition-colors"
+                >
+                  {lang === 'id' ? 'Hapus Riwayat' : 'Clear History'}
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                {recentLinks.map((link) => (
+                  <div key={link.shortCode} className="bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-center shadow-sm hover:shadow-md transition-shadow group">
+                    <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 shrink-0 relative overflow-hidden group-hover:border-primary-100 transition-colors">
+                      <QRCodeCanvas 
+                        value={`https://${link.domain}/${link.shortCode}`} 
+                        size={64}
+                        level="H"
+                        includeMargin={false}
+                        className="rounded"
+                      />
+                    </div>
+                    
+                    <div className="flex-1 min-w-0 text-center sm:text-left w-full">
+                      <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                        <a 
+                          href={`https://${link.domain}/${link.shortCode}`} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="font-bold text-primary-700 hover:text-primary-800 text-lg truncate transition-colors"
+                        >
+                          {link.domain}/{link.shortCode}
+                        </a>
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${link.domain}/${link.shortCode}`);
+                            toast.success(lang === 'id' ? 'Disalin!' : 'Copied!');
+                          }}
+                          className="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
+                          title="Copy"
+                        >
+                          <Copy className="w-4 h-4" />
+                        </button>
+                      </div>
+                      <div className="text-sm text-slate-500 truncate flex items-center justify-center sm:justify-start gap-1">
+                        <ArrowRight className="w-3 h-3 shrink-0" />
+                        <span className="truncate" title={link.longUrl}>{link.longUrl}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="shrink-0 flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          const canvas = document.createElement('canvas');
+                          // Simple download without logo for recent history to keep it lightweight
+                          const downloadLink = document.createElement('a');
+                          const qrCanvas = document.querySelector(`canvas[value="https://${link.domain}/${link.shortCode}"]`) as HTMLCanvasElement;
+                          if (qrCanvas) {
+                            downloadLink.href = qrCanvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+                            downloadLink.download = `qr-${link.shortCode}.png`;
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+                          }
+                        }}
+                        className="p-2 sm:px-4 sm:py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-2"
+                      >
+                        <Download className="w-4 h-4" />
+                        <span className="hidden sm:inline">{lang === 'id' ? 'Unduh QR' : 'Download QR'}</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </main>
 
