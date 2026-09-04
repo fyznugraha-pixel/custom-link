@@ -54,11 +54,17 @@ export default function Home() {
         
         // Clean URL
         window.history.replaceState({}, document.title, window.location.pathname);
+      } else if (error === 'expired') {
+        setShowExpiredModal(true);
+        
+        // Clean URL
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
   }, [lang]);
 
   const [showNotFoundModal, setShowNotFoundModal] = useState(false);
+  const [showExpiredModal, setShowExpiredModal] = useState(false);
   const [showFeatureModal, setShowFeatureModal] = useState(false);
   const [showDonationModal, setShowDonationModal] = useState(false);
   useEffect(() => {
@@ -1365,6 +1371,65 @@ export default function Home() {
                 >
                   <LinkIcon className="w-5 h-5" />
                   {lang === 'id' ? 'Buat Tautan Anda Sendiri' : 'Create Your Own Link'}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Expired Modal */}
+      <AnimatePresence>
+        {showExpiredModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ type: "spring", duration: 0.5, bounce: 0.3 }}
+              className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden relative"
+            >
+              <button 
+                onClick={() => setShowExpiredModal(false)}
+                className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="p-8 text-center">
+                <div className="flex justify-center mb-6">
+                  <div className="w-20 h-20 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center shadow-inner">
+                    <Clock className="w-10 h-10" />
+                  </div>
+                </div>
+                
+                <h3 className="text-2xl font-bold text-slate-900 mb-3">
+                  {lang === 'id' ? 'Link Kedaluwarsa' : 'Link Expired'}
+                </h3>
+                
+                <p className="text-slate-500 mb-8 font-medium">
+                  {lang === 'id' 
+                    ? 'Tautan yang Anda tuju sudah melewati batas waktu dan tidak dapat diakses lagi.' 
+                    : 'The link you are trying to reach has expired and is no longer accessible.'}
+                </p>
+                
+                <button 
+                  onClick={() => {
+                    setShowExpiredModal(false);
+                    const input = document.querySelector('input[type="url"]') as HTMLInputElement;
+                    if (input) {
+                      input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      setTimeout(() => input.focus(), 500);
+                    }
+                  }}
+                  className="w-full py-4 px-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-lg shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                >
+                  {lang === 'id' ? 'Buat Short Link Anda Sendiri' : 'Create Your Own Short Link'}
                 </button>
               </div>
             </motion.div>

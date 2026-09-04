@@ -226,7 +226,7 @@ export async function middleware(request: NextRequest) {
         }
       } else if (res.status === 410) {
         // HTTP 410 Gone -> Expired link
-        return NextResponse.rewrite(new URL('/expired', request.url));
+        return NextResponse.redirect(new URL(`/?error=expired`, request.url));
       } else {
         const text = await res.text();
         return NextResponse.redirect(new URL(`/?error=lookup_failed&status=${res.status}&msg=${encodeURIComponent(text.substring(0,50))}`, request.url));
