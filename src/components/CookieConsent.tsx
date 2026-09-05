@@ -19,9 +19,8 @@ export default function CookieConsent() {
 
     const consent = localStorage.getItem('fyurl_cookie_consent');
     if (!consent) {
-      const handleShow = () => setShow(true);
-      window.addEventListener('loginAnnouncementClosed', handleShow);
-      return () => window.removeEventListener('loginAnnouncementClosed', handleShow);
+      const timer = setTimeout(() => setShow(true), 2000);
+      return () => clearTimeout(timer);
     }
   }, []);
 

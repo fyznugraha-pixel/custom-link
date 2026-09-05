@@ -5,7 +5,6 @@ import AuthProvider from '@/components/AuthProvider';
 import Footer from '@/components/Footer';
 import CookieConsent from '@/components/CookieConsent';
 import AnalyticsTracker from '@/components/AnalyticsTracker';
-import LoginAnnouncementModal from '@/components/LoginAnnouncementModal';
 import { Toaster } from 'react-hot-toast';
 import NextTopLoader from 'nextjs-toploader';
 import "./globals.css";
@@ -169,7 +168,6 @@ export default function RootLayout({
         <Toaster position="top-center" />
         <AuthProvider>
           {children}
-          <LoginAnnouncementModal />
         </AuthProvider>
         <Footer />
         <CookieConsent />
