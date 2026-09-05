@@ -1082,7 +1082,7 @@ export default function Home() {
                       </>
                     ) : (
                       <>
-                        {lang === 'id' ? 'Perpendek URL & Buat Link' : 'Shorten URL & Create Link'}
+                        {lang === 'id' ? 'Buat Link' : 'Make It'}
                         <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
