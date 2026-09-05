@@ -7,8 +7,8 @@ export async function middleware(request: NextRequest) {
   const hostname = request.headers.get('host') || '';
   const cleanHostname = hostname.split(':')[0];
 
-  // 1. Redirect deprecated fyurl.id domain to fyurl.id
-  if (cleanHostname === 'fyurl.id' || cleanHostname === 'www.fyurl.id') {
+  // 1. Redirect deprecated fyurl.fun and fylink.fun domains to fyurl.id
+  if (['fyurl.fun', 'www.fyurl.fun', 'fylink.fun', 'www.fylink.fun'].includes(cleanHostname)) {
     const targetUrl = new URL(request.nextUrl.pathname + request.nextUrl.search, 'https://fyurl.id');
     return NextResponse.redirect(targetUrl, 301);
   }
