@@ -19,9 +19,9 @@ export default function CookieConsent() {
 
     const consent = localStorage.getItem('fyurl_cookie_consent');
     if (!consent) {
-      // Small delay so it doesn't pop up instantly on initial paint
-      const timer = setTimeout(() => setShow(true), 1500);
-      return () => clearTimeout(timer);
+      const handleShow = () => setShow(true);
+      window.addEventListener('loginAnnouncementClosed', handleShow);
+      return () => window.removeEventListener('loginAnnouncementClosed', handleShow);
     }
   }, []);
 

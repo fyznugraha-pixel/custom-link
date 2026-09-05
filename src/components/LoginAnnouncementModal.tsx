@@ -13,7 +13,10 @@ export default function LoginAnnouncementModal() {
 
   useEffect(() => {
     // Only show if not logged in
-    if (status === 'authenticated') return;
+    if (status === 'authenticated') {
+      window.dispatchEvent(new Event('loginAnnouncementClosed'));
+      return;
+    }
 
     const savedLang = localStorage.getItem('fyurl_lang');
     if (savedLang === 'id' || savedLang === 'en') {
@@ -27,12 +30,15 @@ export default function LoginAnnouncementModal() {
       // Delay so it pops up after a short while, not instantly
       const timer = setTimeout(() => setShow(true), 2500);
       return () => clearTimeout(timer);
+    } else {
+      window.dispatchEvent(new Event('loginAnnouncementClosed'));
     }
   }, [status]);
 
   const handleClose = () => {
     localStorage.setItem('fyurl_login_announcement_v1', 'true');
     setShow(false);
+    window.dispatchEvent(new Event('loginAnnouncementClosed'));
   };
 
   if (!show) return null;
