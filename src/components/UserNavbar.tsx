@@ -97,27 +97,17 @@ export default function UserNavbar({ user }: { user: any }) {
               </div>
             </div>
             
-            <div className="flex items-center space-x-2 sm:space-x-4 shrink-0">
-              <button
-                onClick={toggleLanguage}
-                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-0 sm:mr-4"
-                title={t.language}
-              >
-                <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN / ID' : 'ID / EN'}</span>
-                <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
-              </button>
-              
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
               <button 
                 onClick={() => setShowDonationModal(true)}
-                className="inline-flex items-center justify-center p-1.5 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5"
+                className="inline-flex shrink-0 items-center justify-center p-1.5 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5"
                 title={t.donation}
               >
                 <HandCoins className="w-4 h-4 sm:mr-2" />
                 <span className="hidden sm:inline-block">{t.navDonation}</span>
               </button>
 
-              <div className="flex items-center text-sm font-medium text-slate-700">
+              <div className="flex items-center text-sm font-medium text-slate-700 shrink-0">
                 <img 
                   src={user?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || user?.email || 'User')}&background=e2e8f0&color=475569`} 
                   alt={user?.name || "User"} 
@@ -132,10 +122,22 @@ export default function UserNavbar({ user }: { user: any }) {
 
               <button 
                 onClick={() => signOut({ callbackUrl: '/' })}
-                className="inline-flex items-center justify-center p-1.5 sm:p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors ml-1"
+                className="inline-flex shrink-0 items-center justify-center p-1.5 sm:p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                 title="Logout"
               >
                 <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500" /> 
+              </button>
+
+              <div className="w-px h-5 bg-slate-200 hidden sm:block mx-1"></div>
+
+              <button
+                onClick={toggleLanguage}
+                className="flex shrink-0 items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors ml-1 sm:ml-0"
+                title={t.language}
+              >
+                <Globe className="w-4 h-4 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN' : 'ID'}</span>
+                <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
               </button>
             </div>
           </div>

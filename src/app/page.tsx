@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar, HandCoins, LogIn, X, Upload, ExternalLink, RefreshCw, Palette, Clipboard, Check, Share2, GripHorizontal, Scan } from 'lucide-react';
+import { ArrowRight, Link as LinkIcon, Globe, Shield, Zap, Copy, Download, Loader2, CheckCircle2, QrCode, ChevronDown, Trash2, ShieldAlert, Lock, Eye, EyeOff, Clock, Calendar, HandCoins, LogIn, X, Upload, ExternalLink, RefreshCw, Palette, Clipboard, Check, Share2, GripHorizontal, Scan, Infinity } from 'lucide-react';
 import jsQR from "jsqr";
 import { QRCodeCanvas } from 'qrcode.react';
 import Link from 'next/link';
@@ -448,7 +448,7 @@ export default function Home() {
       {/* Hero Section */}
       <main className="pt-32 md:pt-40 pb-20 px-6 sm:px-10 lg:px-16 w-full flex-1 flex flex-col justify-center relative z-10">
         <div className="text-center max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700">
-          <h1 className="w-full text-[2.25rem] leading-tight sm:text-5xl md:text-7xl lg:text-[6.5rem] font-extrabold text-slate-900 tracking-tight mb-4 sm:mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible max-w-full">
+          <h1 className="w-full text-[2.75rem] leading-tight sm:text-6xl md:text-7xl lg:text-[6.5rem] font-extrabold text-slate-900 tracking-tight mb-4 sm:mb-6 flex flex-col md:flex-row items-center justify-center gap-y-2 md:gap-x-4 md:whitespace-nowrap overflow-visible max-w-full">
             <span>{t.makeEveryLink}</span>
             <div className="flex justify-center items-center overflow-visible min-h-[1.5em] relative w-full md:w-auto px-4 md:px-0">
               <TaglineRotator taglines={t.taglines} />
@@ -531,10 +531,11 @@ export default function Home() {
                             setLongUrl(text);
                           } catch (err) {}
                         }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-blue-200/50"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 sm:px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors border border-blue-200/50"
                       >
-                        <Clipboard className="w-3.5 h-3.5" />
-                        Paste <span className="text-[10px] bg-blue-100 px-1 rounded ml-0.5 font-mono">⌘V</span>
+                        <Clipboard className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+                        <span className="hidden sm:inline">Paste</span>
+                        <span className="hidden sm:inline-block text-[10px] bg-blue-100 px-1 rounded ml-0.5 font-mono">⌘V</span>
                       </button>
                     </div>
                   </div>
@@ -652,30 +653,39 @@ export default function Home() {
                     <label className="block text-sm font-bold text-slate-800 mb-3">
                       {lang === 'id' ? 'Kedaluwarsa Link' : 'Link Expiration'} <span className="text-red-500">*</span>
                     </label>
-                    <div className="grid grid-cols-2 sm:flex sm:flex-nowrap gap-2">
+                    <div className="flex flex-nowrap gap-1 min-[360px]:gap-1.5 sm:gap-2 w-full">
                       {[
                         { v: '1d', l: lang === 'id' ? '24 Jam' : '24 Hours' },
                         { v: '3d', l: lang === 'id' ? '3 Hari (Bawaan)' : '3 Days (Default)' },
                         { v: '7d', l: lang === 'id' ? '7 Hari' : '7 Days' },
                         { v: '30d', l: lang === 'id' ? '30 Hari' : '30 Days' },
                         { v: 'never', l: lang === 'id' ? 'Selamanya ∞' : 'Forever ∞' }
-                      ].map((opt, i) => (
+                      ].map((opt) => (
                         <button
                           key={opt.v}
                           type="button"
                           onClick={() => setExpiresIn(opt.v)}
-                          className={`w-full sm:flex-1 py-2.5 sm:py-3 px-2 rounded-xl text-[11px] sm:text-sm font-semibold transition-all flex flex-col items-center justify-center gap-0.5 sm:gap-1 border ${
+                          className={`flex-1 py-2 sm:py-3 px-0.5 sm:px-2 rounded-lg sm:rounded-xl text-[9px] min-[360px]:text-[10px] sm:text-sm font-semibold transition-all flex flex-col items-center justify-center gap-0.5 sm:gap-1 border ${
                             expiresIn === opt.v 
                               ? 'bg-[#0047cc] text-white border-[#0047cc] shadow-md' 
                               : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                          } ${opt.v === 'never' ? 'col-span-2 sm:col-span-1' : ''}`}
+                          }`}
                         >
-                          <div className="flex items-center gap-1 sm:gap-1.5 whitespace-nowrap">
-                            {expiresIn === opt.v && <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />}
-                            <span className="text-center">{opt.l.split(' (')[0]}</span>
+                          <div className="flex items-center justify-center gap-0.5 sm:gap-1.5 whitespace-nowrap w-full">
+                            {expiresIn === opt.v && <Check className="w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 shrink-0" />}
+                            
+                            {/* Desktop Text */}
+                            <span className="hidden sm:inline text-center">{opt.l.split(' (')[0]}</span>
+                            
+                            {/* Mobile Text */}
+                            <span className="sm:hidden text-center flex justify-center items-center h-full">
+                              {opt.v === 'never' ? <Infinity className="w-4 h-4" /> : opt.l.split(' (')[0]}
+                            </span>
                           </div>
+                          
+                          {/* Subtitle only visible on Desktop */}
                           {opt.l.includes('(') && (
-                            <span className={`text-[9px] sm:text-[10px] ${expiresIn === opt.v ? 'text-blue-200' : 'text-slate-400'}`}>
+                            <span className={`hidden sm:block text-[10px] ${expiresIn === opt.v ? 'text-blue-200' : 'text-slate-400'}`}>
                               ({opt.l.split(' (')[1]}
                             </span>
                           )}
@@ -685,8 +695,8 @@ export default function Home() {
                   </div>
 
                   {/* Password Protection */}
-                  <div className="bg-slate-50/50 rounded-2xl border border-slate-200/60 overflow-hidden">
-                    <div className="p-4 sm:p-5 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequirePassword(!requirePassword)}>
+                  <div className="border-t border-slate-200/60 pt-2 overflow-hidden">
+                    <div className="py-3 sm:py-4 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequirePassword(!requirePassword)}>
                       <div className="flex items-start gap-4">
                         <div className="bg-blue-100/50 p-2.5 rounded-xl border border-blue-200/50 shrink-0 mt-0.5 sm:mt-0">
                           <Lock className="h-5 w-5 text-blue-600" />
@@ -715,7 +725,7 @@ export default function Home() {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden border-t border-slate-200/60"
                         >
-                          <div className="p-4 sm:p-5 bg-white">
+                          <div className="py-4 bg-transparent">
                             <div className="relative">
                               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <Lock className="h-4 w-4 text-slate-400" />
@@ -747,8 +757,8 @@ export default function Home() {
                   </div>
 
                   {/* Time-Lock / Scheduled Access */}
-                  <div className={`bg-slate-50/50 rounded-2xl border border-slate-200/60 ${isTimezoneDropdownOpen ? 'relative z-20' : 'overflow-hidden'}`}>
-                    <div className="p-4 sm:p-5 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequireSchedule(!requireSchedule)}>
+                  <div className={`border-t border-slate-200/60 pt-2 ${isTimezoneDropdownOpen ? 'relative z-20' : 'overflow-hidden'}`}>
+                    <div className="py-3 sm:py-4 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequireSchedule(!requireSchedule)}>
                       <div className="flex items-start gap-4">
                         <div className="bg-indigo-100/50 p-2.5 rounded-xl border border-indigo-200/50 shrink-0 mt-0.5 sm:mt-0">
                           <Clock className="h-5 w-5 text-indigo-600" />
@@ -777,7 +787,7 @@ export default function Home() {
                           transition={{ duration: 0.2 }}
                           className={`border-t border-slate-200/60 ${isTimezoneDropdownOpen ? '' : 'overflow-hidden'}`}
                         >
-                          <div className="p-4 sm:p-5 bg-white">
+                          <div className="py-4 bg-transparent">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               <div className="relative border border-slate-200/60 rounded-xl focus-within:ring-2 focus-within:ring-primary-500 transition-all bg-slate-50/80 focus-within:bg-white overflow-hidden">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -852,8 +862,8 @@ export default function Home() {
                   </div>
 
                   {/* Custom Link Preview (OG) Toggle */}
-                  <div className="bg-slate-50/50 rounded-2xl border border-slate-200/60 overflow-hidden">
-                    <div className="p-4 sm:p-5 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequireOg(!requireOg)}>
+                  <div className="border-t border-slate-200/60 pt-2 overflow-hidden">
+                    <div className="py-3 sm:py-4 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequireOg(!requireOg)}>
                       <div className="flex items-start gap-4">
                         <div className="bg-sky-100/50 p-2.5 rounded-xl border border-sky-200/50 shrink-0 mt-0.5 sm:mt-0">
                           <Share2 className="h-5 w-5 text-sky-600" />
@@ -882,7 +892,7 @@ export default function Home() {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden border-t border-slate-200/60"
                         >
-                          <div className="p-4 sm:p-5 bg-white grid grid-cols-1 lg:grid-cols-2 gap-8">
+                          <div className="py-4 bg-transparent grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div className="space-y-4">
                               <div>
                                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
@@ -998,8 +1008,8 @@ export default function Home() {
                   </div>
 
                   {/* Custom QR Logo */}
-                  <div className="bg-slate-50/50 rounded-2xl border border-slate-200/60 overflow-hidden transition-all">
-                    <div className="p-4 sm:p-5 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => {
+                  <div className="border-t border-slate-200/60 pt-2 overflow-hidden transition-all">
+                    <div className="py-3 sm:py-4 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => {
                         if (qrLogo === '/logo/fyurl-logo-tp.png') {
                             if (fileInputRef.current) fileInputRef.current.click();
                         } else {
@@ -1019,8 +1029,8 @@ export default function Home() {
                       <span className="text-[10px] font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded-md shrink-0">{lang === 'id' ? 'Tersedia' : 'Available'}</span>
                     </div>
 
-                    <div className="px-4 pb-4 sm:px-5 sm:pb-5">
-                      <div className="bg-white border border-slate-200/60 rounded-xl p-4 flex flex-col sm:flex-row items-center gap-4">
+                    <div className="pb-4 sm:pb-5">
+                      <div className="bg-transparent flex flex-col sm:flex-row items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center shrink-0 border border-blue-100">
                           {qrLogo ? (
                               <img src={qrLogo} alt="Logo" className="w-8 h-8 object-contain" />
