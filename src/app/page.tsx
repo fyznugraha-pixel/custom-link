@@ -463,26 +463,29 @@ export default function Home() {
         <div className="w-full max-w-[1400px] mx-auto relative z-10 animate-in zoom-in-95 duration-500 delay-150">
           
           {/* Tabs */}
-          <div className="flex overflow-x-auto hide-scrollbar max-w-[90vw] sm:max-w-full bg-white/80 backdrop-blur-xl p-1.5 sm:p-2 rounded-full border border-slate-200/60 w-fit mx-auto shadow-sm mb-8 sm:mb-10 snap-x snap-mandatory">
+          <div className="flex bg-white/80 backdrop-blur-xl p-1.5 sm:p-2 rounded-2xl sm:rounded-full border border-slate-200/60 w-full sm:w-fit mx-auto shadow-sm mb-8 sm:mb-10 items-center justify-between sm:justify-center gap-1 sm:gap-0">
             <button
               onClick={() => setActiveTab('shortener')}
-              className={`px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-bold rounded-full transition-all duration-300 border whitespace-nowrap snap-center shrink-0 ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
+              className={`flex-1 sm:flex-none px-2 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-base font-bold rounded-xl sm:rounded-full transition-all duration-300 border whitespace-nowrap flex items-center justify-center ${activeTab === 'shortener' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
             >
-              Custom Link
+              <span className="sm:hidden">Link</span>
+              <span className="hidden sm:inline">Custom Link</span>
             </button>
             <button
               onClick={() => setActiveTab('qr')}
-              className={`px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-bold rounded-full transition-all duration-300 flex items-center justify-center border whitespace-nowrap snap-center shrink-0 ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
+              className={`flex-1 sm:flex-none px-2 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-base font-bold rounded-xl sm:rounded-full transition-all duration-300 flex items-center justify-center border whitespace-nowrap ${activeTab === 'qr' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
             >
-              <QrCode className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-2.5" />
-              {t.qrGenerator}
+              <QrCode className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2.5" />
+              <span className="sm:hidden">{lang === 'id' ? 'Buat QR' : 'QR'}</span>
+              <span className="hidden sm:inline">{t.qrGenerator}</span>
             </button>
             <button
               onClick={() => setActiveTab('scan')}
-              className={`px-6 sm:px-8 py-2.5 sm:py-3 text-sm sm:text-base font-bold rounded-full transition-all duration-300 flex items-center justify-center border whitespace-nowrap snap-center shrink-0 ${activeTab === 'scan' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
+              className={`flex-1 sm:flex-none px-2 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-base font-bold rounded-xl sm:rounded-full transition-all duration-300 flex items-center justify-center border whitespace-nowrap ${activeTab === 'scan' ? 'bg-white text-primary-700 shadow-md border-slate-200/50 scale-100' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-50/50 border-transparent scale-95'}`}
             >
-              <Scan className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-2.5" />
-              {lang === 'id' ? 'Cek Isi QR' : 'Decode QR'}
+              <Scan className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2.5" />
+              <span className="sm:hidden">{lang === 'id' ? 'Cek QR' : 'Scan'}</span>
+              <span className="hidden sm:inline">{lang === 'id' ? 'Cek Isi QR' : 'Decode QR'}</span>
             </button>
           </div>
 
