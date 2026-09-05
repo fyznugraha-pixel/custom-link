@@ -46,8 +46,15 @@ export default function LoginAnnouncementModal() {
   return (
     <AnimatePresence>
       {show && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/40 backdrop-blur-sm">
+        <div 
+          key="login-modal-overlay"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-slate-900/40 backdrop-blur-sm"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) handleClose();
+          }}
+        >
           <motion.div
+            key="login-modal-content"
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
@@ -55,7 +62,7 @@ export default function LoginAnnouncementModal() {
             className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden relative border border-slate-100"
           >
             {/* Background effects */}
-            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-primary-100/50 rounded-full blur-3xl" />
+            <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-primary-100/50 rounded-full blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-blue-100/50 rounded-full blur-3xl" />
 
             {/* Header */}
