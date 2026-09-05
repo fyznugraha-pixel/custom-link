@@ -59,6 +59,14 @@ body {
     scrollbar-width: thin;
     scrollbar-color: #cbd5e1 transparent;
   }
+
+  .hide-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
 }
 
 @keyframes bounce-in-top {
