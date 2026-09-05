@@ -52,10 +52,10 @@ export default function UserNavbar({ user }: { user: any }) {
       {/* Top Navbar (Desktop & Mobile) */}
       <nav className="bg-white border-b border-border fixed top-0 w-full z-50">
         <div className="w-full px-4 sm:px-10 lg:px-16">
-          <div className="flex justify-between h-16">
-            <div className="flex">
+          <div className="flex justify-between h-16 gap-2">
+            <div className="flex shrink-0">
               <Link href="/" className="flex-shrink-0 flex items-center">
-                <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-10 w-auto object-contain" />
+                <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-7 sm:h-10 w-auto object-contain" />
               </Link>
               <div className="hidden sm:-my-px sm:ml-8 sm:flex sm:space-x-8">
                 <Link 
@@ -97,20 +97,20 @@ export default function UserNavbar({ user }: { user: any }) {
               </div>
             </div>
             
-            <div className="flex items-center space-x-3 sm:space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4 shrink-0">
               <button
                 onClick={toggleLanguage}
-                className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-2 sm:mr-4"
+                className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-0 sm:mr-4"
                 title={t.language}
               >
-                <Globe className="w-4 h-4" />
+                <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN / ID' : 'ID / EN'}</span>
                 <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
               </button>
               
               <button 
                 onClick={() => setShowDonationModal(true)}
-                className="inline-flex items-center justify-center p-2 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center p-1.5 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5"
                 title={t.donation}
               >
                 <HandCoins className="w-4 h-4 sm:mr-2" />
@@ -121,7 +121,7 @@ export default function UserNavbar({ user }: { user: any }) {
                 <img 
                   src={user?.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || user?.email || 'User')}&background=e2e8f0&color=475569`} 
                   alt={user?.name || "User"} 
-                  className="h-8 w-8 rounded-full sm:mr-2 object-cover bg-slate-100" 
+                  className="h-7 w-7 sm:h-8 sm:w-8 rounded-full sm:mr-2 object-cover bg-slate-100" 
                   onError={(e) => {
                     e.currentTarget.onerror = null;
                     e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || user?.email || 'User')}&background=e2e8f0&color=475569`;
@@ -132,10 +132,10 @@ export default function UserNavbar({ user }: { user: any }) {
 
               <button 
                 onClick={() => signOut({ callbackUrl: '/' })}
-                className="inline-flex items-center justify-center p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                className="inline-flex items-center justify-center p-1.5 sm:p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors ml-1"
                 title="Logout"
               >
-                <LogOut className="w-4 h-4 text-red-500" /> 
+                <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500" /> 
               </button>
             </div>
           </div>

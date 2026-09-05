@@ -409,34 +409,34 @@ export default function Home() {
         <UserNavbar user={session.user} />
       ) : (
       <nav className="border-b border-border bg-white fixed top-0 w-full z-50 transition-all">
-        <div className="w-full px-6 sm:px-10 lg:px-16 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 group cursor-pointer" onClick={() => setResult(null)}>
-            <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
+        <div className="w-full px-4 sm:px-10 lg:px-16 h-16 flex items-center justify-between gap-2">
+          <div className="flex items-center shrink-0 group cursor-pointer" onClick={() => setResult(null)}>
+            <img src="/logo/fyurl-horizontal.png" alt="Fyurl" className="h-7 sm:h-10 w-auto object-contain group-hover:scale-105 transition-transform" />
           </div>
           
-          <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-2 sm:gap-6 shrink-0">
             <button
               onClick={() => {
                 const newLang = lang === 'en' ? 'id' : 'en';
                 setLang(newLang);
                 localStorage.setItem('fyurl_lang', newLang);
               }}
-              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              <Globe className="w-4 h-4" />
+              <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN / ID' : 'ID / EN'}</span>
               <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
             </button>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <button 
                 onClick={() => setShowDonationModal(true)}
-                className="inline-flex items-center justify-center p-2 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5" 
+                className="inline-flex items-center justify-center p-1.5 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5" 
                 title={t.donation}
               >
-                <HandCoins className="w-5 h-5 sm:w-4 sm:h-4 sm:mr-2" />
+                <HandCoins className="w-4 h-4 sm:w-4 sm:h-4 sm:mr-2" />
                 <span className="hidden sm:inline-block">{t.donation}</span>
               </button>
-              <button onClick={() => signIn()} className="inline-flex items-center justify-center px-4 py-2 border border-slate-200 rounded-lg shadow-sm text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-200 hover:shadow-md hover:-translate-y-0.5">
+              <button onClick={() => signIn()} className="inline-flex items-center justify-center px-3 sm:px-4 py-1.5 sm:py-2 border border-slate-200 rounded-lg shadow-sm text-xs sm:text-sm font-bold sm:font-medium text-slate-700 bg-white hover:bg-slate-50 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-200 hover:shadow-md hover:-translate-y-0.5">
                 Login
               </button>
             </div>
