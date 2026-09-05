@@ -652,30 +652,30 @@ export default function Home() {
                     <label className="block text-sm font-bold text-slate-800 mb-3">
                       {lang === 'id' ? 'Kedaluwarsa Link' : 'Link Expiration'} <span className="text-red-500">*</span>
                     </label>
-                    <div className="flex flex-wrap sm:flex-nowrap gap-2">
+                    <div className="grid grid-cols-2 sm:flex sm:flex-nowrap gap-2">
                       {[
                         { v: '1d', l: lang === 'id' ? '24 Jam' : '24 Hours' },
                         { v: '3d', l: lang === 'id' ? '3 Hari (Bawaan)' : '3 Days (Default)' },
                         { v: '7d', l: lang === 'id' ? '7 Hari' : '7 Days' },
                         { v: '30d', l: lang === 'id' ? '30 Hari' : '30 Days' },
                         { v: 'never', l: lang === 'id' ? 'Selamanya ∞' : 'Forever ∞' }
-                      ].map(opt => (
+                      ].map((opt, i) => (
                         <button
                           key={opt.v}
                           type="button"
                           onClick={() => setExpiresIn(opt.v)}
-                          className={`flex-1 py-3 px-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex flex-col items-center justify-center gap-1 border ${
+                          className={`w-full sm:flex-1 py-2.5 sm:py-3 px-2 rounded-xl text-[11px] sm:text-sm font-semibold transition-all flex flex-col items-center justify-center gap-0.5 sm:gap-1 border ${
                             expiresIn === opt.v 
                               ? 'bg-[#0047cc] text-white border-[#0047cc] shadow-md' 
                               : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                          }`}
+                          } ${opt.v === 'never' ? 'col-span-2 sm:col-span-1' : ''}`}
                         >
-                          <div className="flex items-center gap-1.5">
-                            {expiresIn === opt.v && <Check className="w-3.5 h-3.5 shrink-0" />}
+                          <div className="flex items-center gap-1 sm:gap-1.5 whitespace-nowrap">
+                            {expiresIn === opt.v && <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />}
                             <span className="text-center">{opt.l.split(' (')[0]}</span>
                           </div>
                           {opt.l.includes('(') && (
-                            <span className={`text-[10px] ${expiresIn === opt.v ? 'text-blue-200' : 'text-slate-400'}`}>
+                            <span className={`text-[9px] sm:text-[10px] ${expiresIn === opt.v ? 'text-blue-200' : 'text-slate-400'}`}>
                               ({opt.l.split(' (')[1]}
                             </span>
                           )}
