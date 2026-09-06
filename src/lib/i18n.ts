@@ -140,7 +140,7 @@ export const dictionaries = {
     qrGenerator: "Bikin QR",
     destinationUrl: "URL Tujuan",
     customAlias: "Alias Custom",
-    optional: "(Bebas)",
+    optional: "(Opsional)",
     leaveBlankAuto: "Biarin kosong aja kalau mau dibikinin kode acak otomatis.",
     linkTitle: "Judul Link / Nama Acara",
     titlePlaceholder: "Contoh: Daftar Webinar, Ultah Budi",

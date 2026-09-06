@@ -98,6 +98,18 @@ export default function UserNavbar({ user }: { user: any }) {
             </div>
             
             <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+              <button
+                onClick={toggleLanguage}
+                className="flex shrink-0 items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors mr-1 sm:mr-0"
+                title={t.language}
+              >
+                <Globe className="w-4 h-4 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN' : 'ID'}</span>
+                <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
+              </button>
+
+              <div className="w-px h-5 bg-slate-200 hidden sm:block mx-1"></div>
+
               <button 
                 onClick={() => setShowDonationModal(true)}
                 className="inline-flex shrink-0 items-center justify-center p-1.5 sm:px-4 sm:py-2 border border-transparent rounded-lg shadow-sm text-xs sm:text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 hover:shadow-md hover:-translate-y-0.5"
@@ -121,23 +133,15 @@ export default function UserNavbar({ user }: { user: any }) {
               </div>
 
               <button 
-                onClick={() => signOut({ callbackUrl: '/' })}
+                onClick={() => {
+                  if (window.confirm(lang === 'id' ? 'Yakin mau keluar?' : 'Are you sure you want to log out?')) {
+                    signOut({ callbackUrl: '/' });
+                  }
+                }}
                 className="inline-flex shrink-0 items-center justify-center p-1.5 sm:p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                 title="Logout"
               >
                 <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-500" /> 
-              </button>
-
-              <div className="w-px h-5 bg-slate-200 hidden sm:block mx-1"></div>
-
-              <button
-                onClick={toggleLanguage}
-                className="flex shrink-0 items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium text-muted-foreground hover:text-foreground transition-colors ml-1 sm:ml-0"
-                title={t.language}
-              >
-                <Globe className="w-4 h-4 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline font-semibold">{lang === 'en' ? 'EN' : 'ID'}</span>
-                <span className="sm:hidden font-semibold">{lang.toUpperCase()}</span>
               </button>
             </div>
           </div>

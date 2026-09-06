@@ -1022,7 +1022,7 @@ export default function Home() {
                           <QrCode className="h-5 w-5 text-indigo-600" />
                         </div>
                         <div>
-                          <h3 className="font-bold text-[15px] text-slate-800">{lang === 'id' ? 'Logo Kode QR Kustom' : 'Custom QR Code Logo'} <span className="text-slate-400 font-normal">{lang === 'id' ? '(Opsional)' : '(Optional)'}</span></h3>
+                          <h3 className="font-bold text-[15px] text-slate-800">{lang === 'id' ? 'Logo Kode QR Kustom' : 'Custom QR Code Logo'} <span className="text-slate-400 font-normal">{t.optional}</span></h3>
                           <p className="text-xs text-slate-500 mt-0.5">{lang === 'id' ? 'Taruh logo brand kamu atau watermark persis di tengah-tengah QR code.' : 'Embed your brand avatar or watermark in the center of the QR barcode.'}</p>
                         </div>
                       </div>
