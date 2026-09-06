@@ -695,7 +695,7 @@ export default function Home() {
                   </div>
 
                   {/* Password Protection */}
-                  <div className="border-t border-slate-200/60 pt-2 overflow-hidden">
+                  <div className="border-t border-slate-200/60 pt-2 overflow-visible">
                     <div className="py-3 sm:py-4 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequirePassword(!requirePassword)}>
                       <div className="flex items-start gap-4">
                         <div className="bg-blue-100/50 p-2.5 rounded-xl border border-blue-200/50 shrink-0 mt-0.5 sm:mt-0">
@@ -725,7 +725,7 @@ export default function Home() {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden border-t border-slate-200/60"
                         >
-                          <div className="py-4 bg-transparent">
+                          <div className="py-4 px-1 -mx-1 bg-transparent">
                             <div className="relative">
                               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                 <Lock className="h-4 w-4 text-slate-400" />
@@ -757,7 +757,7 @@ export default function Home() {
                   </div>
 
                   {/* Time-Lock / Scheduled Access */}
-                  <div className={`border-t border-slate-200/60 pt-2 ${isTimezoneDropdownOpen ? 'relative z-20' : 'overflow-hidden'}`}>
+                  <div className={`border-t border-slate-200/60 pt-2 ${isTimezoneDropdownOpen ? 'relative z-20' : 'overflow-visible'}`}>
                     <div className="py-3 sm:py-4 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequireSchedule(!requireSchedule)}>
                       <div className="flex items-start gap-4">
                         <div className="bg-indigo-100/50 p-2.5 rounded-xl border border-indigo-200/50 shrink-0 mt-0.5 sm:mt-0">
@@ -785,9 +785,9 @@ export default function Home() {
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
                           transition={{ duration: 0.2 }}
-                          className={`border-t border-slate-200/60 ${isTimezoneDropdownOpen ? '' : 'overflow-hidden'}`}
+                          className={`border-t border-slate-200/60 ${isTimezoneDropdownOpen ? 'overflow-visible' : 'overflow-hidden'}`}
                         >
-                          <div className="py-4 bg-transparent">
+                          <div className="py-4 px-1 -mx-1 bg-transparent">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                               <div className="relative border border-slate-200/60 rounded-xl focus-within:ring-2 focus-within:ring-primary-500 transition-all bg-slate-50/80 focus-within:bg-white overflow-hidden">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -862,7 +862,7 @@ export default function Home() {
                   </div>
 
                   {/* Custom Link Preview (OG) Toggle */}
-                  <div className="border-t border-slate-200/60 pt-2 overflow-hidden">
+                  <div className="border-t border-slate-200/60 pt-2 overflow-visible">
                     <div className="py-3 sm:py-4 flex items-start sm:items-center justify-between cursor-pointer" onClick={() => setRequireOg(!requireOg)}>
                       <div className="flex items-start gap-4">
                         <div className="bg-sky-100/50 p-2.5 rounded-xl border border-sky-200/50 shrink-0 mt-0.5 sm:mt-0">
@@ -892,7 +892,7 @@ export default function Home() {
                           transition={{ duration: 0.2 }}
                           className="overflow-hidden border-t border-slate-200/60"
                         >
-                          <div className="py-4 bg-transparent grid grid-cols-1 lg:grid-cols-2 gap-8">
+                          <div className="py-4 px-1 -mx-1 bg-transparent grid grid-cols-1 lg:grid-cols-2 gap-8">
                             <div className="space-y-4">
                               <div>
                                 <label className="block text-xs font-bold text-slate-700 mb-1.5">
@@ -1022,7 +1022,7 @@ export default function Home() {
                           <QrCode className="h-5 w-5 text-indigo-600" />
                         </div>
                         <div>
-                          <h3 className="font-bold text-[15px] text-slate-800">{lang === 'id' ? 'Logo Kode QR Kustom' : 'Custom QR Code Logo'} <span className="text-slate-400 font-normal">{t.optional}</span></h3>
+                          <h3 className="font-bold text-[15px] text-slate-800">{lang === 'id' ? 'Logo Kode QR Kustom' : 'Custom QR Code Logo'} <span className="text-slate-400 font-normal">{lang === 'id' ? '(Opsional)' : '(Optional)'}</span></h3>
                           <p className="text-xs text-slate-500 mt-0.5">{lang === 'id' ? 'Taruh logo brand kamu atau watermark persis di tengah-tengah QR code.' : 'Embed your brand avatar or watermark in the center of the QR barcode.'}</p>
                         </div>
                       </div>
