@@ -53,6 +53,7 @@ export default function UserNavbar({ user }: { user: any }) {
     const newLang = lang === 'en' ? 'id' : 'en';
     setLang(newLang);
     localStorage.setItem('fyurl_lang', newLang);
+    window.location.reload();
   };
 
   return (
