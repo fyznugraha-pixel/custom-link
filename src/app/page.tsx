@@ -151,6 +151,37 @@ export default function Home() {
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
+  const [aliasAvailable, setAliasAvailable] = useState<boolean | null>(null);
+  const [checkingAlias, setCheckingAlias] = useState(false);
+  
+  useEffect(() => {
+    if (!customAlias) {
+      setAliasAvailable(null);
+      return;
+    }
+    
+    if (!/^[a-zA-Z0-9-_]+$/.test(customAlias)) {
+      setAliasAvailable(false);
+      return;
+    }
+
+    const checkAlias = async () => {
+      setCheckingAlias(true);
+      try {
+        const res = await fetch(`/api/check-alias?alias=${customAlias}&domainId=${domainId || ''}`);
+        const data = await res.json();
+        setAliasAvailable(data.available);
+      } catch (e) {
+        setAliasAvailable(null);
+      } finally {
+        setCheckingAlias(false);
+      }
+    };
+
+    const timeoutId = setTimeout(checkAlias, 500);
+    return () => clearTimeout(timeoutId);
+  }, [customAlias, domainId]);
+
   const [title, setTitle] = useState('');
   const [expiresIn, setExpiresIn] = useState('3d');
   const [customDays, setCustomDays] = useState('60');
@@ -546,7 +577,17 @@ export default function Home() {
                         <label htmlFor="customAlias" className="block text-sm font-bold text-slate-800">
                           {t.customAlias} <span className="text-slate-400 font-normal">{t.optional}</span>
                         </label>
-                        {customAlias && <span className="text-xs font-medium text-blue-600 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>{lang === 'id' ? 'Tersedia' : 'Available'} ✓</span>}
+                        {customAlias && (
+                          <span className="text-xs font-medium flex items-center gap-1">
+                            {checkingAlias ? (
+                              <span className="text-slate-500 flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" /> {lang === 'id' ? 'Mengecek...' : 'Checking...'}</span>
+                            ) : aliasAvailable === true ? (
+                              <span className="text-blue-600 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-blue-600 rounded-full"></div>{lang === 'id' ? 'Tersedia' : 'Available'} ✓</span>
+                            ) : aliasAvailable === false ? (
+                              <span className="text-red-500 flex items-center gap-1"><div className="w-1.5 h-1.5 bg-red-500 rounded-full"></div>{lang === 'id' ? 'Tidak Tersedia' : 'Unavailable'} ✗</span>
+                            ) : null}
+                          </span>
+                        )}
                       </div>
                       <div className="flex shadow-sm rounded-xl focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-transparent transition-all">
                         {customDomains.length > 0 ? (
@@ -733,10 +774,11 @@ export default function Home() {
                               <input
                                 type={showPassword ? "text" : "password"}
                                 required={requirePassword}
+                                minLength={4}
                                 placeholder="SecurePass@2025!"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full pl-11 pr-12 py-3.5 text-sm font-medium border border-slate-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all bg-slate-50/80 placeholder-slate-400"
+                                className={`block w-full pl-11 pr-12 py-3.5 text-sm font-medium border rounded-xl focus:outline-none focus:ring-2 focus:ring-inset transition-all bg-slate-50/80 ${requirePassword && password.length > 0 && password.length < 4 ? 'border-red-400 focus:ring-red-400 text-red-600 placeholder-red-300' : 'border-slate-200/60 focus:ring-primary-500 placeholder-slate-400'}`}
                               />
                               <button
                                 type="button"
@@ -746,10 +788,16 @@ export default function Home() {
                                 {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                               </button>
                             </div>
-                            <p className="text-[11px] text-blue-600 font-medium mt-3 flex items-start gap-1.5 font-mono">
-                              <Shield className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                              {lang === 'id' ? 'Pengunjung bakal ngeliat halaman login aman (AES 256-bit) sebelum diarahkan.' : 'Visitors will see a 256-bit AES secure authentication dialog before redirect.'}
-                            </p>
+                            <div className="flex flex-col gap-1.5 mt-3">
+                              <p className={`text-[11px] font-medium flex items-start gap-1.5 ${requirePassword && password.length > 0 && password.length < 4 ? 'text-red-500' : 'text-slate-500'}`}>
+                                <ShieldAlert className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                                {lang === 'id' ? 'Minimal 4 karakter (huruf/angka/simbol bebas).' : 'Minimum 4 characters (any).'}
+                              </p>
+                              <p className="text-[11px] text-blue-600 font-medium flex items-start gap-1.5 font-mono">
+                                <Shield className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                                {lang === 'id' ? 'Pengunjung bakal ngeliat halaman login aman (AES 256-bit).' : 'Visitors will see a 256-bit AES secure authentication dialog.'}
+                              </p>
+                            </div>
                           </div>
                         </motion.div>
                       )}
@@ -789,7 +837,7 @@ export default function Home() {
                         >
                           <div className="py-4 px-1 -mx-1 bg-transparent">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                              <div className="relative border border-slate-200/60 rounded-xl focus-within:ring-2 focus-within:ring-primary-500 transition-all bg-slate-50/80 focus-within:bg-white overflow-hidden">
+                              <div className="relative border border-slate-200/60 rounded-xl focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-500 transition-all bg-slate-50/80 focus-within:bg-white overflow-hidden">
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                   <Calendar className="h-4.5 w-4.5 text-blue-500" />
                                 </div>
@@ -804,7 +852,7 @@ export default function Home() {
                                 />
                               </div>
                               <div 
-                                className="flex items-center gap-2 px-3 py-2 border border-slate-200/60 rounded-xl bg-slate-50/50 focus-within:ring-2 focus-within:ring-primary-500 transition-all focus-within:bg-white relative cursor-pointer"
+                                className="flex items-center gap-2 px-3 py-2 border border-slate-200/60 rounded-xl bg-slate-50/50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-primary-500 transition-all focus-within:bg-white relative cursor-pointer"
                                 tabIndex={0}
                                 onBlur={(e) => {
                                   if (!e.currentTarget.contains(e.relatedTarget as Node)) {
@@ -903,7 +951,7 @@ export default function Home() {
                                   value={ogTitle}
                                   onChange={(e) => setOgTitle(e.target.value)}
                                   placeholder="Indonesia Digital Summit 2025 • Konferensi Teknologi"
-                                  className="block w-full px-4 py-2.5 text-sm font-medium text-slate-800 bg-slate-50 border border-slate-200/60 rounded-xl focus:ring-2 focus:ring-primary-500 focus:bg-white outline-none transition-all placeholder-slate-400"
+                                  className="block w-full px-4 py-2.5 text-sm font-medium text-slate-800 bg-slate-50 border border-slate-200/60 rounded-xl focus:ring-2 focus:ring-inset focus:ring-primary-500 focus:bg-white outline-none transition-all placeholder-slate-400"
                                 />
                               </div>
                               <div>
@@ -915,7 +963,7 @@ export default function Home() {
                                   onChange={(e) => setOgDescription(e.target.value)}
                                   placeholder={lang === 'id' ? "Temukan peta jalan inovasi AI, keamanan siber, dan ekonomi digital terkini bersama 50+ pembicara..." : "Discover the AI innovation roadmap, cybersecurity, and digital economy with 50+ speakers..."}
                                   rows={3}
-                                  className="block w-full px-4 py-2.5 text-sm font-medium text-slate-800 bg-slate-50 border border-slate-200/60 rounded-xl focus:ring-2 focus:ring-primary-500 focus:bg-white outline-none transition-all resize-none placeholder-slate-400"
+                                  className="block w-full px-4 py-2.5 text-sm font-medium text-slate-800 bg-slate-50 border border-slate-200/60 rounded-xl focus:ring-2 focus:ring-inset focus:ring-primary-500 focus:bg-white outline-none transition-all resize-none placeholder-slate-400"
                                 />
                               </div>
                               <div>
@@ -1082,7 +1130,7 @@ export default function Home() {
                 <div className="mt-8 text-center">
                   <button
                     type="submit"
-                    disabled={loading || !longUrl}
+                    disabled={loading || !longUrl || (requirePassword && password.length < 4) || aliasAvailable === false}
                     className="w-full sm:w-auto inline-flex items-center justify-center px-12 py-4 text-base font-bold text-white bg-[#0047cc] hover:bg-blue-700 rounded-xl transition-all focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-70 disabled:cursor-not-allowed group shadow-lg shadow-blue-500/30"
                   >
                     {loading ? (
@@ -1110,7 +1158,7 @@ export default function Home() {
                   </div>
                   <h2 className="text-3xl font-bold text-foreground mb-8">{t.linkReady}</h2>
                   
-                  <div className="bg-primary-50/50 rounded-2xl border border-primary-100 p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-stretch text-left">
+                  <div className="flex flex-col md:flex-row gap-8 items-center md:items-stretch text-left">
                   <div className="flex-1 flex flex-col justify-center min-w-0">
                     <p className="text-sm font-semibold text-muted-foreground mb-3">{t.shortLinkText}</p>
                     <div className="flex shadow-sm rounded-xl overflow-hidden border border-primary-200 bg-white mb-6">
@@ -1129,17 +1177,17 @@ export default function Home() {
                       </button>
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row gap-6 mt-2">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2">
                       <button
                         onClick={() => setResult(null)}
-                        className="text-primary-600 hover:text-primary-700 font-medium flex items-center transition-colors group w-fit bg-primary-50 px-4 py-2 rounded-lg border border-primary-100"
+                        className="text-primary-600 hover:text-primary-700 font-medium flex-1 flex items-center justify-center transition-colors group bg-primary-50 px-4 py-3 rounded-xl border border-primary-100"
                       >
                         <ArrowRight className="w-4 h-4 mr-2 rotate-180 group-hover:-translate-x-1 transition-transform" />
                         {t.createAnother}
                       </button>
                       <button
                         onClick={() => setShowDonationModal(true)}
-                        className="text-amber-700 hover:text-amber-800 font-medium flex items-center transition-colors group w-fit bg-amber-50 hover:bg-amber-100 px-4 py-2 rounded-lg border border-amber-200"
+                        className="text-amber-700 hover:text-amber-800 font-medium flex-1 flex items-center justify-center transition-colors group bg-amber-50 hover:bg-amber-100 px-4 py-3 rounded-xl border border-amber-200"
                       >
                         <HandCoins className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform text-amber-500" />
                         {lang === 'id' ? 'Traktir Kopi (Donasi)' : 'Support via Donation'}
@@ -1414,8 +1462,8 @@ export default function Home() {
               
               <div className="space-y-3">
                 {recentLinks.map((link) => (
-                  <div key={link.shortCode} className="bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-xl p-4 flex flex-col sm:flex-row gap-4 items-center shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 shrink-0 relative overflow-hidden group-hover:border-primary-100 transition-colors">
+                  <div key={link.shortCode} className="bg-white/80 backdrop-blur-md border border-slate-200/60 rounded-xl p-3 sm:p-4 flex flex-row gap-3 sm:gap-4 items-center shadow-sm hover:shadow-md transition-shadow group">
+                    <div className="bg-slate-50 p-1.5 sm:p-2 rounded-lg border border-slate-100 shrink-0 relative overflow-hidden group-hover:border-primary-100 transition-colors">
                       <QRCodeCanvas 
                         id={`qr-history-${link.shortCode}`}
                         value={`https://${link.domain}/${link.shortCode}`} 
@@ -1434,13 +1482,13 @@ export default function Home() {
                       />
                     </div>
                     
-                    <div className="flex-1 min-w-0 text-center sm:text-left w-full">
-                      <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                    <div className="flex-1 min-w-0 text-left w-full">
+                      <div className="flex items-center justify-start gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
                         <a 
                           href={`https://${link.domain}/${link.shortCode}`} 
                           target="_blank" 
                           rel="noreferrer"
-                          className="font-bold text-primary-700 hover:text-primary-800 text-lg truncate transition-colors"
+                          className="font-bold text-primary-700 hover:text-primary-800 text-base sm:text-lg truncate transition-colors"
                         >
                           {link.domain}/{link.shortCode}
                         </a>
@@ -1449,13 +1497,13 @@ export default function Home() {
                             navigator.clipboard.writeText(`${link.domain}/${link.shortCode}`);
                             toast.success(lang === 'id' ? 'Disalin!' : 'Copied!');
                           }}
-                          className="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-md transition-colors"
+                          className="p-1 sm:p-1.5 text-slate-400 hover:text-primary-600 hover:bg-primary-50 rounded-md transition-colors shrink-0"
                           title="Copy"
                         >
-                          <Copy className="w-4 h-4" />
+                          <Copy className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                         </button>
                       </div>
-                      <div className="text-sm text-slate-500 truncate flex items-center justify-center sm:justify-start gap-1">
+                      <div className="text-xs sm:text-sm text-slate-500 truncate flex items-center justify-start gap-1">
                         <ArrowRight className="w-3 h-3 shrink-0" />
                         <span className="truncate" title={link.longUrl}>{link.longUrl}</span>
                       </div>

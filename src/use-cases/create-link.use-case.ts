@@ -120,6 +120,9 @@ export class CreateLinkUseCase {
     // 4. Hash Password (if any)
     let passwordHash = null;
     if (data.password) {
+      if (data.password.length < 4) {
+        throw new Error("Password must be at least 4 characters long");
+      }
       passwordHash = await bcrypt.hash(data.password, 10);
     }
 
