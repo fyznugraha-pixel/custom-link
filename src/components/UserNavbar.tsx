@@ -17,6 +17,14 @@ export default function UserNavbar({ user }: { user: any }) {
   const t = dictionaries[lang];
 
   useEffect(() => {
+    // Add padding to body on mobile to prevent navbar from covering footer
+    document.body.classList.add('mobile-navbar-active');
+    return () => {
+      document.body.classList.remove('mobile-navbar-active');
+    };
+  }, []);
+
+  useEffect(() => {
     const savedLang = localStorage.getItem('fyurl_lang');
     if (savedLang === 'id' || savedLang === 'en') {
       setLang(savedLang);
