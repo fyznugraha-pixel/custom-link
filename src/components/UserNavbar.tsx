@@ -7,11 +7,13 @@ import { signOut } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 import { dictionaries, Language } from '@/lib/i18n';
 import DonationModal from '@/components/DonationModal';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function UserNavbar({ user }: { user: any }) {
   const pathname = usePathname();
   const [imageError, setImageError] = useState(false);
   const [showDonationModal, setShowDonationModal] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   
   const [lang, setLang] = useState<Language>('en');
   const t = dictionaries[lang];
@@ -142,11 +144,7 @@ export default function UserNavbar({ user }: { user: any }) {
               </div>
 
               <button 
-                onClick={() => {
-                  if (window.confirm(lang === 'id' ? 'Yakin mau keluar?' : 'Are you sure you want to log out?')) {
-                    signOut({ callbackUrl: '/' });
-                  }
-                }}
+                onClick={() => setShowLogoutModal(true)}
                 className="inline-flex shrink-0 items-center justify-center p-1.5 sm:p-2 border border-border rounded-md shadow-sm text-sm font-medium text-foreground bg-white hover:bg-muted focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                 title="Logout"
               >
@@ -209,6 +207,52 @@ export default function UserNavbar({ user }: { user: any }) {
         onClose={() => setShowDonationModal(false)} 
         lang={lang} 
       />
+
+      <AnimatePresence>
+        {showLogoutModal && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowLogoutModal(false)}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm bg-white rounded-2xl shadow-xl z-[101] overflow-hidden"
+            >
+              <div className="p-6">
+                <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+                  <LogOut className="w-6 h-6 text-red-600" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-800 text-center mb-2">
+                  {lang === 'id' ? 'Yakin mau keluar?' : 'Are you sure you want to log out?'}
+                </h3>
+                <p className="text-sm text-slate-500 text-center mb-6">
+                  {lang === 'id' ? 'Kamu harus login lagi untuk mengakses dashboard.' : 'You will need to log in again to access the dashboard.'}
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowLogoutModal(false)}
+                    className="flex-1 px-4 py-2.5 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                  >
+                    {lang === 'id' ? 'Batal' : 'Cancel'}
+                  </button>
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="flex-1 px-4 py-2.5 text-sm font-bold text-white bg-red-600 hover:bg-red-700 rounded-xl transition-colors"
+                  >
+                    {lang === 'id' ? 'Keluar' : 'Log out'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }
