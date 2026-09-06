@@ -151,37 +151,6 @@ export default function Home() {
   const [longUrl, setLongUrl] = useState('');
   const [qrText, setQrText] = useState('');
   const [customAlias, setCustomAlias] = useState('');
-  const [aliasAvailable, setAliasAvailable] = useState<boolean | null>(null);
-  const [checkingAlias, setCheckingAlias] = useState(false);
-  
-  useEffect(() => {
-    if (!customAlias) {
-      setAliasAvailable(null);
-      return;
-    }
-    
-    if (!/^[a-zA-Z0-9-_]+$/.test(customAlias)) {
-      setAliasAvailable(false);
-      return;
-    }
-
-    const checkAlias = async () => {
-      setCheckingAlias(true);
-      try {
-        const res = await fetch(`/api/check-alias?alias=${customAlias}&domainId=${domainId || ''}`);
-        const data = await res.json();
-        setAliasAvailable(data.available);
-      } catch (e) {
-        setAliasAvailable(null);
-      } finally {
-        setCheckingAlias(false);
-      }
-    };
-
-    const timeoutId = setTimeout(checkAlias, 500);
-    return () => clearTimeout(timeoutId);
-  }, [customAlias, domainId]);
-
   const [title, setTitle] = useState('');
   const [expiresIn, setExpiresIn] = useState('3d');
   const [customDays, setCustomDays] = useState('60');
@@ -229,6 +198,37 @@ export default function Home() {
   const [defaultDomain, setDefaultDomain] = useState('link.byfayiz.web.id');
   const [customDomains, setCustomDomains] = useState<any[]>([]);
   const [domainId, setDomainId] = useState('');
+
+  const [aliasAvailable, setAliasAvailable] = useState<boolean | null>(null);
+  const [checkingAlias, setCheckingAlias] = useState(false);
+  
+  useEffect(() => {
+    if (!customAlias) {
+      setAliasAvailable(null);
+      return;
+    }
+    
+    if (!/^[a-zA-Z0-9-_]+$/.test(customAlias)) {
+      setAliasAvailable(false);
+      return;
+    }
+
+    const checkAlias = async () => {
+      setCheckingAlias(true);
+      try {
+        const res = await fetch(`/api/check-alias?alias=${customAlias}&domainId=${domainId || ''}`);
+        const data = await res.json();
+        setAliasAvailable(data.available);
+      } catch (e) {
+        setAliasAvailable(null);
+      } finally {
+        setCheckingAlias(false);
+      }
+    };
+
+    const timeoutId = setTimeout(checkAlias, 500);
+    return () => clearTimeout(timeoutId);
+  }, [customAlias, domainId]);
 
   useEffect(() => {
     const currentHost = window.location.host.replace(/^www\./, '');
