@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Lock, Unlock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff, Clock } from 'lucide-react';
+import { Lock, Unlock, Loader2, ArrowRight, ShieldAlert, Eye, EyeOff, Clock, Globe } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { dictionaries, Language } from '@/lib/i18n';
@@ -114,17 +114,22 @@ export default function UnlockClient({
   const isTimeLocked = timeLeft !== null && timeLeft > 0;
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 selection:bg-primary-500 selection:text-white relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary-600/20 blur-[120px] rounded-full pointer-events-none" />
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-4 selection:bg-primary-500 selection:text-white relative overflow-hidden">
+      {/* Dynamic Background Orbs */}
+      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary-600/20 blur-[120px] rounded-full pointer-events-none mix-blend-screen animate-pulse" style={{ animationDuration: '4s' }} />
+      <div className="absolute bottom-0 right-1/4 w-[600px] h-[600px] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none mix-blend-screen animate-pulse" style={{ animationDuration: '7s' }} />
       
       <motion.div 
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="w-full max-w-md relative z-10"
       >
-        <div className="bg-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-3xl p-8 sm:p-10 shadow-2xl">
-          <div className="flex flex-col items-center text-center mb-8">
-            <div className="w-20 h-20 bg-slate-700/50 rounded-full flex items-center justify-center mb-6 relative border border-slate-600/50">
+        <div className="bg-slate-900/40 backdrop-blur-2xl border border-slate-700/50 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl shadow-black/50 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+          
+          <div className="flex flex-col items-center text-center mb-10 relative z-10">
+            <div className="w-24 h-24 bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl flex items-center justify-center mb-8 relative border border-slate-700/50 shadow-xl shadow-black/20 group">
+              <div className="absolute inset-0 bg-primary-500/10 opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl blur-xl" />
               <AnimatePresence mode="wait">
                 {success ? (
                   <motion.div
@@ -178,7 +183,7 @@ export default function UnlockClient({
                 exit={{ opacity: 0, y: -20 }}
                 className="flex flex-col items-center justify-center py-6"
               >
-                <div className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-white to-slate-400 tracking-wider font-mono">
+                <div className="text-5xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-slate-400 tracking-tight font-mono drop-shadow-sm">
                   {formatTime(timeLeft)}
                 </div>
               </motion.div>
@@ -197,7 +202,7 @@ export default function UnlockClient({
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={t.enterPassword}
                     disabled={loading || success}
-                    className="block w-full pl-5 pr-12 py-4 text-base bg-slate-900/50 border border-slate-700/50 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all disabled:opacity-50"
+                    className="block w-full pl-6 pr-12 py-4 text-base bg-slate-950/50 border border-slate-700/50 rounded-2xl text-white placeholder-slate-500 focus:outline-none focus:border-primary-500 focus:ring-4 focus:ring-primary-500/20 transition-all disabled:opacity-50 shadow-inner"
                   />
                   <button
                     type="button"
@@ -223,7 +228,7 @@ export default function UnlockClient({
                 <button
                   type="submit"
                   disabled={loading || !password || success}
-                  className="w-full relative group overflow-hidden rounded-2xl bg-primary-600 px-8 py-4 transition-all hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full relative group overflow-hidden rounded-2xl bg-primary-600 px-8 py-4 transition-all hover:bg-primary-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-600/20"
                 >
                   <div className="flex items-center justify-center gap-2">
                     {loading ? (
@@ -240,11 +245,12 @@ export default function UnlockClient({
             ) : null}
           </AnimatePresence>
 
-          <div className="mt-8 flex flex-col items-center gap-4">
+          <div className="mt-10 flex flex-col items-center gap-6 relative z-10">
             <button
               onClick={() => setLang(lang === 'en' ? 'id' : 'en')}
-              className="text-xs font-semibold text-slate-500 hover:text-slate-400 transition-colors uppercase tracking-wider"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-800/40 border border-slate-700/50 text-xs font-bold text-slate-300 hover:text-white hover:bg-slate-700/60 hover:scale-105 hover:border-slate-600 transition-all uppercase tracking-wider shadow-sm"
             >
+              <Globe className="w-4 h-4 opacity-70" />
               {lang === 'en' ? 'ID / EN' : 'EN / ID'}
             </button>
             <Link href="/" className="flex items-center gap-2 group">
